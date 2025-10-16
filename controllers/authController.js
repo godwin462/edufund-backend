@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const OtpModel = require("../models/OtpModel");
 const { nodemailerOtpHelper, sendEmail } = require("../email/brevo");
 const { validateEmail } = require("../middlewares/validateEmail");
+const constants = require("../utils/constants");
 
 const otpLifeTime = process.env.OTP_EXPIRY_DATE;
 
@@ -47,7 +48,7 @@ exports.register = async (req, res) => {
       html,
     }); //console.log(otp);
 
-    otp = jwt.sign({ otp }, process.env.JWT_SECRETE, { expiresIn: `${otpLifeTime}m` });
+    otp = jwt.sign({ otp }, process.env.JWT_SECRETE, { expiresIn: constants.otp_expiry });
 
     await OtpModel.deleteMany({ userId: user._id }); // Delete previous OTPs
     await OtpModel.create({
@@ -93,7 +94,7 @@ exports.login = async (req, res) => {
       html,
     });
 
-    otp = jwt.sign({ otp }, process.env.JWT_SECRETE, { expiresIn: `${otpLifeTime}m` });
+    otp = jwt.sign({ otp }, process.env.JWT_SECRETE, { expiresIn: constants.otp_expiry });
 
     await OtpModel.deleteMany({ userId: user._id }); // Delete previous OTPs
     await OtpModel.create({

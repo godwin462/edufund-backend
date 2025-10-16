@@ -153,13 +153,13 @@ exports.login = async (req, res) => {
         email: user.email,
         isAdmin: user.isAdmin,
       },
-      process.env.JWT_SECRET,
-      { expiresIn: "1day" }
+      process.env.JWT_SECRETE,
+      { expiresIn: "1d" }
     );
 
     // Send a success response
     res.status(200).json({
-      message: "Login successfull",
+      message: "Login successful",
       data: user.fullName,
       token,
     });

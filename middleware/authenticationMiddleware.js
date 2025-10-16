@@ -9,7 +9,7 @@ exports.authenticate = async (req, res, next) => {
                 message: 'No token provided'
             })
         }
-        const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = await jwt.verify(token, process.env.JWT_SECRETE);
         const user = await userModel.findById(decoded.id);
 
         if (user === null) {

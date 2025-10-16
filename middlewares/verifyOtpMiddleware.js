@@ -47,7 +47,7 @@ exports.verifyOtp = async (req, res, next) => {
       // if (auth.trials >= OTP_TRIALS) {
       //   auth.trials = 0;
       //   otp = jwt.sign({ otp: otpIsValid.otp }, process.env.JWT_SECRETE, {
-      //     expiresIn: `${otpLifeTime}m`,
+      //     expiresIn: `
       //   });
       //   auth.otp = otp;
       //   console.log(`reseting for otp to 0 `);
