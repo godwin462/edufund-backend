@@ -1,4 +1,4 @@
-const { initializePayment, verifyPayment } = require('../controllers/payment');
+const { initializePayment, verifyPayment } = require('../controllers/paymentController');
 const { authenticate } = require('../middleware/authenticationMiddleware');
 
 const router = require('express').Router();

@@ -2,8 +2,8 @@ const nodemailer = require("nodemailer");
 
 exports.sendMail = async (user) => {
   const transporter = nodemailer.createTransport({
-    host: process.env.HOST,
-    service: process.env.SERVICE,
+    host: process.env.EMAIL_HOST,
+    service: process.env.SERVEMAIL_SERVICEICE,
     port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
@@ -14,7 +14,7 @@ exports.sendMail = async (user) => {
 
   (async () => {
     const info = await transporter.sendMail({
-      from: `Chowfinder <${process.env.APP_USERNAME}>`,
+      from: `EduFund <${process.env.APP_USERNAME}>`,
       to: user.email,
       subject: user.subject,
       html: user.html

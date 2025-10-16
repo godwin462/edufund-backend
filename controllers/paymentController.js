@@ -1,5 +1,4 @@
 const userModel = require('../models/userModel');
-const productModel = require('../models/productModel');
 const paymentModel = require('../models/paymentModel');
 const axios = require('axios');
 const otpGen = require('otp-generator');
@@ -17,12 +16,6 @@ exports.initializePayment = async (req, res) => {
         message: 'User not found'
       })
     }
-    const product = await productModel.findById(productId);
-    if (product === null) {
-      return res.status(404).json({
-        message: 'Product not found'
-      })
-    }
 
     const paymentData = {
       amount: product.price *1000,
@@ -34,11 +27,15 @@ exports.initializePayment = async (req, res) => {
       }
     }
 
-    const { data } = await axios.post('https://api.korapay.com/merchant/api/v1/charges/initialize', paymentData, {
-      headers: {
-        Authorization: `Bearer ${process.env.KORAPAY_SECRET_KEY}`
+    const { data } = await axios.post(
+      "https://api.korapay.com/merchant/api/v1/charges/initialize",
+      paymentData,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.KORA_API_KEY}`,
+        },
       }
-    });
+    );
 
     const payment = new paymentModel({
       userId: id,
@@ -76,11 +73,14 @@ exports.verifyPayment = async (req, res) => {
         message: 'Payment not found'
       })
     }
-    const { data } = await axios.get(`https://api.korapay.com/merchant/api/v1/charges/${reference}`, {
-      headers: {
-        Authorization: `Bearer ${process.env.KORAPAY_SECRET_KEY}`
+    const { data } = await axios.get(
+      `https://api.korapay.com/merchant/api/v1/charges/${reference}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.KORA_SECRETE_KEY}`,
+        },
       }
-    })
+    );
 
     console.log(data)
     if (data?.status === true && data?.data?.status === "success") {
