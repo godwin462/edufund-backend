@@ -4,15 +4,15 @@ const doc = {
   info: {
     version: "1.0.0",
     title: "API Documentation",
-    description: "EfuFunds backend api",
+    description: "EduFunds backend api",
   },
   host: "localhost:8080",
-  basePath: "/api/v1",
+  basePath: "/",
   schemes: ["http", "https"],
   consumes: ["application/json"],
   produces: ["application/json"],
 };
 
 const outputFile = "./swagger-output.json";
-const endpointsFiles = ["./router/*.js"];
+const endpointsFiles = ["./server.js"];
 swaggerAutogen(outputFile, endpointsFiles, doc);

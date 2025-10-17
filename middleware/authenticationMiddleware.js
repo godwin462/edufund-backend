@@ -14,7 +14,7 @@ exports.authenticate = async (req, res, next) => {
 
         if (user === null) {
             return res.status(404).json({
-                message: 'Authentication Failed: User not found'
+                message: 'Authentication Failed: User not found, please create an account'
             })
         }
         req.user = decoded;

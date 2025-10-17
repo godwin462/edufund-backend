@@ -13,7 +13,7 @@ exports.initializePayment = async (req, res) => {
     const user = await userModel.findById(id);
     if (user === null) {
       return res.status(404).json({
-        message: 'User not found'
+        message: 'User not found, please create an account'
       })
     }
 

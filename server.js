@@ -28,9 +28,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/api/v1/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use("/api/v1", authRouter);
-app.use("/api/v1", userRouter);
-app.use("/api/v1", paymentRouter);
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/payment", paymentRouter);
 
 app.use("/", (req, res) => {
   res.send("Connected to Backend Server");

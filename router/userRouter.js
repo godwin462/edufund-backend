@@ -1,20 +1,9 @@
-const { register, update, verify, resendOtp, login, getAll, makeAdmin } = require('../controllers/userController');
-const { authenticate, adminAuth } = require('../middleware/authenticationMiddleware');
-const uploads = require('../middleware/multerMiddleware');
-const { registerValidator, verifyValidator, resendValidator } = require('../middleware/validatorMiddleware');
+const { getAllUsers, getUser, deleteUser, updateUser } = require("../controllers/userController");
 
-const router = require('express').Router();
+const userRouter = require("express").Router();
+userRouter.get("/", getAllUsers);
+userRouter.get("/:userId", getUser);
+userRouter.delete("/:userId", deleteUser);
+userRouter.patch("/:userId", updateUser);
 
-router.post('/register', uploads.single('profilePicture'), registerValidator, register);
-
-router.post('/verify', verifyValidator, verify);
-
-router.post('/resend-otp', resendValidator, resendOtp);
-
-router.post('/login', login);
-
-router.get('/users', getAll);
-
-router.patch('/users/:id', authenticate, adminAuth, makeAdmin);
-
-module.exports = router;
+module.exports = userRouter;
