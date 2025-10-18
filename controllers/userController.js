@@ -1,16 +1,32 @@
 const UserModel = require("../models/userModel");
-const {hashData} = require("../utils/bcryptUtil");
+const { hashData } = require("../utils/bcryptUtil");
+const {
+  cloudinaryUpload,
+  cloudinaryDelete,
+} = require("../utils/cloudinaryUtil");
 
 exports.createUser = async (req, res) => {
+  let file = null;
   try {
     const { firstName, lastName, email, password, role } = req.body;
+    let profilePicture;
+
+    if (req.file && req.file.buffer) {
+      file = await cloudinaryUpload(file.buffer);
+      profilePicture = {
+        imageUrl: file.secure_url,
+        publicId: file.public_id,
+      };
+    }
+
     const hashedPassword = hashData(password);
     const student = new UserModel({
       firstName,
       lastName,
       email,
-      password:hashedPassword,
-      role
+      password: hashedPassword,
+      role,
+      profilePicture,
     });
     await student.save();
     res.status(201).json({
@@ -40,7 +56,7 @@ exports.updateUser = async (req, res) => {
       lastName,
       email,
       password,
-      role
+      role,
     });
     await user.save();
     res.status(200).json({
@@ -51,9 +67,9 @@ exports.updateUser = async (req, res) => {
     res.status(500).json({
       message: "Server error updating user",
       error: error.message,
-    })
+    });
   }
-}
+};
 
 exports.deleteUser = async (req, res) => {
   try {
@@ -64,6 +80,10 @@ exports.deleteUser = async (req, res) => {
         message: "User not found, please create an account",
       });
     }
+
+    if (user.profilePicture && user.profilePicture.publicId)
+      await cloudinaryDelete(user.profilePicture.publicId);
+
     await UserModel.findByIdAndDelete(userId);
     res.status(200).json({
       message: "User deleted successfully",
@@ -102,7 +122,7 @@ exports.getAllUsers = async (req, res) => {
     const users = await UserModel.find();
     const total = users.length;
     res.status(200).json({
-      message: total<1 ? "No users found" : "Users found successfully",
+      message: total < 1 ? "No users found" : "Users found successfully",
       total,
       data: users,
     });

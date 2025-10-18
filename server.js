@@ -50,7 +50,7 @@ mongoose
   .then(() => {
     console.log("Connected to Database");
     app.listen(PORT, () => {
-      console.log("Server is running on Port:", PORT);
+      console.log(`EduFund server is running on http://localhost:${PORT}`);
     });
   })
   .catch((error) => {

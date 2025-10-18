@@ -2,16 +2,37 @@
 const passport = require("../middleware/passportMiddleware");
 // const profile = require("./middleware/passportMiddleware");
 const authRouter = require("express").Router();
-const { register, login, resendOtp } = require("../controllers/authController");
+const { register, login, resendOtp } = require("../controllers/OtpAuthController");
 const { verifyOtp } = require("../middlewares/verifyOtpMiddleware");
 const { assignRole, studentAccess } = require("../middlewares/roleMiddleware");
 const {
   logInRoleValidationMiddleware,
 } = require("../middlewares/loginRoleValidationMiddleware");
-
-authRouter.post("/register/student", assignRole, register);
-authRouter.post("/register/sponsor", assignRole, register);
-authRouter.post("/register/admin", assignRole, register);
+const upload = require("../middleware/multerMiddleware");
+/**
+ * @swagger
+ * tags:
+ *   name: Authentication
+ *   description: Authentication endpoints
+ */
+authRouter.post(
+  "/register/student",
+  assignRole,
+  upload.single("profilePicture"),
+  register
+);
+authRouter.post(
+  "/register/sponsor",
+  assignRole,
+  upload.single("profilePicture"),
+  register
+);
+authRouter.post(
+  "/register/admin",
+  assignRole,
+  upload.single("profilePicture"),
+  register
+);
 
 authRouter.post("/login/student", logInRoleValidationMiddleware, login);
 authRouter.post("/login/sponsor", logInRoleValidationMiddleware, login);

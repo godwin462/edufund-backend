@@ -9,11 +9,10 @@ const { validateEmail } = require("../middlewares/validateEmail");
 const constants = require("../utils/constants");
 const { generateOtp } = require("../utils/otp");
 const { generateJwt } = require("../utils/jwtUtil");
-
-const otpLifeTime = process.env.OTP_EXPIRY_DATE;
+const { cloudinaryUpload } = require("../utils/cloudinaryUtil");
 
 exports.register = async (req, res) => {
-  //   let file;
+  let file = null;
   try {
     const { firstName, lastName, email, role } = req.body;
 
@@ -28,12 +27,22 @@ exports.register = async (req, res) => {
     if (!validateEmail(email)) {
       return res.status(400).json({ message: "Please provide a valid email!" });
     }
+    let profilePicture;
+
+    if (req.file && req.file.buffer) {
+      file = await cloudinaryUpload(file.buffer);
+      profilePicture = {
+        imageUrl: file.secure_url,
+        publicId: file.public_id,
+      };
+    }
 
     const user = new UserModel({
       firstName,
       lastName,
       email,
       role,
+      profilePicture,
     });
 
     let otp = generateOtp();
