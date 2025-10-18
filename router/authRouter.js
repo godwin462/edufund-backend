@@ -1,20 +1,19 @@
-// const passport = require("passport");
-const passport = require("../middleware/passportMiddleware");
-// const profile = require("./middleware/passportMiddleware");
 const authRouter = require("express").Router();
-const { register, login, resendOtp } = require("../controllers/OtpAuthController");
-const { verifyOtp } = require("../middlewares/verifyOtpMiddleware");
-const { assignRole, studentAccess } = require("../middlewares/roleMiddleware");
 const {
+  register,
+  login,
+  resendVerificationLink,
+  verifyUser,
+} = require("../controllers/emailUrlAuthController");
+const passport = require("../middleware/passportMiddleware");
+const {
+  studentAccess,
   logInRoleValidationMiddleware,
-} = require("../middlewares/loginRoleValidationMiddleware");
+} = require("../middleware/loginRoleValidationMiddleware");
 const upload = require("../middleware/multerMiddleware");
-/**
- * @swagger
- * tags:
- *   name: Authentication
- *   description: Authentication endpoints
- */
+const { assignRole } = require("../middleware/roleMiddleware");
+
+// Account registration routes
 authRouter.post(
   "/register/student",
   assignRole,
@@ -33,14 +32,11 @@ authRouter.post(
   upload.single("profilePicture"),
   register
 );
-
+// Account login routes
 authRouter.post("/login/student", logInRoleValidationMiddleware, login);
 authRouter.post("/login/sponsor", logInRoleValidationMiddleware, login);
 authRouter.post("/login/admin", logInRoleValidationMiddleware, login);
-
-authRouter.post("/resend-otp/:userId", resendOtp);
-authRouter.put("/verify-otp/:userId", verifyOtp, verifyOtp);
-
+// Account Google login routes
 authRouter.get(
   "/auth/google",
   passport.authenticate("google", { scope: ["profile"] })
@@ -49,9 +45,11 @@ authRouter.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/login" }),
   (req, res) => {
-    // console.log(req);
     res.send({ message: "Authentication Success" });
   }
 );
+// Account verification routes
+authRouter.post("/resend-verification/:userId", resendVerificationLink);
+authRouter.get("/verify/:userId/", verifyUser);
 
 module.exports = authRouter;

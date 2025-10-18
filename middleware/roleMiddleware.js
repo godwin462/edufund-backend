@@ -7,7 +7,7 @@ exports.assignRole = (req, res, next) => {
     const roles = ["admin", "sponsor", "student"];
 
     const role = roles.find((key) => endpoint.includes(key));
-    // console.log(role);
+    console.log(req.body);
 
     if (role) {
       req.body.role = role;
@@ -15,9 +15,10 @@ exports.assignRole = (req, res, next) => {
     }
     return res.status(403).json({ message: "Access denied, invalid role" });
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
-      .json({ message: "Server error", error: error.message });
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -38,7 +39,7 @@ exports.studentAccess = async (req, res, next) => {
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "Server error", error: error.message });
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -59,7 +60,7 @@ exports.adminAccess = async (req, res, next) => {
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "Server error", error: error.message });
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -80,6 +81,6 @@ exports.sponsorAccess = async (req, res, next) => {
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "Server error", error: error.message });
+      .json({ message: "Internal server error", error: error.message });
   }
 };
