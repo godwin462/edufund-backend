@@ -1,5 +1,4 @@
-const cloudinary = require("cloudinary").v2;
-
+const cloudinary = require("../config/cloudinary");
 exports.cloudinaryUpload = (
   buffer,
   resource_type = "auto",

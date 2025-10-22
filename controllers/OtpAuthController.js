@@ -8,13 +8,19 @@ const { nodemailerOtpHelper, sendEmail } = require("../email/brevo");
 const { validateEmail } = require("../middleware/validateEmail");
 const constants = require("../utils/constants");
 const { generateOtp } = require("../utils/otp");
-const { generateJwt } = require("../utils/jwtUtil");
+const { generateJwt, verifyJwt, decodeJwt } = require("../utils/jwtUtil");
 const { cloudinaryUpload } = require("../utils/cloudinaryUtil");
+const passport = require("passport");
+const { compareData, hashData } = require("../utils/bcryptUtil");
 
 exports.register = async (req, res) => {
+  /*
+  #swagger.tags = ['Authentication']
+  #swagger.description = 'Register user account.'
+  */
   let file = null;
   try {
-    const { firstName, lastName, email, role } = req.body;
+    const { firstName, lastName, email, role, password } = req.body;
 
     const existingEmail = await UserModel.findOne({ email });
 
@@ -22,10 +28,6 @@ exports.register = async (req, res) => {
       return res
         .status(400)
         .json({ message: "User with the credentials already exists" });
-    }
-
-    if (!validateEmail(email)) {
-      return res.status(400).json({ message: "Please provide a valid email!" });
     }
     let profilePicture;
 
@@ -37,12 +39,14 @@ exports.register = async (req, res) => {
       };
     }
 
+    const hashedPassword = hashData(password);
     const user = new UserModel({
       firstName,
       lastName,
       email,
       role,
       profilePicture,
+      password: hashedPassword,
     });
 
     let otp = generateOtp();
@@ -65,7 +69,9 @@ exports.register = async (req, res) => {
     });
 
     await user.save();
-    res.status(201).json({ message: "OTP sent successfully", data: user });
+    res.status(201).json({
+      message: "OTP sent successfully, check your email to verify your account",
+    });
   } catch (error) {
     console.log(error);
     // if (file && file.path) fs.unlinkSync(file.path);
@@ -76,50 +82,37 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
+  /*
+  #swagger.tags = ['Authentication']
+  #swagger.description = 'Login user account.'
+  */
   try {
-    const { email } = req.body;
+    const { email, password } = req.body;
 
-    if (!validateEmail(email)) {
-      return res.status(400).json({ message: "Please provide a vlide email!" });
-    }
+    const user = await UserModel.findOne({ email }).select("+password");
 
-    const user = await UserModel.findOne({ email });
-    // console.log(email);
     if (!user) {
-      return res
-        .status(404)
-        .json({ message: "User not found, please create an account" });
+      return res.status(404).json({
+        message:
+          "User not found, please check your credentials or create an account",
+      });
     }
 
-    // if (!user.isVerified) {
-    //   return res.status(500).json({
-    //     message: "User not verified, please verify account to continue",
-    //   });
-    // }
+    if (!user.isVerified) {
+      return res.status(500).json({
+        message: "User not verified, please verify account to continue",
+      });
+    }
 
-    let otp = await generateOtp();
+    if (!compareData(password, user.password)) {
+      return res
+        .status(400)
+        .json({ message: "Please provide a valid account password" });
+    }
 
-    const text = `EduFunds Account verification`;
-    const html = loginOtpTemplate(otp);
-    await sendEmail({
-      email,
-      subject: "EduFunds Account Login",
-      text,
-      html,
-    });
+    const token = await generateJwt({ id: user._id }, "1d");
 
-    otp = await generateJwt({ otp }, constants.otp_expiry);
-
-    await OtpModel.deleteMany({ userId: user._id }); // Delete previous OTPs
-    await OtpModel.create({
-      userId: user._id,
-      otp,
-    });
-
-    // console.log(otp);
-    res
-      .status(200)
-      .json({ message: "OTP sent successfully, check your email" });
+    res.status(200).json({ message: "Success, user logged in", token });
   } catch (error) {
     console.log(error);
     res
@@ -129,9 +122,27 @@ exports.login = async (req, res) => {
 };
 
 exports.verifyOtp = async (req, res) => {
+  /*
+  #swagger.tags = ['Authentication']
+  #swagger.description = 'Verify OTP for user account.'
+  #swagger.parameters['userId'] = {
+    in: 'path',
+    description: 'User ID.',
+    required: true,
+    type: 'string'
+  }
+  #swagger.parameters['obj'] = {
+    in: 'body',
+    description: 'OTP to be verified.',
+    required: true,
+    schema: {
+      $otp: '123456'
+    }
+  }
+*/
   try {
-    const { userId } = req.params;
     const { otp } = req.body;
+    const { userId } = req.params;
 
     const user = await UserModel.findById(userId);
 
@@ -140,11 +151,38 @@ exports.verifyOtp = async (req, res) => {
         .status(404)
         .json({ message: "User not found, please create an account" });
     }
+    if (user.isVerified) {
+      return res
+        .status(400)
+        .json({ message: "user already verified, please login to continue" });
+    }
+    const dbOtp = await OtpModel.findOne({ userId });
+    // console.log(dbOtp);
 
-    res
-      .status(200)
-      .json({ message: "OTP verification successful ✅", data: user });
+    if (!dbOtp) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+
+    const isValidOtp = await verifyJwt(dbOtp.otp);
+    if (!isValidOtp.otp) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+    const decodeOtp = await decodeJwt(dbOtp.otp);
+    // console.log(decodeOtp);
+
+    if (decodeOtp.otp !== otp) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+
+    user.isVerified = true;
+    const token = await generateJwt({ id: user._id }, "1d");
+    await user.save();
+
+    res.status(200).json({ message: "OTP verification successful ✅", token });
   } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return res.status(400).json({ message: "OTP expired, request new otp" });
+    }
     console.log(error);
     res.status(500).json({
       message: "Internal server error verifying OTP",
@@ -154,10 +192,14 @@ exports.verifyOtp = async (req, res) => {
 };
 
 exports.resendOtp = async (req, res) => {
+  /*
+  #swagger.tags = ['Authentication']
+  #swagger.description = 'Resend OTP for user account.'
+  */
   try {
-    const { userId } = req.params;
+    const { email } = req.body;
 
-    const user = await UserModel.findById(userId);
+    const user = await UserModel.findOne({ email });
 
     if (!user) {
       return res
@@ -176,7 +218,7 @@ exports.resendOtp = async (req, res) => {
       html,
     });
 
-    otp = generateJwt({ otp }, constants.otp_expiry);
+    otp = await generateJwt({ otp }, constants.otp_expiry);
 
     await OtpModel.deleteMany({ userId: user._id }); // Delete previous OTPs
     await OtpModel.create({
@@ -185,43 +227,13 @@ exports.resendOtp = async (req, res) => {
     });
 
     // console.log(otp);
-    res.status(200).json({ message: "OTP sent successfully", data: user });
+    res
+      .status(200)
+      .json({ message: "New OTP sent, check your email", data: user });
   } catch (error) {
     console.log(error);
     res
       .status(500)
       .json({ message: "Internal Server Error", error: error.message });
-  }
-};
-
-exports.verifyUser = async (req, res) => {
-  try {
-    const { userId } = req.params;
-
-    const user = await UserModel.findById(userId);
-
-    if (!user) {
-      return res
-        .status(404)
-        .json({ message: "User not found, please create an account" });
-    }
-
-    if (user.isVerified) {
-      return res.status(403).json({
-        message: "User already verified, please login to continue",
-      });
-    }
-    Object.assign(user, { isVerified: true });
-    await user.save();
-
-    res
-      .status(200)
-      .json({ message: "User verification successful ✅", data: user });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      message: "Internal server error verifying user",
-      error: error.message,
-    });
   }
 };

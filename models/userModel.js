@@ -21,6 +21,10 @@ const UserSchema = new mongoose.Schema(
         // required: true,
       },
     },
+    phoneNumber: {
+      type: String,
+      unique: true,
+    },
     password: {
       type: String,
       required: true,
@@ -38,6 +42,21 @@ const UserSchema = new mongoose.Schema(
       type: String,
       enum: ["student", "institution", "sponsor", "admin"],
       default: "student",
+    },
+    sponsorType: {
+      type: String,
+      enum: ["individual", "organization"],
+      default: "individual",
+      required: function () {
+        return this.role === "sponsor";
+      },
+    },
+    organizationName: {
+      type: String,
+      default: null,
+      required: function () {
+        return this.role === "sponsor";
+      },
     },
   },
   { timestamps: true }

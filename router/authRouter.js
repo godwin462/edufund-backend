@@ -2,9 +2,9 @@ const authRouter = require("express").Router();
 const {
   register,
   login,
-  resendVerificationLink,
-  verifyUser,
-} = require("../controllers/emailUrlAuthController");
+  resendOtp,
+  verifyOtp,
+} = require("../controllers/OtpAuthController");
 const passport = require("../middleware/passportMiddleware");
 const {
   studentAccess,
@@ -16,26 +16,44 @@ const { assignRole } = require("../middleware/roleMiddleware");
 // Account registration routes
 authRouter.post(
   "/register/student",
-  assignRole,
   upload.single("profilePicture"),
+  assignRole,
   register
 );
 authRouter.post(
-  "/register/sponsor",
-  assignRole,
+  "/register/sponsor/organization",
   upload.single("profilePicture"),
+  assignRole,
+  register
+);
+authRouter.post(
+  "/register/sponsor/individual",
+  upload.single("profilePicture"),
+  assignRole,
   register
 );
 authRouter.post(
   "/register/admin",
-  assignRole,
   upload.single("profilePicture"),
+  assignRole,
   register
 );
 // Account login routes
 authRouter.post("/login/student", logInRoleValidationMiddleware, login);
-authRouter.post("/login/sponsor", logInRoleValidationMiddleware, login);
+authRouter.post(
+  "/login/sponsor/individual",
+  logInRoleValidationMiddleware,
+  login
+);
+authRouter.post(
+  "/login/sponsor/organization",
+  logInRoleValidationMiddleware,
+  login
+);
 authRouter.post("/login/admin", logInRoleValidationMiddleware, login);
+// Account verification routes
+authRouter.post("/resend-otp/", resendOtp);
+authRouter.post("/verify/:userId/", verifyOtp);
 // Account Google login routes
 authRouter.get(
   "/auth/google",
@@ -48,8 +66,5 @@ authRouter.get(
     res.send({ message: "Authentication Success" });
   }
 );
-// Account verification routes
-authRouter.post("/resend-verification/:userId", resendVerificationLink);
-authRouter.get("/verify/:userId/", verifyUser);
 
 module.exports = authRouter;

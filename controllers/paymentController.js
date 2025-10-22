@@ -32,7 +32,7 @@ exports.initializePayment = async (req, res) => {
       paymentData,
       {
         headers: {
-          Authorization: `Bearer ${process.env.KORA_API_KEY}`,
+          Authorization: `Bearer ${process.env.KORA_KEY}`,
         },
       }
     );

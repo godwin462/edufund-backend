@@ -28,9 +28,8 @@ exports.register = async (req, res) => {
     }
 
     let profilePicture;
-
     if (req.file && req.file.buffer) {
-      file = await cloudinaryUpload(file.buffer);
+      file = await cloudinaryUpload(req.file.buffer);
       profilePicture = {
         imageUrl: file.secure_url,
         publicId: file.public_id,
@@ -47,6 +46,7 @@ exports.register = async (req, res) => {
       profilePicture,
       password: hashedPassword,
     });
+
     const token = await generateJwt({ id: user._id }, constants.jwt_expiry);
     let link = `${req.protocol}://${req.get("host")}/api/v1/auth/verify/${
       user._id

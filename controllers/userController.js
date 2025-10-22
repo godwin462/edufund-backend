@@ -6,6 +6,10 @@ const {
 } = require("../utils/cloudinaryUtil");
 
 exports.createUser = async (req, res) => {
+  /*
+  #swagger.tags = ['User']
+  #swagger.description = 'Create a new user.'
+  */
   let file = null;
   try {
     const { firstName, lastName, email, password, role } = req.body;
@@ -27,6 +31,7 @@ exports.createUser = async (req, res) => {
       password: hashedPassword,
       role,
       profilePicture,
+      password,
     });
     await student.save();
     res.status(201).json({
@@ -42,6 +47,10 @@ exports.createUser = async (req, res) => {
 };
 
 exports.updateUser = async (req, res) => {
+  /*
+  #swagger.tags = ['User']
+  #swagger.description = 'Update existing user.'
+  */
   try {
     const { userId } = req.params;
     const { firstName, lastName, email, password, role } = req.body;
@@ -72,6 +81,10 @@ exports.updateUser = async (req, res) => {
 };
 
 exports.deleteUser = async (req, res) => {
+  /*
+  #swagger.tags = ['User']
+  #swagger.description = 'Delete a new user.'
+  */
   try {
     const { userId } = req.params;
     const user = await UserModel.findById(userId);
@@ -97,6 +110,10 @@ exports.deleteUser = async (req, res) => {
 };
 
 exports.getUser = async (req, res) => {
+  /*
+  #swagger.tags = ['User']
+  #swagger.description = 'Get a user by  ID.'
+  */
   try {
     const { userId } = req.params;
     const user = await UserModel.findById(userId);
@@ -118,6 +135,10 @@ exports.getUser = async (req, res) => {
 };
 
 exports.getAllUsers = async (req, res) => {
+  /*
+  #swagger.tags = ['User']
+  #swagger.description = 'Get all users.'
+  */
   try {
     const users = await UserModel.find();
     const total = users.length;
@@ -135,6 +156,10 @@ exports.getAllUsers = async (req, res) => {
 };
 
 exports.getUserByEmail = async (req, res) => {
+  /*
+  #swagger.tags = ['User']
+  #swagger.description = 'Get a user by email.'
+  */
   try {
     const { email } = req.body;
     const user = await UserModel.findOne({ email });

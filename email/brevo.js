@@ -6,8 +6,7 @@ const nodemailer = require("nodemailer");
 // Create a test account or replace with real credentials.
 const transporter = nodemailer.createTransport({
   service: "gmail",
-  port: 587,
-  secure: false, // true for 465, false for other ports
+  secure: true, // use SSL
   auth: {
     user: process.env.EMAIL,
     pass: process.env.MAIL_PASS,
@@ -46,7 +45,12 @@ const brevoSendEmail = async (options) => {
     if (response.data.error) {
       throw new Error(response.data.error.message);
     }
-    console.log("Email sent successfully:", response.data);
+    console.log(
+      "Email sent successfully:",
+      response.data,
+      options.email,
+      process.env.EMAIL
+    );
   } catch (error) {
     console.error(
       "Error sending email:",
@@ -60,6 +64,6 @@ const nodemailerOtpHelper = new NodemailerHelper(
   process.env.MAIL_PASS
 );
 const sendEmail =
-  process.env.NODE_ENV === "production" ? brevoSendEmail : nodemailerSendEmail;
+  process.env.NODE_ENV !== "production" ? brevoSendEmail : nodemailerSendEmail;
 
 module.exports = { sendEmail, nodemailerOtpHelper };

@@ -7,10 +7,15 @@ exports.assignRole = (req, res, next) => {
     const roles = ["admin", "sponsor", "student"];
 
     const role = roles.find((key) => endpoint.includes(key));
-    console.log(req.body);
-
+    const sponsor = endpoint.includes("organization");
     if (role) {
       req.body.role = role;
+      if (sponsor) {
+        req.body.sponsorType = "organization";
+        req.body.organizationName
+          ? null
+          : (req.body.organizationName = undefined);
+      }
       return next();
     }
     return res.status(403).json({ message: "Access denied, invalid role" });
