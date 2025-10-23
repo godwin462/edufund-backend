@@ -1,4 +1,4 @@
-const swaggerAutogen = require("swagger-autogen")();
+const swaggerAutogen = require("swagger-autogen")({ openapi: "3.0.0" });
 
 const doc = {
   info: {
@@ -6,7 +6,24 @@ const doc = {
     title: "API Documentation",
     description: "EduFunds backend api",
   },
-  host: "localhost:8080",
+  // host: "localhost:8080",
+  servers: [
+    { url: "http://localhost:8080", description: "Local server" },
+    {
+      url: "https://edufund-backend-os2x.onrender.com",
+      description: "Production server",
+    },
+  ],
+  securityDefinitions: {
+    bearerAuth: {
+      type: "apiKey",
+      name: "Authorization",
+      scheme: "bearer",
+      in: "header",
+      bearerFormat: "JWT",
+      definition: "JWT Authorization header using the Bearer scheme.",
+    },
+  },
   basePath: "/",
   schemes: ["http", "https"],
   consumes: ["application/json"],

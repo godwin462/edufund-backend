@@ -51,7 +51,8 @@ mongoose
   .then(() => {
     console.log("Connected to Database");
     app.listen(PORT, () => {
-      console.log(`EduFund server is running on http://localhost:${PORT}`);
+      console.log(`EduFund server is running on http://localhost:${PORT}
+        Documentation: http://localhost:${PORT}/api/v1/api-docs`);
     });
   })
   .catch((error) => {
