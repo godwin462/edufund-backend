@@ -446,8 +446,7 @@
             "required": true,
             "schema": {
               "type": "string"
-            },
-            "description": "User ID."
+            }
           }
         ],
         "responses": {
@@ -470,16 +469,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "in": {
-                    "example": "any"
-                  },
-                  "description": {
-                    "example": "any"
-                  },
-                  "required": {
-                    "example": "any"
-                  },
-                  "schema": {
+                  "otp": {
                     "example": "any"
                   }
                 }
@@ -505,6 +495,68 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/change-password/{userId}": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "description": "Change authenticated user account password.",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "example": "any"
+                  },
+                  "newPassword": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }

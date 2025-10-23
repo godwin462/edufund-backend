@@ -1,23 +1,24 @@
 const userModel = require('../models/userModel');
 const jwt = require('jsonwebtoken');
+const {verifyJwt} = require("../utils/jwtUtil");
 
-exports.authenticate = async (req, res, next) => {
+exports.isAuthenticated = async (req, res, next) => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
         if (!token) {
             return res.status(401).json({
-                message: 'No token provided'
+                message: 'User not authenticated, please login'
             })
         }
-        const decoded = await jwt.verify(token, process.env.JWT_SECRETE);
+        const decoded = await verifyJwt(token);
         const user = await userModel.findById(decoded.id);
 
-        if (user === null) {
+        if (!user) {
             return res.status(404).json({
-                message: 'Authentication Failed: User not found, please create an account'
+                message: 'Cannot perform action please crae'
             })
         }
-        req.user = decoded;
+        // req.user = decoded;
         next()
     } catch (error) {
         if (error instanceof jwt.TokenExpiredError) {
@@ -34,6 +35,16 @@ exports.authenticate = async (req, res, next) => {
 
 exports.adminAuth = async(req, res, next)=> {
     if (req.user.isAdmin !== true) {
+        return res.status(403).json({
+            message: "You're not authorized perform this action."
+        })
+    } else{
+        next()
+    }
+}
+
+exports.checkVerification = async(req, res, next) => {
+    if (req.user.isVerified !== true) {
         return res.status(403).json({
             message: "You're not authorized perform this action."
         })

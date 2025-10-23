@@ -18,11 +18,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: true,
-    saveUninitialized: true,
-  })
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: true,
+        saveUninitialized: true
+    })
 );
 
 app.use(passport.initialize());
@@ -34,27 +34,27 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/payment", paymentRouter);
 
 app.use("/", (req, res) => {
-  res.send("Connected to Backend Server");
+    res.send("Connected to Backend Server");
 });
 
 app.use((error, req, res, next) => {
-  if (error) {
-    return res.status(500).json({
-      message: error.message,
-    });
-  }
-  next();
+    if (error) {
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+    next();
 });
 
 mongoose
-  .connect(DB)
-  .then(() => {
-    console.log("Connected to Database");
-    app.listen(PORT, () => {
-      console.log(`EduFund server is running on http://localhost:${PORT}
+    .connect(DB)
+    .then(() => {
+        console.log("Connected to Database");
+        app.listen(PORT, () => {
+            console.log(`EduFund server is running on http://localhost:${PORT}
         Documentation: http://localhost:${PORT}/api/v1/api-docs`);
+        });
+    })
+    .catch((error) => {
+        console.log("Error connecting to Database", error.message);
     });
-  })
-  .catch((error) => {
-    console.log("Error connecting to Database", error.message);
-  });
