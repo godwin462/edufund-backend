@@ -12,6 +12,7 @@ const passport = require("passport");
 const authRouter = require("./router/authRouter");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger-output.json");
+const contactUsRouter = require("./router/contactUsRouter");
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use("/api/v1/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/payment", paymentRouter);
+app.use("/api/v1/contact-us", contactUsRouter);
 
 app.use("/", (req, res) => {
     res.send("Connected to Backend Server");
