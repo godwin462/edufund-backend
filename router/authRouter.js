@@ -55,7 +55,7 @@ authRouter.post(
 authRouter.post("/login/admin", logInRoleValidationMiddleware, login);
 // Account verification routes
 authRouter.post("/resend-otp/", resendOtp);
-authRouter.post("/verify/:userId/", verifyOtp);
+authRouter.post("/verify/:email/", verifyOtp);
 // Account Google login routes
 authRouter.get(
   "/auth/google",
