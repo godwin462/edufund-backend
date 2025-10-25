@@ -1,9 +1,6 @@
 const {
-  initializePayment,
-  verifyPayment,
   makeDonation,
   verifyPaymentWebHook,
-  getReceivedDonations,
 } = require("../controllers/paymentController");
 const { isAuthenticated } = require("../middleware/authenticationMiddleware");
 
@@ -11,9 +8,13 @@ const paymentRouter = require("express").Router();
 
 paymentRouter.post(
   "/make-donation/:donorId/:receiverId",
-  //   isAuthenticated,
+  isAuthenticated,
   makeDonation
 );
-paymentRouter.get("/verify-payment-webhook", verifyPaymentWebHook);
+paymentRouter.get(
+  "/verify-payment-webhook",
+  isAuthenticated,
+  verifyPaymentWebHook
+);
 
 module.exports = paymentRouter;

@@ -128,9 +128,9 @@ exports.verifyOtp = async (req, res) => {
   */
     try {
         const {otp} = req.body;
-        const {userId} = req.params;
+        const {email} = req.params;
 
-        const user = await UserModel.findById(userId);
+        const user = await UserModel.findOne({email});
 
         if (!user) {
             return res
@@ -142,7 +142,7 @@ exports.verifyOtp = async (req, res) => {
                 .status(400)
                 .json({message: "user already verified, please login to continue"});
         }
-        const dbOtp = await OtpModel.findOne({userId});
+        const dbOtp = await OtpModel.findOne({userId: user._id});
         // console.log(dbOtp);
 
         if (!dbOtp) {
@@ -278,4 +278,3 @@ exports.changePassword = async (req, res) => {
             .json({message: "internal server error", error: error.message});
     }
 };
-
