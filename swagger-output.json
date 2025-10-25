@@ -841,6 +841,58 @@
         }
       }
     },
+    "/api/v1/received-donations/student-balance/{studentId}": {
+      "get": {
+        "tags": [
+          "Donation"
+        ],
+        "description": "Get student wallet ballance.",
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/received-donations/campaign-balance/{campaignId}": {
+      "get": {
+        "tags": [
+          "Donation"
+        ],
+        "description": "Get total donations for a campaign.",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/v1/received-donations/campaign-donations/{campaignId}": {
       "get": {
         "tags": [

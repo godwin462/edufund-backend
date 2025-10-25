@@ -76,3 +76,83 @@ exports.getCampaignDonations = async (req, res) => {
     });
   }
 };
+
+exports.getSentDonations = async (req, res) => {
+  /* #swagger.tags = ['Donation']
+   #swagger.description = 'Get all donations by a student.'
+   */
+  try {
+    const { donorId } = req.params;
+    const donations = await paymentModel
+      .find({ senderId: donorId })
+      .populate("senderId");
+    const total = donations.length;
+    res.status(200).json({
+      message:
+        total < 1 ? "No donations found" : "Donations found successfully",
+      total,
+      data: donations,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error getting donations",
+      error: error.message,
+    });
+  }
+};
+
+exports.getCampaignDonationBalance = async (req, res) => {
+  /* #swagger.tags = ['Donation']
+   #swagger.description = 'Get total donations for a campaign.'
+   */
+  try {
+    const { campaignId } = req.params;
+    const donations = await paymentModel
+      .find({ campaignId })
+      .populate("senderId");
+    const totalDonation = donations.reduce(
+      (acc, donation) => acc + donation.amount,
+      0
+    );
+    res.status(200).json({
+      message:
+        total < 1 ? "No donations found" : "Donations found successfully",
+      total,
+      balance: totalDonation,
+      data: donations,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error getting donations",
+      error: error.message,
+    });
+  }
+};
+
+exports.getStudentWalletBalance = async (req, res) => {
+  /* #swagger.tags = ['Donation']
+   #swagger.description = 'Get student wallet ballance.'
+   */
+  try {
+    const { studentId } = req.params;
+    const donations = await paymentModel
+      .find({ receiverId: studentId })
+      .populate("senderId");
+    const totalDonation = donations.reduce(
+      (acc, donation) => acc + donation.amount,
+      0
+    );
+    res.status(200).json({
+      message:
+        total < 1 ? "No donations found" : "Donations found successfully",
+      total,
+      balance: totalDonation,
+      data: totalDonation,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error getting student wallet",
+      error: error.message,
+    });
+  }
+};

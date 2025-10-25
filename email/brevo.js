@@ -32,6 +32,7 @@ const sendEmail = async (options) => {
       "Error sending email:",
       error.response ? error.response.data : error.message
     );
+    throw error;
   }
 };
 
