@@ -288,6 +288,10 @@ exports.changePassword = async (req, res) => {
 };
 
 exports.getCurrentAuthUser = async (req, res) => {
+  /*
+    #swagger.tags = ['Authentication']
+    #swagger.description = 'Get authenticated user'
+    */
   try {
     const user = req.user;
     res.status(200).json({ message: "success", data: user });
