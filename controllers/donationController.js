@@ -8,14 +8,17 @@ exports.getReceivedDonations = async (req, res) => {
    #swagger.description = 'Get all donations to a student.'
    */
   try {
+    const status = req.query.status || "Successful";
     const { studentId } = req.params;
     const donations = await paymentModel
-      .find({ receiverId: studentId })
+      .find({ receiverId: studentId, status })
       .populate("senderId");
     const total = donations.length;
     res.status(200).json({
       message:
-        total < 1 ? "No donations found" : "Donations found successfully",
+        total < 1
+          ? `No ${status} donations found`
+          : "Donations found successfully",
       total,
       data: donations,
     });

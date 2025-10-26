@@ -5,6 +5,7 @@ const {
   resendOtp,
   verifyOtp,
   changePassword,
+  getCurrentAuthUser,
 } = require("../controllers/OtpAuthController");
 const passport = require("../middleware/passportMiddleware");
 const {
@@ -13,7 +14,7 @@ const {
 } = require("../middleware/loginRoleValidationMiddleware");
 const upload = require("../middleware/multerMiddleware");
 const { assignRole } = require("../middleware/roleMiddleware");
-const {isAuthenticated} = require("../middleware/authenticationMiddleware");
+const { isAuthenticated } = require("../middleware/authenticationMiddleware");
 
 // Account registration routes
 authRouter.post(
@@ -71,5 +72,7 @@ authRouter.get(
 
 //  auth updates
 authRouter.post("/change-password/:userId", isAuthenticated, changePassword);
+// Current auth user
+authRouter.post("/me", isAuthenticated, getCurrentAuthUser);
 
 module.exports = authRouter;
