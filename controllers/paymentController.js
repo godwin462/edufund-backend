@@ -9,7 +9,7 @@ exports.makeDonation = async (req, res) => {
    */
   try {
     const { donorId, receiverId } = req.params;
-    const { amount } = req.body;
+    const { amount, redirect_url } = req.body;
     if (!amount || typeof amount !== "number" || amount <= 0) {
       return res.status(400).json({
         message: "Please provide a valid donation amount",
@@ -68,6 +68,7 @@ exports.makeDonation = async (req, res) => {
       receiverId,
       amount,
       reference,
+      redirect_url: req.url,
     });
 
     if (!transaction) {
@@ -82,7 +83,7 @@ exports.makeDonation = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Error initializing payment: " + error.message,
-      error: error.response?.data,
+      error: error.response,
     });
   }
 };
@@ -100,7 +101,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
           message: "Payment not found",
         });
       }
-      payment.status = "Successful";
+      payment.status = "successful";
       await payment.save();
       res.status(200).json({
         message: "Payment Verified Successfully",
@@ -112,7 +113,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
           message: "Payment not found",
         });
       }
-      payment.status = "Failed";
+      payment.status = "failed";
       await payment.save();
       res.status(200).json({
         message: "Payment Failed",

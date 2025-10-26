@@ -6,7 +6,6 @@ const doc = {
     title: "API Documentation",
     description: "EduFunds backend api",
   },
-  // host: "localhost:8080",
   servers: [
     { url: "http://localhost:8080", description: "Local server" },
     {
@@ -14,16 +13,21 @@ const doc = {
       description: "Production server",
     },
   ],
-  securityDefinitions: {
-    bearerAuth: {
-      type: "apiKey",
-      name: "Authorization",
-      scheme: "bearer",
-      in: "header",
-      bearerFormat: "JWT",
-      definition: "JWT Authorization header using the Bearer scheme.",
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+        description: "JWT Authorization header using the Bearer scheme.",
+      },
     },
   },
+  security: [
+    {
+      bearerAuth: [],
+    },
+  ],
   basePath: "/api/v1",
   schemes: ["http", "https"],
   consumes: ["application/json"],

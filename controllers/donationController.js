@@ -8,14 +8,17 @@ exports.getReceivedDonations = async (req, res) => {
    #swagger.description = 'Get all donations to a student.'
    */
   try {
+    const status = req.query.status || "Successful";
     const { studentId } = req.params;
     const donations = await paymentModel
-      .find({ receiverId: studentId })
+      .find({ receiverId: studentId, status })
       .populate("senderId");
     const total = donations.length;
     res.status(200).json({
       message:
-        total < 1 ? "No donations found" : "Donations found successfully",
+        total < 1
+          ? `No ${status} donations found`
+          : "Donations found successfully",
       total,
       data: donations,
     });
@@ -60,7 +63,7 @@ exports.getCampaignDonations = async (req, res) => {
   try {
     const { campaignId } = req.params;
     const donations = await paymentModel
-      .find({ receiverId: studentId, campaignId })
+      .find({ receiverId: studentId, campaignId, status: "Successful" })
       .populate("senderId");
     const total = donations.length;
     res.status(200).json({
@@ -88,8 +91,7 @@ exports.getSentDonations = async (req, res) => {
       .populate("senderId");
     const total = donations.length;
     res.status(200).json({
-      message:
-        total < 1 ? "No donations found" : "Donations found successfully",
+      message: total < 1 ? "No donations yet" : "Donations found successfully",
       total,
       data: donations,
     });
@@ -108,15 +110,15 @@ exports.getCampaignDonationBalance = async (req, res) => {
   try {
     const { campaignId } = req.params;
     const donations = await paymentModel
-      .find({ campaignId })
+      .find({ campaignId, status: "Successful" })
       .populate("senderId");
     const totalDonation = donations.reduce(
       (acc, donation) => acc + donation.amount,
       0
     );
+    const total = donations.length;
     res.status(200).json({
-      message:
-        total < 1 ? "No donations found" : "Donations found successfully",
+      message: total < 1 ? "No donations yet" : "Donations found successfully",
       total,
       balance: totalDonation,
       data: donations,
@@ -136,18 +138,18 @@ exports.getStudentWalletBalance = async (req, res) => {
   try {
     const { studentId } = req.params;
     const donations = await paymentModel
-      .find({ receiverId: studentId })
+      .find({ receiverId: studentId, status: "Successful" })
       .populate("senderId");
     const totalDonation = donations.reduce(
       (acc, donation) => acc + donation.amount,
       0
     );
+    const total = donations.length;
     res.status(200).json({
-      message:
-        total < 1 ? "No donations found" : "Donations found successfully",
+      message: total < 1 ? "No donations yet" : "Donations found successfully",
       total,
       balance: totalDonation,
-      data: totalDonation,
+      data: donations,
     });
   } catch (error) {
     res.status(500).json({
