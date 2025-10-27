@@ -11,7 +11,7 @@ paymentRouter.post(
   isAuthenticated,
   makeDonation
 );
-paymentRouter.get(
+paymentRouter.post(
   "/verify-payment-webhook",
   verifyPaymentWebHook
 );
