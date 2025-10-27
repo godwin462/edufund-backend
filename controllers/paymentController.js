@@ -120,6 +120,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: "Error verifying payment: " + error.message,
     });
