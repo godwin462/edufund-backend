@@ -8,7 +8,7 @@ exports.getReceivedDonations = async (req, res) => {
    #swagger.description = 'Get all donations to a student.'
    */
   try {
-    const status = req.query.status || "Successful";
+    const status = req.query.status || "successful";
     const { studentId } = req.params;
     const donations = await paymentModel
       .find({ receiverId: studentId, status })
@@ -63,7 +63,7 @@ exports.getCampaignDonations = async (req, res) => {
   try {
     const { campaignId } = req.params;
     const donations = await paymentModel
-      .find({ receiverId: studentId, campaignId, status: "Successful" })
+      .find({ receiverId: studentId, campaignId, status: "successful" })
       .populate("senderId");
     const total = donations.length;
     res.status(200).json({
@@ -138,7 +138,7 @@ exports.getStudentWalletBalance = async (req, res) => {
   try {
     const { studentId } = req.params;
     const donations = await paymentModel
-      .find({ receiverId: studentId, status: "Successful" })
+      .find({ receiverId: studentId, status: "successful" })
       .populate("senderId");
     const totalDonation = donations.reduce(
       (acc, donation) => acc + donation.amount,
