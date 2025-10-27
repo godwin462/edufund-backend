@@ -45,7 +45,6 @@ exports.makeDonation = async (req, res) => {
         name: donor.fullName,
       },
     };
-    console.log(process.env.KORA_SECRET_KEY);
     const url = "https://api.korapay.com/merchant/api/v1/charges/initialize";
     const response = await axios.post(url, payload, {
       headers: {
@@ -60,8 +59,6 @@ exports.makeDonation = async (req, res) => {
         error: response.data,
       });
     }
-
-    console.log(response.data);
 
     const transaction = await paymentModel.create({
       senderId: donorId,
@@ -78,9 +75,10 @@ exports.makeDonation = async (req, res) => {
     }
     return res.status(200).json({
       message: "Donation test successfully",
-      data: response.data.data.checkout_url,
+      data: response.data.data,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: "Error initializing payment: " + error.message,
       error: error.response,
@@ -101,10 +99,11 @@ exports.verifyPaymentWebHook = async (req, res) => {
           message: "Payment not found",
         });
       }
+      console.log("Payment verification successful");
       payment.status = "successful";
       await payment.save();
       res.status(200).json({
-        message: "Payment Verified Successfully",
+        message: "Payment Verification Successful",
       });
     } else if (event === "charge.failed") {
       const payment = await paymentModel.findOne({ reference: data.reference });
@@ -114,6 +113,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
         });
       }
       payment.status = "failed";
+      console.log('Payment verification failed')
       await payment.save();
       res.status(200).json({
         message: "Payment Failed",
