@@ -110,7 +110,7 @@ exports.getCampaignDonationBalance = async (req, res) => {
   try {
     const { campaignId } = req.params;
     const donations = await paymentModel
-      .find({ campaignId, status: "Successful" })
+      .find({ campaignId, status: "successful" })
       .populate("senderId");
     const totalDonation = donations.reduce(
       (acc, donation) => acc + donation.amount,
