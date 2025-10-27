@@ -13,7 +13,6 @@ paymentRouter.post(
 );
 paymentRouter.get(
   "/verify-payment-webhook",
-  isAuthenticated,
   verifyPaymentWebHook
 );
 
