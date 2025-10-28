@@ -1,9 +1,8 @@
 const { createAcademicDetails, deleteAcademicDetails, updateAcademicDetails, getAcademicDetails } = require('../controllers/academicController')
 
 const { isAuthenticated } = require("../middleware/authenticationMiddleware");
-const { studentAccess } = require('../middleware/roleMiddleware');
 
-const { studentAccess } = require("../middleware/roleMiddleware");
+const { studentAccess } = require('../middleware/roleMiddleware');
 
 const academicRouter = require('express').Router();
 
