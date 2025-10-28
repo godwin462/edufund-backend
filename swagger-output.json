@@ -62,6 +62,9 @@
                   },
                   "password": {
                     "example": "any"
+                  },
+                  "phoneNumber": {
+                    "example": "any"
                   }
                 }
               }
@@ -115,6 +118,9 @@
                     "example": "any"
                   },
                   "password": {
+                    "example": "any"
+                  },
+                  "phoneNumber": {
                     "example": "any"
                   }
                 }
@@ -170,6 +176,9 @@
                   },
                   "password": {
                     "example": "any"
+                  },
+                  "phoneNumber": {
+                    "example": "any"
                   }
                 }
               }
@@ -223,6 +232,9 @@
                     "example": "any"
                   },
                   "password": {
+                    "example": "any"
+                  },
+                  "phoneNumber": {
                     "example": "any"
                   }
                 }
@@ -409,6 +421,9 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "404": {
             "description": "Not Found"
@@ -1424,6 +1439,307 @@
         "scheme": "bearer",
         "bearerFormat": "JWT",
         "description": "JWT Authorization header using the Bearer scheme."
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "strongPassword123"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe"
+          },
+          "profilePicture": {
+            "type": "object",
+            "properties": {
+              "imageUrl": {
+                "type": "string",
+                "example": "https://example.com/avatar.jpg"
+              },
+              "publicId": {
+                "type": "string",
+                "example": "profile_public_id"
+              }
+            }
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "+2348012345678"
+          },
+          "isVerified": {
+            "type": "boolean",
+            "example": false
+          },
+          "role": {
+            "type": "string",
+            "example": "student"
+          },
+          "sponsorType": {
+            "type": "string",
+            "example": "individual"
+          },
+          "organizationName": {
+            "type": "string",
+            "example": "Example Org"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "Academic": {
+        "type": "object",
+        "properties": {
+          "studentId": {
+            "type": "string",
+            "example": "64d3f6a9e4b0f2a1d9c0b123"
+          },
+          "schoolName": {
+            "type": "string",
+            "example": "Example University"
+          },
+          "year": {
+            "type": "number",
+            "example": 2024
+          },
+          "matricNumber": {
+            "type": "number",
+            "example": 12345678
+          },
+          "jambRegistrationNumber": {
+            "type": "number",
+            "example": 87654321
+          }
+        },
+        "required": [
+          "studentId",
+          "schoolName",
+          "year",
+          "matricNumber",
+          "jambRegistrationNumber"
+        ]
+      },
+      "Campaign": {
+        "type": "object",
+        "properties": {
+          "studentId": {
+            "type": "string",
+            "example": "64d3f6a9e4b0f2a1d9c0b123"
+          },
+          "title": {
+            "type": "string",
+            "example": "Help fund my tuition"
+          },
+          "target": {
+            "type": "number",
+            "example": 500000
+          },
+          "story": {
+            "type": "string",
+            "example": "A short description of the student's need and campaign goals."
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          },
+          "campaignImage": {
+            "type": "object",
+            "properties": {
+              "imageUrl": {
+                "type": "string",
+                "example": "https://example.com/campaign.jpg"
+              }
+            }
+          },
+          "publicId": {
+            "type": "string",
+            "example": "campaign_public_id"
+          }
+        },
+        "required": [
+          "studentId",
+          "title",
+          "target",
+          "story"
+        ]
+      },
+      "Otp": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "64d3f6a9e4b0f2a1d9c0b123"
+          },
+          "otp": {
+            "type": "string",
+            "example": "123456"
+          },
+          "trials": {
+            "type": "number",
+            "example": 0
+          },
+          "blockedUntil": {}
+        },
+        "required": [
+          "userId",
+          "otp"
+        ]
+      },
+      "Payment": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "example": "64d3f6a9e4b0f2a1d9c0b999"
+          },
+          "senderId": {
+            "type": "string",
+            "example": "64d3f6a9e4b0f2a1d9c0b111"
+          },
+          "receiverId": {
+            "type": "string",
+            "example": "64d3f6a9e4b0f2a1d9c0b222"
+          },
+          "withdrawalId": {},
+          "amount": {
+            "type": "number",
+            "example": 2500
+          },
+          "reference": {
+            "type": "string",
+            "example": "pay_ref_123456"
+          },
+          "status": {
+            "type": "string",
+            "example": "pending"
+          },
+          "withdrawn": {
+            "type": "boolean",
+            "example": false
+          }
+        },
+        "required": [
+          "senderId",
+          "receiverId",
+          "amount",
+          "reference"
+        ]
+      },
+      "UserIdentity": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "64d3f6a9e4b0f2a1d9c0b123"
+          },
+          "provider": {
+            "type": "string",
+            "example": "google"
+          },
+          "providerId": {
+            "type": "string",
+            "example": "google-oauth-id-123"
+          },
+          "accessToken": {
+            "type": "string",
+            "example": "ya29.a0Af..."
+          },
+          "refreshToken": {
+            "type": "string",
+            "example": "1//0g..."
+          }
+        },
+        "required": [
+          "userId",
+          "provider"
+        ]
+      },
+      "VerificationToken": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "64d3f6a9e4b0f2a1d9c0b123"
+          },
+          "token": {
+            "type": "string",
+            "example": "verification-token-abcdef"
+          },
+          "expiresAt": {
+            "type": "string",
+            "example": "2025-10-28T12:00:00Z"
+          }
+        },
+        "required": [
+          "userId",
+          "token"
+        ]
+      },
+      "Wallet": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "64d3f6a9e4b0f2a1d9c0b123"
+          },
+          "balance": {
+            "type": "number",
+            "example": 0
+          }
+        }
+      },
+      "Withdrawal": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "64d3f6a9e4b0f2a1d9c0b123"
+          },
+          "campaignId": {
+            "type": "string",
+            "example": "64d3f6a9e4b0f2a1d9c0b999"
+          },
+          "transactionRef": {
+            "type": "string",
+            "example": "wd_ref_98765"
+          },
+          "amount": {
+            "type": "number",
+            "example": 1500.5
+          },
+          "purpose": {
+            "type": "string",
+            "example": "Tuition payout"
+          },
+          "note": {
+            "type": "string",
+            "example": "Optional note"
+          },
+          "status": {
+            "type": "string",
+            "example": "processing"
+          }
+        },
+        "required": [
+          "userId",
+          "campaignId",
+          "transactionRef",
+          "amount",
+          "purpose"
+        ]
       }
     }
   },
