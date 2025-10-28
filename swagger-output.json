@@ -16,6 +16,29 @@
     }
   ],
   "paths": {
+    "/api/v1/test/{donorId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "donorId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/v1/auth/register/student": {
       "post": {
         "tags": [
@@ -817,32 +840,14 @@
       }
     },
     "/api/v1/payment/verify-payment-webhook": {
-      "get": {
+      "post": {
         "tags": [
           "Payment"
         ],
         "description": "Verify payment webhook note: will be called by KoraPay won",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }

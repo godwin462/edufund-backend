@@ -99,7 +99,6 @@ exports.verifyPaymentWebHook = async (req, res) => {
           message: "Payment not found",
         });
       }
-      console.log("Payment verification successful");
       payment.status = "successful";
       await payment.save();
       res.status(200).json({
@@ -113,7 +112,6 @@ exports.verifyPaymentWebHook = async (req, res) => {
         });
       }
       payment.status = "failed";
-      console.log('Payment verification failed')
       await payment.save();
       res.status(200).json({
         message: "Payment Failed",
@@ -123,6 +121,22 @@ exports.verifyPaymentWebHook = async (req, res) => {
     console.log(error);
     res.status(500).json({
       message: "Error verifying payment: " + error.message,
+    });
+  }
+};
+
+exports.withdrawDonation = async (req, res) => {
+  /* #swagger.tags = ['Payment']
+   #swagger.description = 'Withdraw donation.'
+   */
+  try {
+    const { campaignId } = req.body;
+    // to be continued
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Error withdrawing donation: ",
+      error: error.message,
     });
   }
 };
