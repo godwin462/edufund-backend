@@ -805,14 +805,11 @@
     },
     "/api/v1/payment/verify-payment-webhook": {
       "post": {
-      "post": {
         "tags": [
           "Payment"
         ],
         "description": "Verify payment webhook note: will be called by KoraPay won",
         "responses": {
-          "default": {
-            "description": ""
           "default": {
             "description": ""
           }
@@ -879,29 +876,6 @@
           "201": {
             "description": "Created"
           },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/api/v1/academic/{academicDetailsId}": {
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "academicDetailsId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
@@ -921,16 +895,16 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "schoolName": {
+                  "title": {
                     "example": "any"
                   },
-                  "year": {
+                  "target": {
                     "example": "any"
                   },
-                  "matricNumber": {
+                  "story": {
                     "example": "any"
                   },
-                  "jambRegistrationNumber": {
+                  "isActive": {
                     "example": "any"
                   }
                 }

@@ -12,24 +12,27 @@ const WithdrawalSchema = new mongoose.Schema(
       ref: "campaign",
       required: true,
     },
+    transactionRef: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     amount: {
       type: Number,
       required: true,
       min: 0.01,
     },
-    method: {
+    purpose: {
       type: String,
       required: true,
+    },
+    note: {
+      type: String,
     },
     status: {
       type: String,
-      enum: ["requested", "processing", "successful", "failed"],
-      default: "requested",
-    },
-    transactionRef: {
-      type: String,
-      required: true,
-      unique: true,
+      enum: ["processing", "successful", "failed"],
+      default: "processing",
     },
   },
   { timestamps: true }
