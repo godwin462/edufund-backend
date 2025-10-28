@@ -13,6 +13,8 @@ const authRouter = require("./router/authRouter");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger-output.json");
 const contactUsRouter = require("./router/contactUsRouter");
+const campaignRouter = require("./router/campaignRouter");
+const academicRouter = require("./router/academicRouter");
 const donationRouter = require("./router/donationRouter");
 
 const app = express();
@@ -35,6 +37,8 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/payment", paymentRouter);
 app.use("/api/v1/contact-us", contactUsRouter);
+app.use("/api/v1/campaigns", campaignRouter);
+app.use("/api/v1/academic", academicRouter);
 app.use("/api/v1/received-donations", donationRouter);
 
 app.use("/", (req, res) => {

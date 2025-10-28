@@ -885,6 +885,9 @@
         }
       }
     },
+    "/api/v1/campaigns/{studentId}": {
+      "post": {
+        "description": "",
     "/api/v1/received-donations/{studentId}": {
       "get": {
         "tags": [
@@ -899,6 +902,11 @@
             "schema": {
               "type": "string"
             }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
           },
           {
             "name": "authorization",
@@ -931,6 +939,41 @@
           "500": {
             "description": "Internal Server Error"
           }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "example": "any"
+                  },
+                  "target": {
+                    "example": "any"
+                  },
+                  "story": {
+                    "example": "any"
+                  },
+                  "campaignImage": {
+                    "example": "any"
+                  },
+                  "isActive": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/campaigns/{campaignId}": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "campaignId",
         }
       }
     },
@@ -976,6 +1019,9 @@
         }
       }
     },
+    "/api/v1/academic/{studentId}": {
+      "post": {
+        "description": "",
     "/api/v1/received-donations/student-balance/{studentId}": {
       "get": {
         "tags": [
@@ -990,6 +1036,11 @@
             "schema": {
               "type": "string"
             }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
           },
           {
             "name": "authorization",
@@ -1015,6 +1066,36 @@
           "500": {
             "description": "Internal Server Error"
           }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "schoolName": {
+                    "example": "any"
+                  },
+                  "year": {
+                    "example": "any"
+                  },
+                  "matricNumber": {
+                    "example": "any"
+                  },
+                  "jambRegistrationNumber": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "studentId",
         }
       }
     },
@@ -1060,6 +1141,12 @@
         }
       }
     },
+    "/api/v1/academic/{academicDetailsId}": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "academicDetailsId",
     "/api/v1/received-donations/campaign-donations/{campaignId}": {
       "get": {
         "tags": [
@@ -1098,6 +1185,29 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "schoolName": {
+                    "example": "any"
+                  },
+                  "year": {
+                    "example": "any"
+                  },
+                  "matricNumber": {
+                    "example": "any"
+                  },
+                  "jambRegistrationNumber": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
