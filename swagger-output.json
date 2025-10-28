@@ -16,29 +16,6 @@
     }
   ],
   "paths": {
-    "/api/v1/test/{donorId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "donorId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
     "/api/v1/auth/register/student": {
       "post": {
         "tags": [
@@ -675,24 +652,11 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found"
@@ -888,12 +852,6 @@
     "/api/v1/campaigns/{studentId}": {
       "post": {
         "description": "",
-    "/api/v1/received-donations/{studentId}": {
-      "get": {
-        "tags": [
-          "Donation"
-        ],
-        "description": "Get all donations to a student.",
         "parameters": [
           {
             "name": "studentId",
@@ -907,34 +865,6 @@
         "responses": {
           "201": {
             "description": "Created"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -974,6 +904,188 @@
         "parameters": [
           {
             "name": "campaignId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/academic/{studentId}": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "schoolName": {
+                    "example": "any"
+                  },
+                  "year": {
+                    "example": "any"
+                  },
+                  "matricNumber": {
+                    "example": "any"
+                  },
+                  "jambRegistrationNumber": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/academic/{academicDetailsId}": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "academicDetailsId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "schoolName": {
+                    "example": "any"
+                  },
+                  "year": {
+                    "example": "any"
+                  },
+                  "matricNumber": {
+                    "example": "any"
+                  },
+                  "jambRegistrationNumber": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/received-donations/{studentId}": {
+      "get": {
+        "tags": [
+          "Donation"
+        ],
+        "description": "Get all donations to a student.",
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
         }
       }
     },
@@ -1019,9 +1131,6 @@
         }
       }
     },
-    "/api/v1/academic/{studentId}": {
-      "post": {
-        "description": "",
     "/api/v1/received-donations/student-balance/{studentId}": {
       "get": {
         "tags": [
@@ -1036,11 +1145,6 @@
             "schema": {
               "type": "string"
             }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
           },
           {
             "name": "authorization",
@@ -1066,36 +1170,6 @@
           "500": {
             "description": "Internal Server Error"
           }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "schoolName": {
-                    "example": "any"
-                  },
-                  "year": {
-                    "example": "any"
-                  },
-                  "matricNumber": {
-                    "example": "any"
-                  },
-                  "jambRegistrationNumber": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "studentId",
         }
       }
     },
@@ -1141,12 +1215,6 @@
         }
       }
     },
-    "/api/v1/academic/{academicDetailsId}": {
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "academicDetailsId",
     "/api/v1/received-donations/campaign-donations/{campaignId}": {
       "get": {
         "tags": [
@@ -1185,29 +1253,6 @@
           },
           "500": {
             "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "schoolName": {
-                    "example": "any"
-                  },
-                  "year": {
-                    "example": "any"
-                  },
-                  "matricNumber": {
-                    "example": "any"
-                  },
-                  "jambRegistrationNumber": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
           }
         }
       }
