@@ -9,7 +9,7 @@ exports.createCampaign = async (req, res) => {
   */
     try {
         const { studentId } = req.params;
-        const { title, target, story, campaignImage, isActive } = req.body;
+        const { title, target, story, campaignImage, isActive } = req.body || {};
         let file = null;
 
         if (req.file && req.file.buffer) {
@@ -18,7 +18,7 @@ exports.createCampaign = async (req, res) => {
                 imageUrl: file.secure_url,
                 publicId: file.public_id
             };
-        } 
+        }
 
         const newCampaign = new campaignModel({
             studentId,
@@ -48,7 +48,7 @@ exports.updateCampaign = async (req, res) => {
   */
     try {
         const { campaignId } = req.params;
-        const { title, target, story, campaignImage, isActive } = req.body;
+        const { title, target, story, campaignImage, isActive } = req.body || {};
         const updatedCampaign = await campaignModel.findByIdAndUpdate(
             campaignId,
             { title, target, story, campaignImage, isActive },

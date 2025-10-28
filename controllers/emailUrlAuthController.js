@@ -17,7 +17,7 @@ exports.register = async (req, res) => {
   // console.log(req.body);
   let file = null;
   try {
-    const { firstName, lastName, email, role, password } = req.body;
+    const { firstName, lastName, email, role, password } = req.body || {};
 
     const existingEmail = await UserModel.findOne({ email });
 
@@ -82,7 +82,7 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body || {};
 
     const user = await UserModel.findOne({ email }).select("+password");
 
@@ -236,7 +236,7 @@ exports.resendVerificationLink = async (req, res) => {
 exports.resetPassword = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { newPassword, oldPassword } = req.body;
+    const { newPassword, oldPassword } = req.body || {};
 
     const user = await UserModel.findById(userId);
 

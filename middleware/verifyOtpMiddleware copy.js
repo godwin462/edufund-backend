@@ -8,7 +8,7 @@ exports.verifyOtp = async (req, res, next) => {
   let auth;
   try {
     const { userId } = req.params;
-    const { otp } = req.body;
+    const { otp } = req.body || {};
     // console.log("I am working");
     auth = await OtpModel.findOne({ userId });
 

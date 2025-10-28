@@ -27,7 +27,7 @@ exports.register = async (req, res) => {
         if (error) {
             return res.status(400).json({message: error.details[0].message});
         }
-        const {firstName, lastName, email, role, password, phoneNumber} = req.body;
+        const {firstName, lastName, email, role, password, phoneNumber} = req.body || {};
 
         const existingEmail = await UserModel.findOne({email});
 
@@ -101,7 +101,7 @@ exports.login = async (req, res) => {
         if (error) {
             return res.status(400).json({message: error.details[0].message});
         }
-        const {email, password} = req.body;
+        const {email, password} = req.body || {};
 
         const user = await UserModel.findOne({email}).select("+password");
 
@@ -149,7 +149,7 @@ exports.verifyOtp = async (req, res) => {
         if (error) {
             return res.status(400).json({message: error.details[0].message});
         }
-        const {otp} = req.body;
+        const {otp} = req.body || {};
         const {email} = req.params;
 
         const user = await UserModel.findOne({email});
@@ -212,7 +212,7 @@ exports.resendOtp = async (req, res) => {
         if (error) {
             return res.status(400).json({message: error.details[0].message});
         }
-        const {email} = req.body;
+        const {email} = req.body || {};
 
         const user = await UserModel.findOne({email});
 
@@ -264,7 +264,7 @@ exports.changePassword = async (req, res) => {
             return res.status(400).json({message: error.details[0].message});
         }
         const {userId} = req.params;
-        const {password, newPassword} = req.body;
+        const {password, newPassword} = req.body || {};
 
         const user = await UserModel.findById(userId).select("+password");
 
