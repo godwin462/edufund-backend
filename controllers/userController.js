@@ -12,7 +12,7 @@ exports.createUser = async (req, res) => {
   */
   let file = null;
   try {
-    const { firstName, lastName, email, password, role } = req.body;
+    const { firstName, lastName, email, password, role } = req.body || {};
     let profilePicture;
 
     if (req.file && req.file.buffer) {
@@ -50,20 +50,37 @@ exports.updateUser = async (req, res) => {
   /*
   #swagger.tags = ['User']
   #swagger.description = 'Update existing user.'
+  #swagger.parameters['profilePicture'] = {
+          in: 'formData',
+          type: 'file',
+          required: 'true',
+          description: 'Upload a single file.'
+      }
   */
   try {
     const { userId } = req.params;
-    const { firstName, lastName, email, password, role } = req.body;
+    const { firstName, lastName, email, password, role } = req.body || {};
     const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({
         message: "User not found, please create an account",
       });
     }
+    let file = null;
+    let profilePicture;
+    console.log(req.file);
+    if (req.file && req.file.buffer) {
+      file = await cloudinaryUpload(file.buffer);
+      profilePicture = {
+        imageUrl: file.secure_url,
+        publicId: file.public_id,
+      };
+    }
     Object.assign(
       {
         firstName,
         lastName,
+        profilePicture,
         email,
         password,
         role,
@@ -164,7 +181,7 @@ exports.getUserByEmail = async (req, res) => {
   #swagger.description = 'Get a user by email.'
   */
   try {
-    const { email } = req.body;
+    const { email } = req.body || {};
     const user = await UserModel.findOne({ email });
     if (!user) {
       return res.status(404).json({

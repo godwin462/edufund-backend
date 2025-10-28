@@ -115,7 +115,7 @@ const doc = {
   ],
   basePath: "/api/v1",
   schemes: ["http", "https"],
-  consumes: ["application/json"],
+  consumes: ["application/json", "multipart/form-data"],
   produces: ["application/json"],
 };
 

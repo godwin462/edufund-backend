@@ -701,6 +701,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "profilePicture",
+            "in": "formData",
+            "required": true,
+            "description": "Upload a single file.",
+            "schema": {
+              "type": "file"
+            }
           }
         ],
         "responses": {

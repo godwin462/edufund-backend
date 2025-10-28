@@ -11,7 +11,7 @@ exports.makeDonation = async (req, res) => {
      */
     try {
         const {donorId, receiverId} = req.params;
-        const {amount, redirect_url} = req.body;
+        const {amount, redirect_url} = req.body || {};
         if (!amount || typeof amount !== "number" || amount <= 0) {
             return res.status(400).json({
                 message: "Please provide a valid donation amount"
@@ -89,7 +89,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
      #swagger.description = 'Verify payment webhook note: will be called by KoraPay won't work on swagger ui.'
      */
     try {
-        const {event, data} = req.body;
+        const {event, data} = req.body || {};
         if (event === "charge.success") {
             const payment = await paymentModel.findOne({reference: data.reference});
             if (!payment) {
@@ -129,7 +129,7 @@ exports.withdrawDonation = async (req, res) => {
      */
     try {
         const {campaignId, studentId} = req.params;
-        const {purpose, note} = req.body;
+        const {purpose, note} = req.body || {};
         const campaign = await campaignModel
             .findOne({_id: campaignId, studentId})
             .populate("studentId");
