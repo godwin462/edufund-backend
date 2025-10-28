@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { image } = require('../config/cloudinary');
 
 const campaignSchema = new mongoose.Schema({
     studentId: {
@@ -11,7 +12,8 @@ const campaignSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    target: { type: Number,
+    target: { 
+        type: Number,
         required: true,
     },
     story: {
@@ -24,8 +26,12 @@ const campaignSchema = new mongoose.Schema({
         default: true
     },
     campaignImage: {
+        imageUrl:{
         type: String,
-        required: true,
+        },
+},
+    publicId: {
+        type: String,
 }}, 
 { 
     timestamps: true 
