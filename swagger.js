@@ -1,4 +1,7 @@
+require("dotenv").config();
 const swaggerAutogen = require("swagger-autogen")({ openapi: "3.0.0" });
+
+const port = process.env.PORT || 8080;
 
 const doc = {
   info: {
@@ -7,7 +10,7 @@ const doc = {
     description: "EduFunds backend api",
   },
   servers: [
-    { url: "http://localhost:8080", description: "Local server" },
+    { url: `http://localhost:${port}`, description: "Local server" },
     {
       url: "https://edufund-backend-os2x.onrender.com",
       description: "Production server",
