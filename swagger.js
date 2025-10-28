@@ -16,14 +16,12 @@ const doc = {
   ],
   securityDefinitions: {
     bearerAuth: {
-      type: "apiKey",
-      name: "Authorization",
+      type: "http",
       scheme: "bearer",
-      in: "header",
       bearerFormat: "JWT",
-      definition: "JWT Authorization header using the Bearer scheme.",
     },
   },
+  security: [{ bearerAuth: [] }],
   basePath: "/api/v1",
   schemes: ["http", "https"],
   consumes: ["application/json"],

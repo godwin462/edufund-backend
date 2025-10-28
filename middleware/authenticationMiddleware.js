@@ -1,54 +1,53 @@
-const userModel = require('../models/userModel');
-const jwt = require('jsonwebtoken');
-const {verifyJwt} = require("../utils/jwtUtil");
+const userModel = require("../models/userModel");
+const jwt = require("jsonwebtoken");
+const { verifyJwt } = require("../utils/jwtUtil");
 
 exports.isAuthenticated = async (req, res, next) => {
-    try {
-        const token = req.headers.authorization?.split(' ')[1];
-        if (!token) {
-            return res.status(401).json({
-                message: 'User not authenticated, please login'
-            })
-        }
-        const decoded = await verifyJwt(token);
-        const user = await userModel.findById(decoded.id);
-
-        if (!user) {
-            return res.status(404).json({
-                message: 'Cannot perform action please crae'
-            })
-        }
-        // req.user = decoded;
-        next()
-    } catch (error) {
-        if (error instanceof jwt.TokenExpiredError) {
-            return res.status(401).json({
-                message: 'Session expired, Please login again to continue'
-            })
-        }
-        res.status(500).json({
-            message: error.message
-        })
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({
+        message: "User not authenticated, please login",
+      });
     }
-}
+    const decoded = await verifyJwt(token);
+    const user = await userModel.findById(decoded.id);
 
-
-exports.adminAuth = async(req, res, next)=> {
-    if (req.user.isAdmin !== true) {
-        return res.status(403).json({
-            message: "You're not authorized perform this action."
-        })
-    } else{
-        next()
+    if (!user) {
+      return res.status(404).json({
+        message: "Cannot perform action please crae",
+      });
     }
-}
-
-exports.checkVerification = async(req, res, next) => {
-    if (req.user.isVerified !== true) {
-        return res.status(403).json({
-            message: "You're not authorized perform this action."
-        })
-    } else{
-        next()
+    // req.user = decoded;
+    next();
+  } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      return res.status(401).json({
+        message: "Session expired, Please login again to continue",
+      });
     }
-}
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+exports.adminAuth = async (req, res, next) => {
+  if (req.user.isAdmin !== true) {
+    return res.status(403).json({
+      message: "You're not authorized perform this action.",
+    });
+  } else {
+    next();
+  }
+};
+
+exports.checkVerification = async (req, res, next) => {
+  if (req.user.isVerified !== true) {
+    return res.status(403).json({
+      message: "You're not authorized perform this action.",
+    });
+  } else {
+    next();
+  }
+};

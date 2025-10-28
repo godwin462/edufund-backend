@@ -779,18 +779,59 @@
           }
         }
       }
+    },
+    "/api/v1/analytics/students-helped/{donorId}": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "description": "Total number of students helped.",
+        "parameters": [
+          {
+            "name": "donorId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   },
   "components": {
     "securitySchemes": {
       "bearerAuth": {
-        "type": "apiKey",
-        "name": "Authorization",
+        "type": "http",
         "scheme": "bearer",
-        "in": "header",
-        "bearerFormat": "JWT",
-        "definition": "JWT Authorization header using the Bearer scheme."
+        "bearerFormat": "JWT"
       }
     }
-  }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
 }
