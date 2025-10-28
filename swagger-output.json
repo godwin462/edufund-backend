@@ -701,15 +701,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "profilePicture",
-            "in": "formData",
-            "required": true,
-            "description": "Upload a single file.",
-            "schema": {
-              "type": "file"
-            }
           }
         ],
         "responses": {
@@ -730,25 +721,27 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "firstName": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "lastName": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "email": {
-                    "example": "any"
-                  },
-                  "password": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "role": {
-                    "example": "any"
+                    "type": "string"
+                  },
+                  "profilePicture": {
+                    "type": "string",
+                    "format": "binary"
                   }
                 }
               }

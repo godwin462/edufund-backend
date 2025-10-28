@@ -16,10 +16,10 @@ exports.createUser = async (req, res) => {
     let profilePicture;
 
     if (req.file && req.file.buffer) {
-      file = await cloudinaryUpload(file.buffer);
+      const uploadResult = await cloudinaryUpload(req.file.buffer);
       profilePicture = {
-        imageUrl: file.secure_url,
-        publicId: file.public_id,
+        imageUrl: uploadResult.secure_url,
+        publicId: uploadResult.public_id,
       };
     }
 
@@ -31,7 +31,6 @@ exports.createUser = async (req, res) => {
       password: hashedPassword,
       role,
       profilePicture,
-      password,
     });
     await student.save();
     res.status(201).json({
@@ -50,43 +49,54 @@ exports.updateUser = async (req, res) => {
   /*
   #swagger.tags = ['User']
   #swagger.description = 'Update existing user.'
-  #swagger.parameters['profilePicture'] = {
-          in: 'formData',
-          type: 'file',
-          required: 'true',
-          description: 'Upload a single file.'
-      }
+  #swagger.requestBody = {
+        required: true,
+        content: {
+            "multipart/form-data": {
+                schema: {
+                    type: "object",
+                    properties: {
+                        firstName: { type: "string" },
+                        lastName: { type: "string" },
+                        email: { type: "string" },
+                        role: { type: "string" },
+                        profilePicture: {
+                            type: "string",
+                            format: "binary"
+                        }
+                    }
+                }
+            }
+        }
+    }
   */
   try {
     const { userId } = req.params;
-    const { firstName, lastName, email, password, role } = req.body || {};
+    const { firstName, lastName, email, role } = req.body || {};
     const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({
         message: "User not found, please create an account",
       });
     }
-    let file = null;
     let profilePicture;
-    console.log(req.file);
+    if (user.profilePicture && user.profilePicture.publicId && req.file) {
+      await cloudinaryDelete(user.profilePicture.publicId);
+    }
     if (req.file && req.file.buffer) {
-      file = await cloudinaryUpload(file.buffer);
+      const uploadResult = await cloudinaryUpload(req.file.buffer);
       profilePicture = {
-        imageUrl: file.secure_url,
-        publicId: file.public_id,
+        imageUrl: uploadResult.secure_url,
+        publicId: uploadResult.public_id,
       };
     }
-    Object.assign(
-      {
-        firstName,
-        lastName,
-        profilePicture,
-        email,
-        password,
-        role,
-      },
-      user
-    );
+
+    user.firstName = firstName ?? user.firstName;
+    user.lastName = lastName ?? user.lastName;
+    user.email = email ?? user.email;
+    user.role = role ?? user.role;
+    user.profilePicture = profilePicture ?? user.profilePicture;
+
     await user.save();
     res.status(200).json({
       message: "User updated successfully",
