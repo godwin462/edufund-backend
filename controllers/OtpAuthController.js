@@ -1,16 +1,20 @@
 const UserModel = require("../models/userModel");
 const registrationTemplate = require("../templates/registrationTemplate");
-
 const loginOtpTemplate = require("../templates/loginOtpTemplate");
-require("jsonwebtoken");
 const OtpModel = require("../models/OtpModel");
 const {sendEmail} = require("../email/brevo");
 const constants = require("../utils/constants");
 const {generateOtp} = require("../utils/otp");
 const {generateJwt, verifyJwt, decodeJwt} = require("../utils/jwtUtil");
 const {cloudinaryUpload} = require("../utils/cloudinaryUtil");
-require("passport");
 const {compareData, hashData} = require("../utils/bcryptUtil");
+const {
+    registerValidation,
+    loginValidation,
+    verifyOtpValidation,
+    resendOtpValidation,
+    changePasswordValidation
+} = require("../validations/authControllerValidations");
 
 exports.register = async (req, res) => {
     /*
@@ -19,7 +23,11 @@ exports.register = async (req, res) => {
       */
     let file = null;
     try {
-        const {firstName, lastName, email, role, password} = req.body;
+        const {error} = registerValidation.validate(req.body);
+        if (error) {
+            return res.status(400).json({message: error.details[0].message});
+        }
+        const {firstName, lastName, email, role, password, phoneNumber} = req.body;
 
         const existingEmail = await UserModel.findOne({email});
 
@@ -43,6 +51,7 @@ exports.register = async (req, res) => {
             firstName,
             lastName,
             email,
+            phoneNumber,
             role,
             profilePicture,
             password: hashedPassword
@@ -88,6 +97,10 @@ exports.login = async (req, res) => {
       #swagger.description = 'Login user account.'
       */
     try {
+        const {error} = loginValidation.validate(req.body);
+        if (error) {
+            return res.status(400).json({message: error.details[0].message});
+        }
         const {email, password} = req.body;
 
         const user = await UserModel.findOne({email}).select("+password");
@@ -132,6 +145,10 @@ exports.verifyOtp = async (req, res) => {
       #swagger.description = 'Verify OTP for user account.'
     */
     try {
+        const {error} = verifyOtpValidation.validate({...req.body, ...req.params});
+        if (error) {
+            return res.status(400).json({message: error.details[0].message});
+        }
         const {otp} = req.body;
         const {email} = req.params;
 
@@ -191,6 +208,10 @@ exports.resendOtp = async (req, res) => {
       #swagger.description = 'Resend OTP for user account.'
       */
     try {
+        const {error} = resendOtpValidation.validate(req.body);
+        if (error) {
+            return res.status(400).json({message: error.details[0].message});
+        }
         const {email} = req.body;
 
         const user = await UserModel.findOne({email});
@@ -238,6 +259,10 @@ exports.changePassword = async (req, res) => {
       #swagger.description = 'Change authenticated user account password.'
       */
     try {
+        const {error} = changePasswordValidation.validate({...req.body, ...req.params});
+        if (error) {
+            return res.status(400).json({message: error.details[0].message});
+        }
         const {userId} = req.params;
         const {password, newPassword} = req.body;
 
