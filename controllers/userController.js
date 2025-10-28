@@ -5,46 +5,6 @@ const {
   cloudinaryDelete,
 } = require("../utils/cloudinaryUtil");
 
-exports.createUser = async (req, res) => {
-  /*
-  #swagger.tags = ['User']
-  #swagger.description = 'Create a new user.'
-  */
-  let file = null;
-  try {
-    const { firstName, lastName, email, password, role } = req.body || {};
-    let profilePicture;
-
-    if (req.file && req.file.buffer) {
-      const uploadResult = await cloudinaryUpload(req.file.buffer);
-      profilePicture = {
-        imageUrl: uploadResult.secure_url,
-        publicId: uploadResult.public_id,
-      };
-    }
-
-    const hashedPassword = hashData(password);
-    const student = new UserModel({
-      firstName,
-      lastName,
-      email,
-      password: hashedPassword,
-      role,
-      profilePicture,
-    });
-    await student.save();
-    res.status(201).json({
-      message: `${role} created successfully`,
-      data: student,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: `Server error creating ${role}`,
-      error: error.message,
-    });
-  }
-};
-
 exports.updateUser = async (req, res) => {
   /*
   #swagger.tags = ['User']
