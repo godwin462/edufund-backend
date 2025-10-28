@@ -18,7 +18,7 @@ exports.verifyOtp = async (req, res, next) => {
         .json({ message: "invalid OTP, Please request a new OTP" });
     }
 
-    const otpIsValid = jwt.verify(auth.otp, process.env.JWT_SECRETE);
+    const otpIsValid = jwt.verify(auth.otp, process.env.JWT_SECRET);
     if (!otpIsValid.otp) {
       return res
         .status(400)
@@ -46,7 +46,7 @@ exports.verifyOtp = async (req, res, next) => {
       console.log("Token has expired", error.expiredAt);
       // if (auth.trials >= OTP_TRIALS) {
       //   auth.trials = 0;
-      //   otp = jwt.sign({ otp: otpIsValid.otp }, process.env.JWT_SECRETE, {
+      //   otp = jwt.sign({ otp: otpIsValid.otp }, process.env.JWT_SECRET, {
       //     expiresIn: `
       //   });
       //   auth.otp = otp;
