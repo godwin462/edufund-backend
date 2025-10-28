@@ -817,32 +817,14 @@
       }
     },
     "/api/v1/payment/verify-payment-webhook": {
-      "get": {
+      "post": {
         "tags": [
           "Payment"
         ],
         "description": "Verify payment webhook note: will be called by KoraPay won",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -882,13 +864,10 @@
     },
     "/api/v1/campaigns/{studentId}": {
       "post": {
-        "description": "",
-    "/api/v1/received-donations/{studentId}": {
-      "get": {
         "tags": [
-          "Donation"
+          "Campaign"
         ],
-        "description": "Get all donations to a student.",
+        "description": "Create a new Campaign.",
         "parameters": [
           {
             "name": "studentId",
@@ -897,11 +876,6 @@
             "schema": {
               "type": "string"
             }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
           },
           {
             "name": "authorization",
@@ -909,18 +883,11 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "201": {
+            "description": "Created"
           },
           "401": {
             "description": "Unauthorized"
@@ -965,10 +932,262 @@
     },
     "/api/v1/campaigns/{campaignId}": {
       "delete": {
-        "description": "",
+        "tags": [
+          "Campaign"
+        ],
+        "description": "Delete a Campaign.",
         "parameters": [
           {
             "name": "campaignId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/academic/{studentId}": {
+      "post": {
+        "tags": [
+          "AcademicDetails"
+        ],
+        "description": "Create a new Academic Detail.",
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "schoolName": {
+                    "example": "any"
+                  },
+                  "year": {
+                    "example": "any"
+                  },
+                  "matricNumber": {
+                    "example": "any"
+                  },
+                  "jambRegistrationNumber": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "AcademicDetails"
+        ],
+        "description": "Get Academic Detail.",
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/academic/{academicDetailsId}": {
+      "put": {
+        "tags": [
+          "AcademicDetails"
+        ],
+        "description": "Update the Academic Detail.",
+        "parameters": [
+          {
+            "name": "academicDetailsId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "schoolName": {
+                    "example": "any"
+                  },
+                  "year": {
+                    "example": "any"
+                  },
+                  "matricNumber": {
+                    "example": "any"
+                  },
+                  "jambRegistrationNumber": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/received-donations/{studentId}": {
+      "get": {
+        "tags": [
+          "Donation"
+        ],
+        "description": "Get all donations to a student.",
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
         }
       }
     },
@@ -1014,9 +1233,6 @@
         }
       }
     },
-    "/api/v1/academic/{studentId}": {
-      "post": {
-        "description": "",
     "/api/v1/received-donations/student-balance/{studentId}": {
       "get": {
         "tags": [
@@ -1031,11 +1247,6 @@
             "schema": {
               "type": "string"
             }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
           },
           {
             "name": "authorization",
@@ -1061,36 +1272,6 @@
           "500": {
             "description": "Internal Server Error"
           }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "schoolName": {
-                    "example": "any"
-                  },
-                  "year": {
-                    "example": "any"
-                  },
-                  "matricNumber": {
-                    "example": "any"
-                  },
-                  "jambRegistrationNumber": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "studentId",
         }
       }
     },
@@ -1136,12 +1317,6 @@
         }
       }
     },
-    "/api/v1/academic/{academicDetailsId}": {
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "academicDetailsId",
     "/api/v1/received-donations/campaign-donations/{campaignId}": {
       "get": {
         "tags": [
@@ -1180,29 +1355,6 @@
           },
           "500": {
             "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "schoolName": {
-                    "example": "any"
-                  },
-                  "year": {
-                    "example": "any"
-                  },
-                  "matricNumber": {
-                    "example": "any"
-                  },
-                  "jambRegistrationNumber": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
           }
         }
       }

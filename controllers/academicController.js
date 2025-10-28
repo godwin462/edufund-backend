@@ -2,6 +2,10 @@ const academicModel = require('../models/academicModel')
 
 // Create a new academic record
 exports.createAcademicDetails = async (req, res) => {
+  /*
+  #swagger.tags = ['AcademicDetails']
+  #swagger.description = 'Create a new Academic Detail.'
+  */
     try {
         const { studentId } = req.params;
         const { schoolName, year, matricNumber, jambRegistrationNumber } = req.body;
@@ -26,6 +30,10 @@ exports.createAcademicDetails = async (req, res) => {
 }
 
 exports.getAcademicDetails = async (req, res) => {
+  /*
+  #swagger.tags = ['AcademicDetails']
+  #swagger.description = 'Get Academic Detail.'
+  */
     try {
         const { studentId } = req.params
         const academicDetails = await academicModel.find({studentId});
@@ -42,6 +50,10 @@ exports.getAcademicDetails = async (req, res) => {
 }
 
 exports.updateAcademicDetails = async (req, res) => {
+  /*
+  #swagger.tags = ['AcademicDetails']
+  #swagger.description = 'Update the Academic Detail.'
+  */
     try {
         const { academicDetailsId } = req.params;
         const { schoolName, year, matricNumber, jambRegistrationNumber } = req.body;
@@ -75,6 +87,10 @@ exports.updateAcademicDetails = async (req, res) => {
 
 
 // exports.deleteAcademicDetails = async (req, res)=> {
+  /*
+  #swagger.tags = ['AcademicDetails']
+  #swagger.description = 'Delete the Academic Detail.'
+  */
 //     try {
 //         const { academicDetails } = req.params;
 //         const deletedAcademicDetails = await academicModel.findByIdAndDelete(academicDetails);

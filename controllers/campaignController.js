@@ -2,6 +2,10 @@ const campaignModel = require('../models/campaignModel');
 
 // Create a new campaign
 exports.createCampaign = async (req, res) => {
+  /*
+  #swagger.tags = ['Campaign']
+  #swagger.description = 'Create a new Campaign.'
+  */
     try {
         const { studentId } = req.params;
         const { title, target, story, campaignImage, isActive } = req.body;
@@ -28,6 +32,10 @@ exports.createCampaign = async (req, res) => {
 }
 
 exports.deleteCampaign = async (req, res) => {
+  /*
+  #swagger.tags = ['Campaign']
+  #swagger.description = 'Delete a Campaign.'
+  */
     try {
         const { campaignId } = req.params;
         const deletedCampaign = await campaignModel.findByIdAndDelete(campaignId);
