@@ -60,13 +60,16 @@ exports.updateUser = async (req, res) => {
         message: "User not found, please create an account",
       });
     }
-    Object.assign(user, {
-      firstName,
-      lastName,
-      email,
-      password,
-      role,
-    });
+    Object.assign(
+      {
+        firstName,
+        lastName,
+        email,
+        password,
+        role,
+      },
+      user
+    );
     await user.save();
     res.status(200).json({
       message: "User updated successfully",
