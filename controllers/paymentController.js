@@ -1,6 +1,8 @@
 const userModel = require("../models/userModel");
 const paymentModel = require("../models/paymentModel");
-const axios = require("axios");
+const campaignModel = require("../models/campaignModel");
+const WithdrawalModel = require("../models/withdrawalModel");
+const { koraMakePayment } = require("../utils/kora");
 const reference = require("crypto").randomBytes(16).toString("hex");
 
 exports.makeDonation = async (req, res) => {
@@ -45,13 +47,8 @@ exports.makeDonation = async (req, res) => {
         name: donor.fullName,
       },
     };
-    const url = "https://api.korapay.com/merchant/api/v1/charges/initialize";
-    const response = await axios.post(url, payload, {
-      headers: {
-        Authorization: `Bearer ${process.env.KORA_SECRET_KEY}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const url = "charges/initialize";
+    const response = await koraMakePayment(url, payload);
 
     if (response.status !== 200) {
       return res.status(500).json({
@@ -130,12 +127,65 @@ exports.withdrawDonation = async (req, res) => {
    #swagger.description = 'Withdraw donation.'
    */
   try {
-    const { campaignId } = req.body;
-    // to be continued
+    const { campaignId, userId } = req.params;
+    const { purpose, note } = req.body;
+    const campaign = await campaignModel
+      .findOne({ _id: campaignId, userId })
+      .populate("studentId");
+
+    if (!campaign) {
+      return res.status(404).json({
+        message: "Campaign not found, please create a campaign first",
+      });
+    }
+
+    const donations = await paymentModel
+      .find({ campaignId, status: "successful" })
+      .populate("senderId");
+
+    const amount = donations.reduce(
+      (acc, donation) => acc + donation.amount,
+      0
+    );
+    if (amount < campaign.target) {
+      return res.status(400).json({
+        message: "Cannot withdraw donation, target not met yet!",
+      });
+    }
+    const withdrawal = await WithdrawalModel.create({
+      campaignId,
+      userId,
+      amount,
+      purpose,
+      note,
+    });
+    const payload = {
+      reference,
+      amount,
+      currency: "NGN",
+      customer: {
+        name: `${campaign.studentId.firstName} ${campaign.studentId.lastName}`,
+        email: campaign.studentId.email,
+      },
+      // account_name, merchant_bears_cost, narration, metadata (optional)
+      narration: `EduFund Donation Withdrawal: ${campaign.title}`,
+    };
+    const url = "charges/bank-transfer";
+    const response = await koraMakePayment(url, payload);
+    const total_donations = donations.length;
+    res.status(200).json({
+      message:
+        total_donations < 1
+          ? "No donations yet"
+          : "Donations found successfully",
+      total_donations,
+      redirect_url: response.data.redirect_url,
+      data: donations,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Error withdrawing donation: ",
+      message: "Error withdrawing donation",
       error: error.message,
     });
   }
