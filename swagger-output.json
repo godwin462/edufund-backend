@@ -652,24 +652,11 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found"
@@ -818,11 +805,14 @@
     },
     "/api/v1/payment/verify-payment-webhook": {
       "post": {
+      "post": {
         "tags": [
           "Payment"
         ],
         "description": "Verify payment webhook note: will be called by KoraPay won",
         "responses": {
+          "default": {
+            "description": ""
           "default": {
             "description": ""
           }
@@ -889,6 +879,29 @@
           "201": {
             "description": "Created"
           },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/academic/{academicDetailsId}": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "academicDetailsId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
           "401": {
             "description": "Unauthorized"
           },
@@ -908,19 +921,16 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "title": {
+                  "schoolName": {
                     "example": "any"
                   },
-                  "target": {
+                  "year": {
                     "example": "any"
                   },
-                  "story": {
+                  "matricNumber": {
                     "example": "any"
                   },
-                  "campaignImage": {
-                    "example": "any"
-                  },
-                  "isActive": {
+                  "jambRegistrationNumber": {
                     "example": "any"
                   }
                 }

@@ -9,7 +9,9 @@ const userRouter = require("express").Router();
 
 userRouter.get("/", getAllUsers);
 userRouter.get("/:userId", getUser);
-userRouter.delete("/:userId", isAuthenticated, deleteUser);
+userRouter.delete("/:userId",
+  //  isAuthenticated,
+    deleteUser);
 userRouter.patch("/:userId", isAuthenticated, updateUser);
 
 module.exports = userRouter;

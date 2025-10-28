@@ -1,4 +1,3 @@
-const { required } = require("joi");
 const mongoose = require("mongoose");
 
 const Payment = new mongoose.Schema({
@@ -17,9 +16,9 @@ const Payment = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  donorName:{
-    type:String,
-    default: ()=>this.senderId
+  withdrawalId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Withdrawal",
   },
   amount: {
     type: Number,
@@ -35,6 +34,11 @@ const Payment = new mongoose.Schema({
     type: String,
     enum: ["pending", "successful", "failed", "refunded"],
     default: "pending",
+  },
+  withdrawn: {
+    type: Boolean,
+    default: () => (this.withdrawalId ? true : false),
+    select: false,
   },
 });
 
