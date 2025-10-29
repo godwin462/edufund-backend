@@ -18,7 +18,9 @@
   "paths": {
     "/": {
       "get": {
-        "tags": ["🌿"],
+        "tags": [
+          "🌿"
+        ],
         "description": "Test API.",
         "responses": {
           "200": {
@@ -29,7 +31,9 @@
     },
     "/api/v1/auth/register/student": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "Register user account.",
         "responses": {
           "201": {
@@ -84,7 +88,9 @@
     },
     "/api/v1/auth/register/sponsor/organization": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "Register user account.",
         "responses": {
           "201": {
@@ -139,7 +145,9 @@
     },
     "/api/v1/auth/register/sponsor/individual": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "Register user account.",
         "responses": {
           "201": {
@@ -194,7 +202,9 @@
     },
     "/api/v1/auth/register/admin": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "Register user account.",
         "responses": {
           "201": {
@@ -249,7 +259,9 @@
     },
     "/api/v1/auth/login/student": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "Login user account.",
         "responses": {
           "200": {
@@ -289,7 +301,9 @@
     },
     "/api/v1/auth/login/sponsor/individual": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "Login user account.",
         "responses": {
           "200": {
@@ -329,7 +343,9 @@
     },
     "/api/v1/auth/login/sponsor/organization": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "Login user account.",
         "responses": {
           "200": {
@@ -369,7 +385,9 @@
     },
     "/api/v1/auth/login/admin": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "Login user account.",
         "responses": {
           "200": {
@@ -409,7 +427,9 @@
     },
     "/api/v1/auth/resend-otp/": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "Resend OTP for user account.",
         "responses": {
           "200": {
@@ -443,7 +463,9 @@
     },
     "/api/v1/auth/verify/{email}/": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "Verify OTP for user account.",
         "parameters": [
           {
@@ -507,7 +529,9 @@
     },
     "/api/v1/auth/change-password/{userId}": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "Change authenticated user account password.",
         "parameters": [
           {
@@ -567,7 +591,9 @@
     },
     "/api/v1/auth/me": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "Get authenticated user",
         "parameters": [
           {
@@ -599,7 +625,9 @@
     },
     "/api/v1/user/": {
       "get": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "description": "Get all users.",
         "responses": {
           "200": {
@@ -613,7 +641,9 @@
     },
     "/api/v1/user/{userId}": {
       "get": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "description": "Get a user by ID.",
         "parameters": [
           {
@@ -638,7 +668,9 @@
         }
       },
       "delete": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "description": "Delete a new user.",
         "parameters": [
           {
@@ -663,7 +695,9 @@
         }
       },
       "patch": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "description": "Update existing user.",
         "parameters": [
           {
@@ -726,9 +760,217 @@
         }
       }
     },
+    "/api/v1/Analytics/students-helped/{donorId}": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "description": "Total number of students helped.",
+        "parameters": [
+          {
+            "name": "donorId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/Analytics/allDonors/{studentId}": {
+      "get": {
+        "tags": [
+          "donors"
+        ],
+        "description": "All generous supporters.",
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/Analytics/myDonations": {
+      "get": {
+        "tags": [
+          "myDonations"
+        ],
+        "description": "All students helped.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/donors/students-helped/{donorId}": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "description": "Total number of students helped.",
+        "parameters": [
+          {
+            "name": "donorId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/donors/allDonors/{studentId}": {
+      "get": {
+        "tags": [
+          "donors"
+        ],
+        "description": "All generous supporters.",
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/donors/myDonations": {
+      "get": {
+        "tags": [
+          "myDonations"
+        ],
+        "description": "All students helped.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/v1/payment/make-donation/{donorId}/{receiverId}/{campaignId}": {
       "post": {
-        "tags": ["Payment"],
+        "tags": [
+          "Payment"
+        ],
         "description": "Make a donation.",
         "parameters": [
           {
@@ -804,7 +1046,9 @@
     },
     "/api/v1/payment/verify-payment-webhook": {
       "post": {
-        "tags": ["Payment"],
+        "tags": [
+          "Payment"
+        ],
         "description": "Verify payment webhook note: will be called by KoraPay won",
         "responses": {
           "default": {
@@ -815,7 +1059,9 @@
     },
     "/api/v1/payment/request-withdrawal/{donorId}/{campaignId}": {
       "post": {
-        "tags": ["Payment"],
+        "tags": [
+          "Payment"
+        ],
         "description": "Withdraw donation.",
         "parameters": [
           {
@@ -883,7 +1129,9 @@
     },
     "/api/v1/contact-us/": {
       "post": {
-        "tags": ["Contact Us"],
+        "tags": [
+          "Contact Us"
+        ],
         "description": "Contact Us Form Submission Handler",
         "responses": {
           "200": {
@@ -914,7 +1162,9 @@
     },
     "/api/v1/campaigns/": {
       "get": {
-        "tags": ["Campaign"],
+        "tags": [
+          "Campaign"
+        ],
         "description": "Get a student Campaigns.",
         "parameters": [
           {
@@ -946,7 +1196,9 @@
     },
     "/api/v1/campaigns/{studentId}": {
       "get": {
-        "tags": ["Campaign"],
+        "tags": [
+          "Campaign"
+        ],
         "description": "Get all Campaigns.",
         "parameters": [
           {
@@ -984,7 +1236,9 @@
         }
       },
       "post": {
-        "tags": ["Campaign"],
+        "tags": [
+          "Campaign"
+        ],
         "description": "Create a new Campaign.",
         "parameters": [
           {
@@ -1050,7 +1304,9 @@
     },
     "/api/v1/campaigns/campaign-detail/{campaignId}": {
       "get": {
-        "tags": ["Campaign"],
+        "tags": [
+          "Campaign"
+        ],
         "description": "Get a Campaign.",
         "parameters": [
           {
@@ -1090,7 +1346,9 @@
     },
     "/api/v1/campaigns/{campaignId}": {
       "put": {
-        "tags": ["Campaign"],
+        "tags": [
+          "Campaign"
+        ],
         "description": "Create a new Campaign.",
         "parameters": [
           {
@@ -1154,7 +1412,9 @@
         }
       },
       "delete": {
-        "tags": ["Campaign"],
+        "tags": [
+          "Campaign"
+        ],
         "description": "Delete a Campaign.",
         "parameters": [
           {
@@ -1194,7 +1454,9 @@
     },
     "/api/v1/academic/{studentId}": {
       "post": {
-        "tags": ["AcademicDetails"],
+        "tags": [
+          "AcademicDetails"
+        ],
         "description": "Create a new Academic Detail.",
         "parameters": [
           {
@@ -1255,7 +1517,9 @@
         }
       },
       "get": {
-        "tags": ["AcademicDetails"],
+        "tags": [
+          "AcademicDetails"
+        ],
         "description": "Get Academic Detail.",
         "parameters": [
           {
@@ -1295,7 +1559,9 @@
     },
     "/api/v1/academic/{academicDetailsId}": {
       "put": {
-        "tags": ["AcademicDetails"],
+        "tags": [
+          "AcademicDetails"
+        ],
         "description": "Update the Academic Detail.",
         "parameters": [
           {
@@ -1358,7 +1624,9 @@
     },
     "/api/v1/donation/": {
       "get": {
-        "tags": ["Donation"],
+        "tags": [
+          "Donation"
+        ],
         "description": "Get all donations.",
         "responses": {
           "200": {
@@ -1372,7 +1640,9 @@
     },
     "/api/v1/donation/received-donations/{studentId}": {
       "get": {
-        "tags": ["Donation"],
+        "tags": [
+          "Donation"
+        ],
         "description": "Get all donations to a student.",
         "parameters": [
           {
@@ -1419,7 +1689,9 @@
     },
     "/api/v1/donation/received-donations/donation-detail/{reference}": {
       "get": {
-        "tags": ["Donation"],
+        "tags": [
+          "Donation"
+        ],
         "description": "Get a donation.",
         "parameters": [
           {
@@ -1459,7 +1731,9 @@
     },
     "/api/v1/donation/received-donations/student-balance/{studentId}": {
       "get": {
-        "tags": ["Donation"],
+        "tags": [
+          "Donation"
+        ],
         "description": "Get student wallet ballance.",
         "parameters": [
           {
@@ -1499,7 +1773,9 @@
     },
     "/api/v1/donation/received-donations/campaign-balance/{campaignId}": {
       "get": {
-        "tags": ["Donation"],
+        "tags": [
+          "Donation"
+        ],
         "description": "Get total donations for a campaign.",
         "parameters": [
           {
@@ -1539,7 +1815,9 @@
     },
     "/api/v1/donation/received-donations/campaign-donations/{campaignId}": {
       "get": {
-        "tags": ["Donation"],
+        "tags": [
+          "Donation"
+        ],
         "description": "Get all donations relating to a campaign.",
         "parameters": [
           {
@@ -1641,7 +1919,10 @@
             "example": "Example Org"
           }
         },
-        "required": ["email", "password"]
+        "required": [
+          "email",
+          "password"
+        ]
       },
       "Academic": {
         "type": "object",
@@ -1712,7 +1993,12 @@
             "example": "campaign_public_id"
           }
         },
-        "required": ["studentId", "title", "target", "story"]
+        "required": [
+          "studentId",
+          "title",
+          "target",
+          "story"
+        ]
       },
       "Otp": {
         "type": "object",
@@ -1731,7 +2017,10 @@
           },
           "blockedUntil": {}
         },
-        "required": ["userId", "otp"]
+        "required": [
+          "userId",
+          "otp"
+        ]
       },
       "Payment": {
         "type": "object",
@@ -1766,7 +2055,12 @@
             "example": false
           }
         },
-        "required": ["senderId", "receiverId", "amount", "reference"]
+        "required": [
+          "senderId",
+          "receiverId",
+          "amount",
+          "reference"
+        ]
       },
       "UserIdentity": {
         "type": "object",
@@ -1792,7 +2086,10 @@
             "example": "1//0g..."
           }
         },
-        "required": ["userId", "provider"]
+        "required": [
+          "userId",
+          "provider"
+        ]
       },
       "VerificationToken": {
         "type": "object",
@@ -1810,7 +2107,10 @@
             "example": "2025-10-28T12:00:00Z"
           }
         },
-        "required": ["userId", "token"]
+        "required": [
+          "userId",
+          "token"
+        ]
       },
       "Wallet": {
         "type": "object",
