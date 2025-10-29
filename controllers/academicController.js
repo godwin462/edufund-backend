@@ -8,7 +8,7 @@ exports.createAcademicDetails = async (req, res) => {
   */
     try {
         const { studentId } = req.params;
-        const { schoolName, year, matricNumber, jambRegistrationNumber } = req.body;
+        const { schoolName, year, matricNumber, jambRegistrationNumber } = req.body || {};
         const newAcademicDetails = new academicModel({
             studentId,
             schoolName,
@@ -56,8 +56,8 @@ exports.updateAcademicDetails = async (req, res) => {
   */
     try {
         const { academicDetailsId } = req.params;
-        const { schoolName, year, matricNumber, jambRegistrationNumber } = req.body;
-         
+        const { schoolName, year, matricNumber, jambRegistrationNumber } = req.body || {};
+
         const updatedAcademicDetails = await academicModel.findByIdAndUpdate(
             academicDetailsId,
             {

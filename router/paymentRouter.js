@@ -9,7 +9,7 @@ const { studentAccess } = require("../middleware/roleMiddleware");
 const paymentRouter = require("express").Router();
 
 paymentRouter.post(
-  "/make-donation/:donorId/:receiverId",
+  "/make-donation/:donorId/:receiverId/:campaignId",
   isAuthenticated,
   makeDonation
 );

@@ -4,6 +4,7 @@ const Payment = new mongoose.Schema({
   campaignId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "campaign",
+    required: true,
   },
   senderId: {
     type: mongoose.Schema.Types.ObjectId,

@@ -42,14 +42,17 @@ app.use("/api/v1/payment", paymentRouter);
 app.use("/api/v1/contact-us", contactUsRouter);
 app.use("/api/v1/campaigns", campaignRouter);
 app.use("/api/v1/academic", academicRouter);
-app.use("/api/v1/received-donations", donationRouter);
+app.use("/api/v1/donation", donationRouter);
 
-app.use("/", (req, res) => {
+app.get("/", (req, res) => {
+  /* #swagger.tags = ['🌿']
+   #swagger.description = 'Test API.'
+   */
   res.send("Connected to Backend Server");
 });
 
 app.use((error, req, res, next) => {
-  if (error) {
+  if(error) {
     return res.status(500).json({
       message: error.message,
     });
