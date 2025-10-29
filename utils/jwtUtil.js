@@ -1,9 +1,9 @@
 var jwt = require("jsonwebtoken");
 
 exports.generateJwt = async (data, expiresIn = "15m") =>
-  await jwt.sign(data, process.env.JWT_SECRETE, { expiresIn });
+  await jwt.sign(data, process.env.JWT_SECRET, { expiresIn });
 
 exports.verifyJwt = async (token) =>
-  await jwt.verify(token, process.env.JWT_SECRETE);
+  await jwt.verify(token, process.env.JWT_SECRET);
 
 exports.decodeJwt = async (token) => await jwt.decode(token);

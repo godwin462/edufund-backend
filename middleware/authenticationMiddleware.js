@@ -15,9 +15,16 @@ exports.isAuthenticated = async (req, res, next) => {
 
     if (!user) {
       return res.status(404).json({
-        message: "Cannot perform action please crae",
+        message: "Cannot perform action please create an account",
       });
     }
+    if (!user.isVerified) {
+      return res.status(403).json({
+        message:
+          "You're not authorized perform this action. please verify your account",
+      });
+    }
+    req.user = user;
     // req.user = decoded;
     next();
   } catch (error) {

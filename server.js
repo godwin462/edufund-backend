@@ -10,10 +10,13 @@ const paymentRouter = require("./router/paymentRouter");
 const session = require("express-session");
 const passport = require("passport");
 const authRouter = require("./router/authRouter");
+const donorRouter = require("./router/donorRouter");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger-output.json");
 const contactUsRouter = require("./router/contactUsRouter");
-const donorRouter = require("./router/donorRouter");
+const campaignRouter = require("./router/campaignRouter");
+const academicRouter = require("./router/academicRouter");
+const donationRouter = require("./router/donationRouter");
 
 const app = express();
 
@@ -33,9 +36,13 @@ app.use(passport.session());
 app.use("/api/v1/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/Analytics", donorRouter);
+app.use("/api/v1/donors", donorRouter);
 app.use("/api/v1/payment", paymentRouter);
 app.use("/api/v1/contact-us", contactUsRouter);
-app.use("/api/v1/analytics", donorRouter);
+app.use("/api/v1/campaigns", campaignRouter);
+app.use("/api/v1/academic", academicRouter);
+app.use("/api/v1/received-donations", donationRouter);
 
 app.use("/", (req, res) => {
   res.send("Connected to Backend Server");

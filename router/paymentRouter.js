@@ -1,10 +1,24 @@
-const {initializePayment, verifyPayment} = require("../controllers/paymentController");
-const {isAuthenticated} = require("../middleware/authenticationMiddleware");
+const {
+  makeDonation,
+  verifyPaymentWebHook,
+  withdrawDonation,
+} = require("../controllers/paymentController");
+const { isAuthenticated } = require("../middleware/authenticationMiddleware");
+const { studentAccess } = require("../middleware/roleMiddleware");
 
-const router = require("express").Router();
+const paymentRouter = require("express").Router();
 
-router.post("/make-payment/:id", isAuthenticated, initializePayment);
+paymentRouter.post(
+  "/make-donation/:donorId/:receiverId",
+  isAuthenticated,
+  makeDonation
+);
+paymentRouter.post("/verify-payment-webhook", verifyPaymentWebHook);
+paymentRouter.post(
+  "/request-withdrawal/:donorId/:campaignId",
+  isAuthenticated,
+  studentAccess,
+  withdrawDonation
+);
 
-router.get("/verify-payment", verifyPayment);
-
-module.exports = router;
+module.exports = paymentRouter;

@@ -1,26 +1,33 @@
 const UserModel = require("../models/userModel");
 const registrationTemplate = require("../templates/registrationTemplate");
-
 const loginOtpTemplate = require("../templates/loginOtpTemplate");
-const jwt = require("jsonwebtoken");
 const OtpModel = require("../models/OtpModel");
-const {nodemailerOtpHelper, sendEmail} = require("../email/brevo");
-const {validateEmail} = require("../middleware/validateEmail");
+const {sendEmail} = require("../email/brevo");
 const constants = require("../utils/constants");
 const {generateOtp} = require("../utils/otp");
 const {generateJwt, verifyJwt, decodeJwt} = require("../utils/jwtUtil");
 const {cloudinaryUpload} = require("../utils/cloudinaryUtil");
-const passport = require("passport");
 const {compareData, hashData} = require("../utils/bcryptUtil");
+const {
+    registerValidation,
+    loginValidation,
+    verifyOtpValidation,
+    resendOtpValidation,
+    changePasswordValidation
+} = require("../validations/authControllerValidations");
 
 exports.register = async (req, res) => {
     /*
-    #swagger.tags = ['Authentication']
-    #swagger.description = 'Register user account.'
-    */
+      #swagger.tags = ['Authentication']
+      #swagger.description = 'Register user account.'
+      */
     let file = null;
     try {
-        const {firstName, lastName, email, role, password} = req.body;
+        const {error} = registerValidation.validate(req.body);
+        if (error) {
+            return res.status(400).json({message: error.details[0].message});
+        }
+        const {firstName, lastName, email, role, password, phoneNumber} = req.body;
 
         const existingEmail = await UserModel.findOne({email});
 
@@ -32,7 +39,7 @@ exports.register = async (req, res) => {
         let profilePicture;
 
         if (req.file && req.file.buffer) {
-            file = await cloudinaryUpload(file.buffer);
+            file = await cloudinaryUpload( req.file.buffer);
             profilePicture = {
                 imageUrl: file.secure_url,
                 publicId: file.public_id
@@ -44,6 +51,7 @@ exports.register = async (req, res) => {
             firstName,
             lastName,
             email,
+            phoneNumber,
             role,
             profilePicture,
             password: hashedPassword
@@ -67,10 +75,12 @@ exports.register = async (req, res) => {
             userId: user._id,
             otp
         });
+        user.password = undefined;
 
         await user.save();
         res.status(201).json({
-            message: "OTP sent successfully, check your email to verify your account"
+            message: "OTP sent successfully, check your email to verify your account",
+            data: user
         });
     } catch (error) {
         console.log(error);
@@ -83,10 +93,14 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
     /*
-    #swagger.tags = ['Authentication']
-    #swagger.description = 'Login user account.'
-    */
+      #swagger.tags = ['Authentication']
+      #swagger.description = 'Login user account.'
+      */
     try {
+        const {error} = loginValidation.validate(req.body);
+        if (error) {
+            return res.status(400).json({message: error.details[0].message});
+        }
         const {email, password} = req.body;
 
         const user = await UserModel.findOne({email}).select("+password");
@@ -110,9 +124,13 @@ exports.login = async (req, res) => {
                 .json({message: "Please provide a valid account password"});
         }
 
+
         const token = await generateJwt({id: user._id}, "1d");
-        req.user = {id: user._id};
-        res.status(200).json({message: "Success, user logged in", token});
+        user.password = undefined;
+        req.user = user;
+        res
+            .status(200)
+            .json({message: "Success, user logged in", token, data: user});
     } catch (error) {
         console.log(error);
         res
@@ -123,14 +141,18 @@ exports.login = async (req, res) => {
 
 exports.verifyOtp = async (req, res) => {
     /*
-    #swagger.tags = ['Authentication']
-    #swagger.description = 'Verify OTP for user account.'
-  */
+      #swagger.tags = ['Authentication']
+      #swagger.description = 'Verify OTP for user account.'
+    */
     try {
+        const {error} = verifyOtpValidation.validate({...req.body, ...req.params});
+        if (error) {
+            return res.status(400).json({message: error.details[0].message});
+        }
         const {otp} = req.body;
-        const {userId} = req.params;
+        const {email} = req.params;
 
-        const user = await UserModel.findById(userId);
+        const user = await UserModel.findOne({email});
 
         if (!user) {
             return res
@@ -142,22 +164,22 @@ exports.verifyOtp = async (req, res) => {
                 .status(400)
                 .json({message: "user already verified, please login to continue"});
         }
-        const dbOtp = await OtpModel.findOne({userId});
+        const dbOtp = await OtpModel.findOne({userId: user._id});
         // console.log(dbOtp);
 
         if (!dbOtp) {
-            return res.status(400).json({message: "Invalid OTP"});
+            return res.status(400).json({message: "Invalid OTP, please request for a new one"});
         }
 
         const isValidOtp = await verifyJwt(dbOtp.otp);
         if (!isValidOtp.otp) {
-            return res.status(400).json({message: "Invalid OTP"});
+            return res.status(400).json({message: "Invalid OTP, please ensure to get the correct token from your email"});
         }
         const decodeOtp = await decodeJwt(dbOtp.otp);
         // console.log(decodeOtp);
 
         if (decodeOtp.otp !== otp) {
-            return res.status(400).json({message: "Invalid OTP"});
+            return res.status(400).json({message: "Wrong OTP, please check your email and try again"});
         }
 
         user.isVerified = true;
@@ -165,7 +187,9 @@ exports.verifyOtp = async (req, res) => {
         req.user = {id: user._id};
         await user.save();
 
-        res.status(200).json({message: "OTP verification successful ✅", token});
+        res
+            .status(200)
+            .json({message: "OTP verification successful ✅", token, data: user});
     } catch (error) {
         if (error.name === "TokenExpiredError") {
             return res.status(400).json({message: "OTP expired, request new otp"});
@@ -180,10 +204,14 @@ exports.verifyOtp = async (req, res) => {
 
 exports.resendOtp = async (req, res) => {
     /*
-    #swagger.tags = ['Authentication']
-    #swagger.description = 'Resend OTP for user account.'
-    */
+      #swagger.tags = ['Authentication']
+      #swagger.description = 'Resend OTP for user account.'
+      */
     try {
+        const {error} = resendOtpValidation.validate(req.body);
+        if (error) {
+            return res.status(400).json({message: error.details[0].message});
+        }
         const {email} = req.body;
 
         const user = await UserModel.findOne({email});
@@ -227,13 +255,16 @@ exports.resendOtp = async (req, res) => {
 
 exports.changePassword = async (req, res) => {
     /*
-    #swagger.tags = ['Authentication']
-    #swagger.description = 'Change authenticated user account password.'
-    */
+      #swagger.tags = ['Authentication']
+      #swagger.description = 'Change authenticated user account password.'
+      */
     try {
+        const {error} = changePasswordValidation.validate({...req.body, ...req.params});
+        if (error) {
+            return res.status(400).json({message: error.details[0].message});
+        }
         const {userId} = req.params;
         const {password, newPassword} = req.body;
-
 
         const user = await UserModel.findById(userId).select("+password");
 
@@ -249,9 +280,10 @@ exports.changePassword = async (req, res) => {
                 .json({message: "User not verified, please verify your account"});
         }
         if (!compareData(password, user.password)) {
-            return res
-                .status(400)
-                .json({message: "Initial password account incorrect, please provide correct account password"});
+            return res.status(400).json({
+                message:
+                    "Initial password account incorrect, please provide correct account password"
+            });
         }
 
         if (compareData(newPassword, user.password)) {
@@ -260,13 +292,14 @@ exports.changePassword = async (req, res) => {
                 .json({message: "New password cannot be same as old password"});
         }
         if (password === newPassword) {
-            return res
-                .status(400)
-                .json({message: "New password cannot be same as initial account password"});
+            return res.status(400).json({
+                message: "New password cannot be same as initial account password"
+            });
         }
 
         user.password = hashData(newPassword);
         await user.save();
+        user.password = undefined;
 
         res
             .status(200)
@@ -279,3 +312,17 @@ exports.changePassword = async (req, res) => {
     }
 };
 
+exports.getCurrentAuthUser = async (req, res) => {
+    /*
+      #swagger.tags = ['Authentication']
+      #swagger.description = 'Get authenticated user'
+      */
+    try {
+        const user = req.user;
+        res.status(200).json({message: "success", data: user});
+    } catch (error) {
+        return res
+            .status(500)
+            .json({message: "internal server error", error: error.message});
+    }
+};

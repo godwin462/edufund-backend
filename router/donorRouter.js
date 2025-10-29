@@ -1,6 +1,10 @@
 const donorRouter = require("express").Router();
 
-const { totalStudentsHelped } = require("../controllers/donorController");
+const {
+  totalStudentsHelped,
+  getDonorsForStudent,
+  myDonations,
+} = require("../controllers/donorController");
 const { isAuthenticated } = require("../middleware/authenticationMiddleware");
 
 donorRouter.get(
@@ -8,4 +12,7 @@ donorRouter.get(
   isAuthenticated,
   totalStudentsHelped
 );
+donorRouter.get("/allDonors/:studentId", isAuthenticated, getDonorsForStudent);
+
+donorRouter.get("/myDonations", myDonations);
 module.exports = donorRouter;

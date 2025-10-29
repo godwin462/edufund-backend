@@ -1,104 +1,193 @@
-const userModel = require('../models/userModel');
-const paymentModel = require('../models/paymentModel');
-const axios = require('axios');
-const otpGen = require('otp-generator');
+const userModel = require("../models/userModel");
+const paymentModel = require("../models/paymentModel");
+const campaignModel = require("../models/campaignModel");
+const WithdrawalModel = require("../models/withdrawalModel");
+const {koraMakePayment} = require("../utils/kora");
+const reference = require("crypto").randomBytes(16).toString("hex");
 
+exports.makeDonation = async (req, res) => {
+    /* #swagger.tags = ['Payment']
+     #swagger.description = 'Make a donation.'
+     */
+    try {
+        const {donorId, receiverId} = req.params;
+        const {amount, redirect_url} = req.body;
+        if (!amount || typeof amount !== "number" || amount <= 0) {
+            return res.status(400).json({
+                message: "Please provide a valid donation amount"
+            });
+        }
 
-exports.initializePayment = async (req, res) => {
-  try {
-    const code = await otpGen.generate(12, { upperCaseAlphabets: false, lowerCaseAlphabets: true, digits: true, specialChars: false })
-    const ref = `TCA-${code}-TCHEE`
-    const productId = req.params.id;
-    const { id } = req.user;
-    const user = await userModel.findById(id);
-    if (user === null) {
-      return res.status(404).json({
-        message: 'User not found, please create an account'
-      })
+        const receiver = await userModel.findById(receiverId);
+
+        if (!receiver) {
+            return res.status(404).json({
+                message: "Receiver not found, please create an account"
+            });
+        }
+        if (receiver.role !== "student") {
+            return res.status(400).json({
+                message: "Receiver not a student, donation not allowed"
+            });
+        }
+        const donor = await userModel.findById(donorId);
+
+        if (!donor) {
+            return res.status(404).json({
+                message: "Donor not found, please create an account to make donation"
+            });
+        }
+
+        const payload = {
+            amount: amount,
+            currency: "NGN",
+            reference,
+            redirect_url,
+            customer: {
+                email: donor.email,
+                name: donor.fullName
+            }
+        };
+        const url = "charges/initialize";
+        const response = await koraMakePayment(url, payload);
+
+        if (response.status !== 200) {
+            return res.status(500).json({
+                message: "Error initializing payment",
+                error: response.data
+            });
+        }
+
+        const transaction = await paymentModel.create({
+            senderId: donorId,
+            receiverId,
+            amount,
+            reference,
+            redirect_url: req.url
+        });
+
+        if (!transaction) {
+            return res.status(500).json({
+                message: "Error creating transaction"
+            });
+        }
+        return res.status(200).json({
+            message: "Donation test successfully",
+            data: response.data.data
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Error initializing payment: " + error.message,
+            error: error.response
+        });
     }
-
-    const paymentData = {
-      amount: product.price *1000,
-      currency: 'NGN',
-      reference: ref,
-      customer: {
-        email: user.email,
-        name: user.fullName
-      }
-    }
-
-    const { data } = await axios.post(
-      "https://api.korapay.com/merchant/api/v1/charges/initialize",
-      paymentData,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.KORA_KEY}`,
-        },
-      }
-    );
-
-    const payment = new paymentModel({
-      userId: id,
-      productId,
-      reference: ref,
-      price: product.price
-    });
-
-    if (data?.status === true) {
-      await payment.save();
-    }
-
-    res.status(200).json({
-      message: 'Payment Initialized successfuly',
-      data: {
-        reference: data?.data?.reference,
-        url: data?.data?.checkout_url
-      }
-    })
-  } catch (error) {
-    res.status(500).json({
-      message: 'Error initializing payment: ' + error.message,
-      error: error.response?.data
-    })
-  }
 };
 
-
-exports.verifyPayment = async (req, res) => {
-  try {
-    const { reference } = req.query;
-    const payment = await paymentModel.findOne({ reference });
-    if (payment === null) {
-      return res.status(404).json({
-        message: 'Payment not found'
-      })
+exports.verifyPaymentWebHook = async (req, res) => {
+    /* #swagger.tags = ['Payment']
+     #swagger.description = 'Verify payment webhook note: will be called by KoraPay won't work on swagger ui.'
+     */
+    try {
+        const {event, data} = req.body;
+        if (event === "charge.success") {
+            const payment = await paymentModel.findOne({reference: data.reference});
+            if (!payment) {
+                return res.status(404).json({
+                    message: "Payment not found"
+                });
+            }
+            payment.status = "successful";
+            await payment.save();
+            res.status(200).json({
+                message: "Payment Verification Successful"
+            });
+        } else if (event === "charge.failed") {
+            const payment = await paymentModel.findOne({reference: data.reference});
+            if (!payment) {
+                return res.status(404).json({
+                    message: "Payment not found"
+                });
+            }
+            payment.status = "failed";
+            await payment.save();
+            res.status(200).json({
+                message: "Payment Failed"
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Error verifying payment: " + error.message
+        });
     }
-    const { data } = await axios.get(
-      `https://api.korapay.com/merchant/api/v1/charges/${reference}`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.KORA_SECRETE_KEY}`,
-        },
-      }
-    );
+};
 
-    console.log(data)
-    if (data?.status === true && data?.data?.status === "success") {
-      payment.status = 'Successful'
-      await payment.save();
-      res.status(200).json({
-        message: 'Payment Verified Successfully'
-      })
-    } else{
-      payment.status = 'Failed'
-      await payment.save();
-      res.status(200).json({
-        message: 'Payment Failed'
-      })
+exports.withdrawDonation = async (req, res) => {
+    /* #swagger.tags = ['Payment']
+     #swagger.description = 'Withdraw donation.'
+     */
+    try {
+        const {campaignId, studentId} = req.params;
+        const {purpose, note} = req.body;
+        const campaign = await campaignModel
+            .findOne({_id: campaignId, studentId})
+            .populate("studentId");
+
+        if (!campaign) {
+            return res.status(404).json({
+                message: "Campaign not found, please create a campaign first"
+            });
+        }
+
+        const donations = await paymentModel
+            .find({campaignId, status: "successful"})
+            .populate("senderId");
+
+        const amount = donations.reduce(
+            (acc, donation) => acc + donation.amount,
+            0
+        );
+        if (amount < campaign.target) {
+            return res.status(400).json({
+                message: "Cannot withdraw donation, target not met yet!"
+            });
+        }
+        const withdrawal = await WithdrawalModel.create({
+            campaignId,
+            userId: studentId,
+            amount,
+            purpose,
+            note
+        });
+        const payload = {
+            reference,
+            amount,
+            currency: "NGN",
+            customer: {
+                name: `${campaign.studentId.firstName} ${campaign.studentId.lastName}`,
+                email: campaign.studentId.email
+            },
+            // account_name, merchant_bears_cost, narration, metadata (optional)
+            narration: `EduFund Donation Withdrawal: ${campaign.title}`
+        };
+        const url = "charges/bank-transfer";
+        const response = await koraMakePayment(url, payload);
+        const total_donations = donations.length;
+        res.status(200).json({
+            message:
+                total_donations < 1
+                    ? "No donations yet"
+                    : "Donations found successfully",
+            total_donations,
+            redirect_url: response.data.redirect_url,
+            data: withdrawal
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Error withdrawing donation",
+            error: error.message
+        });
     }
-  } catch (error) {
-    res.status(500).json({
-      message: 'Error verifying payment: ' + error.message
-    })
-  }
 };
