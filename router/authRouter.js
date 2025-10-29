@@ -147,41 +147,12 @@ authRouter.post(
   register
 );
 
-// Account login routes
-/**
- * @swagger
- * /auth/login/student:
- *   post:
- *     summary: Login as a student
- *     tags: [Authentication]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       "200":
- *         description: Success, user logged in
- *       "400":
- *         description: Bad request
- *       "404":
- *         description: User not found
- *       "500":
- *         description: Internal server error
- */
-authRouter.post("/login/student", logInRoleValidationMiddleware, login);
 
 /**
  * @swagger
- * /auth/login/sponsor/individual:
+ * /auth/login:
  *   post:
- *     summary: Login as an individual sponsor
+ *     summary: Login to a user account
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -205,41 +176,7 @@ authRouter.post("/login/student", logInRoleValidationMiddleware, login);
  *         description: Internal server error
  */
 authRouter.post(
-  "/login/sponsor/individual",
-  logInRoleValidationMiddleware,
-  login
-);
-
-/**
- * @swagger
- * /auth/login/sponsor/organization:
- *   post:
- *     summary: Login as an organization sponsor
- *     tags: [Authentication]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       "200":
- *         description: Success, user logged in
- *       "400":
- *         description: Bad request
- *       "404":
- *         description: User not found
- *       "500":
- *         description: Internal server error
- */
-authRouter.post(
-  "/login/sponsor/organization",
-  logInRoleValidationMiddleware,
+  "/login",
   login
 );
 
