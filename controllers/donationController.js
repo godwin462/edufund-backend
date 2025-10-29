@@ -9,9 +9,9 @@ exports.getReceivedDonations = async (req, res) => {
    */
   try {
     const status = req.query.status || "successful";
-    const { studentId } = req.params;
+    const {studentId} = req.params;
     const donations = await paymentModel
-      .find({ receiverId: studentId, status })
+      .find({receiverId: studentId, status})
       .populate("senderId");
     const total = donations.length;
     res.status(200).json({
@@ -22,7 +22,7 @@ exports.getReceivedDonations = async (req, res) => {
       total,
       data: donations,
     });
-  } catch (error) {
+  } catch(error) {
     res.status(500).json({
       message: "Server error getting donations",
       error: error.message,
@@ -35,11 +35,11 @@ exports.getOneReceivedDonation = async (req, res) => {
    #swagger.description = 'Get a donation.'
    */
   try {
-    const { reference } = req.params;
+    const {reference} = req.params;
     const donation = await paymentModel
-      .findOne({ reference })
+      .findOne({reference})
       .populate("senderId");
-    if (!donation) {
+    if(!donation) {
       res.status(404).json({
         message: "Donation not found",
       });
@@ -48,7 +48,7 @@ exports.getOneReceivedDonation = async (req, res) => {
       message: "Donation found successfully",
       data: donation,
     });
-  } catch (error) {
+  } catch(error) {
     res.status(500).json({
       message: "Server error getting donations",
       error: error.message,
@@ -61,9 +61,9 @@ exports.getCampaignDonations = async (req, res) => {
    #swagger.description = 'Get all donations relating to a campaign.'
    */
   try {
-    const { campaignId } = req.params;
+    const {campaignId} = req.params;
     const donations = await paymentModel
-      .find({ receiverId: studentId, campaignId, status: "successful" })
+      .find({receiverId: studentId, campaignId, status: "successful"})
       .populate("senderId");
     const total = donations.length;
     res.status(200).json({
@@ -72,7 +72,7 @@ exports.getCampaignDonations = async (req, res) => {
       total,
       data: donations,
     });
-  } catch (error) {
+  } catch(error) {
     res.status(500).json({
       message: "Server error getting donations",
       error: error.message,
@@ -85,9 +85,9 @@ exports.getSentDonations = async (req, res) => {
    #swagger.description = 'Get all donations by a student.'
    */
   try {
-    const { donorId } = req.params;
+    const {donorId} = req.params;
     const donations = await paymentModel
-      .find({ senderId: donorId })
+      .find({senderId: donorId})
       .populate("senderId");
     const total = donations.length;
     res.status(200).json({
@@ -95,7 +95,7 @@ exports.getSentDonations = async (req, res) => {
       total,
       data: donations,
     });
-  } catch (error) {
+  } catch(error) {
     res.status(500).json({
       message: "Server error getting donations",
       error: error.message,
@@ -108,9 +108,9 @@ exports.getCampaignDonationBalance = async (req, res) => {
    #swagger.description = 'Get total donations for a campaign.'
    */
   try {
-    const { campaignId } = req.params;
+    const {campaignId} = req.params;
     const donations = await paymentModel
-      .find({ campaignId, status: "successful" })
+      .find({campaignId, status: "successful"})
       .populate("senderId");
     const totalDonation = donations.reduce(
       (acc, donation) => acc + donation.amount,
@@ -123,7 +123,7 @@ exports.getCampaignDonationBalance = async (req, res) => {
       balance: totalDonation,
       data: donations,
     });
-  } catch (error) {
+  } catch(error) {
     res.status(500).json({
       message: "Server error getting donations",
       error: error.message,
@@ -136,9 +136,9 @@ exports.getStudentWalletBalance = async (req, res) => {
    #swagger.description = 'Get student wallet ballance.'
    */
   try {
-    const { studentId } = req.params;
+    const {studentId} = req.params;
     const donations = await paymentModel
-      .find({ receiverId: studentId, status: "successful" })
+      .find({receiverId: studentId, status: "successful"})
       .populate("senderId");
     const totalDonation = donations.reduce(
       (acc, donation) => acc + donation.amount,
@@ -151,9 +151,29 @@ exports.getStudentWalletBalance = async (req, res) => {
       balance: totalDonation,
       data: donations,
     });
-  } catch (error) {
+  } catch(error) {
     res.status(500).json({
       message: "Server error getting student wallet",
+      error: error.message,
+    });
+  }
+};
+
+exports.getAllDonations = async (req, res) => {
+  /* #swagger.tags = ['Donation']
+   #swagger.description = 'Get all donations.'
+   */
+  try {
+    const donations = await paymentModel.find().populate("senderId receiverId campaignId");
+    const total = donations.length;
+    res.status(200).json({
+      message: total < 1 ? "No donations yet, donate and help a student today" : "Donations found successfully",
+      total,
+      data: donations,
+    });
+  } catch(error) {
+    res.status(500).json({
+      message: "Server error getting donations",
       error: error.message,
     });
   }
