@@ -40,12 +40,12 @@ exports.myDonations = async (req, res) => {
   }
 };
 
-exports.donors = async (req, res) => {
-  try {
-    const donators = await f;
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ message: `Error getting all donators: ${error.message}` });
-  }
-};
+// exports.donors = async (req, res) => {
+//   try {
+//     const donators = await f;
+//   } catch (error) {
+//     return res
+//       .status(500)
+//       .json({ message: `Error getting all donators: ${error.message}` });
+//   }
+// };
