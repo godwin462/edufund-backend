@@ -16,6 +16,19 @@
     }
   ],
   "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "🌿"
+        ],
+        "description": "Test API.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/v1/auth/register/student": {
       "post": {
         "tags": [
@@ -733,9 +746,6 @@
                   "lastName": {
                     "type": "string"
                   },
-                  "email": {
-                    "type": "string"
-                  },
                   "role": {
                     "type": "string"
                   },
@@ -750,7 +760,7 @@
         }
       }
     },
-    "/api/v1/payment/make-donation/{donorId}/{receiverId}": {
+    "/api/v1/payment/make-donation/{donorId}/{receiverId}/{campaignId}": {
       "post": {
         "tags": [
           "Payment"
@@ -767,6 +777,14 @@
           },
           {
             "name": "receiverId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "campaignId",
             "in": "path",
             "required": true,
             "schema": {
@@ -1398,7 +1416,23 @@
         }
       }
     },
-    "/api/v1/received-donations/{studentId}": {
+    "/api/v1/donation/": {
+      "get": {
+        "tags": [
+          "Donation"
+        ],
+        "description": "Get all donations.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/donation/received-donations/{studentId}": {
       "get": {
         "tags": [
           "Donation"
@@ -1447,7 +1481,7 @@
         }
       }
     },
-    "/api/v1/received-donations/donation-detail/{reference}": {
+    "/api/v1/donation/received-donations/donation-detail/{reference}": {
       "get": {
         "tags": [
           "Donation"
@@ -1489,7 +1523,7 @@
         }
       }
     },
-    "/api/v1/received-donations/student-balance/{studentId}": {
+    "/api/v1/donation/received-donations/student-balance/{studentId}": {
       "get": {
         "tags": [
           "Donation"
@@ -1531,7 +1565,7 @@
         }
       }
     },
-    "/api/v1/received-donations/campaign-balance/{campaignId}": {
+    "/api/v1/donation/received-donations/campaign-balance/{campaignId}": {
       "get": {
         "tags": [
           "Donation"
@@ -1573,7 +1607,7 @@
         }
       }
     },
-    "/api/v1/received-donations/campaign-donations/{campaignId}": {
+    "/api/v1/donation/received-donations/campaign-donations/{campaignId}": {
       "get": {
         "tags": [
           "Donation"
