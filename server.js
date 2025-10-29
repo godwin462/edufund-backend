@@ -41,7 +41,7 @@ app.use("/api/v1/campaigns", campaignRouter);
 app.use("/api/v1/academic", academicRouter);
 app.use("/api/v1/received-donations", donationRouter);
 
-app.use("/", (req, res) => {
+app.get("/", (req, res) => {
   res.send("Connected to Backend Server");
 });
 
