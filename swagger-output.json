@@ -1033,9 +1033,6 @@
                 "properties": {
                   "amount": {
                     "example": "any"
-                  },
-                  "redirect_url": {
-                    "example": "any"
                   }
                 }
               }

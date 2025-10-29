@@ -25,6 +25,13 @@ exports.registerValidation = joi.object({
     phoneNumber: joi.string().messages({
         'string.base': 'Phone number must be a string.',
     }),
+    sponsorType: joi.string().messages({
+        'string.base': 'Sponsor type must be a string.',
+        'any.only': 'Sponsor type must be one of [company, individual].',
+    }).optional(),
+    organizationName: joi.string().messages({
+        'string.base': 'Sponsor type must be a string.',
+    }).optional(),
 });
 
 exports.loginValidation = joi.object({

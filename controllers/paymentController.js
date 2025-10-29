@@ -11,7 +11,9 @@ exports.makeDonation = async (req, res) => {
      */
   try {
     const { donorId, receiverId, campaignId } = req.params;
-    const { amount, redirect_url } = req.body || {};
+    let { amount } = req.body || {};
+    amount = parseInt(amount);
+
     if (!amount || typeof amount !== "number" || amount <= 0) {
       return res.status(400).json({
         message: "Please provide a valid donation amount",
@@ -42,7 +44,6 @@ exports.makeDonation = async (req, res) => {
       amount: parseInt(amount),
       currency: "NGN",
       reference,
-      redirect_url: redirect_url || undefined,
       customer: {
         email: donor.email,
         name: donor.fullName,

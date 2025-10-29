@@ -27,7 +27,7 @@ exports.register = async (req, res) => {
         if (error) {
             return res.status(400).json({message: error.details[0].message});
         }
-        const {firstName, lastName, email, role, password, phoneNumber} = req.body || {};
+        const {firstName, lastName, email, role, password, phoneNumber, sponsorType, organizationName} = req.body || {};
 
         const existingEmail = await UserModel.findOne({email});
 
@@ -47,6 +47,7 @@ exports.register = async (req, res) => {
         }
 
         const hashedPassword = hashData(password);
+        console.log(hashedPassword);
         const user = new UserModel({
             firstName,
             lastName,
@@ -54,7 +55,9 @@ exports.register = async (req, res) => {
             phoneNumber,
             role,
             profilePicture,
-            password: hashedPassword
+            password: hashedPassword,
+            sponsorType,
+            organizationName
         });
 
         let otp = generateOtp();
@@ -75,9 +78,9 @@ exports.register = async (req, res) => {
             userId: user._id,
             otp
         });
-        user.password = undefined;
 
         await user.save();
+        user.password = undefined;
         res.status(201).json({
             message: "OTP sent successfully, check your email to verify your account",
             data: user
