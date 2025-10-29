@@ -17,7 +17,7 @@ const paymentRouter = require("express").Router();
 
 /**
  * @swagger
- * /payments/make-donation/{donorId}/{receiverId}/{campaignId}:
+ * /payment/make-donation/{donorId}/{receiverId}/{campaignId}:
  *   post:
  *     summary: Initiate a donation to a campaign
  *     tags: [Payments]
@@ -67,7 +67,7 @@ paymentRouter.post(
 
 /**
  * @swagger
- * /payments/verify-payment-webhook:
+ * /payment/verify-payment-webhook:
  *   post:
  *     summary: Webhook to verify payment status from payment provider (KoraPay)
  *     tags: [Payments]
@@ -99,7 +99,7 @@ paymentRouter.post("/verify-payment-webhook", verifyPaymentWebHook);
 
 /**
  * @swagger
- * /payments/request-withdrawal/{studentId}/{campaignId}:
+ * /payment/request-withdrawal/{studentId}/{campaignId}:
  *   post:
  *     summary: Request a withdrawal for a campaign that has met its target
  *     tags: [Payments]
