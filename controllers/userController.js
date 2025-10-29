@@ -18,7 +18,6 @@ exports.updateUser = async (req, res) => {
                     properties: {
                         firstName: { type: "string" },
                         lastName: { type: "string" },
-                        email: { type: "string" },
                         role: { type: "string" },
                         profilePicture: {
                             type: "string",
@@ -32,7 +31,7 @@ exports.updateUser = async (req, res) => {
   */
   try {
     const { userId } = req.params;
-    const { firstName, lastName, email, role } = req.body || {};
+    const { firstName, lastName, role } = req.body || {};
     const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({
@@ -53,7 +52,6 @@ exports.updateUser = async (req, res) => {
 
     user.firstName = firstName ?? user.firstName;
     user.lastName = lastName ?? user.lastName;
-    user.email = email ?? user.email;
     user.role = role ?? user.role;
     user.profilePicture = profilePicture ?? user.profilePicture;
 
