@@ -4,9 +4,7 @@ const axios = require("axios");
 const reference = require("crypto").randomBytes(16).toString("hex");
 
 exports.getReceivedDonations = async (req, res) => {
-  /* #swagger.tags = ['Donation']
-   #swagger.description = 'Get all donations to a student.'
-   */
+
   try {
     const status = req.query.status || "successful";
     const {studentId} = req.params;
@@ -31,9 +29,7 @@ exports.getReceivedDonations = async (req, res) => {
 };
 
 exports.getOneReceivedDonation = async (req, res) => {
-  /* #swagger.tags = ['Donation']
-   #swagger.description = 'Get a donation.'
-   */
+
   try {
     const {reference} = req.params;
     const donation = await paymentModel
@@ -57,9 +53,7 @@ exports.getOneReceivedDonation = async (req, res) => {
 };
 
 exports.getCampaignDonations = async (req, res) => {
-  /* #swagger.tags = ['Donation']
-   #swagger.description = 'Get all donations relating to a campaign.'
-   */
+
   try {
     const {campaignId} = req.params;
     const donations = await paymentModel
@@ -81,9 +75,7 @@ exports.getCampaignDonations = async (req, res) => {
 };
 
 exports.getSentDonations = async (req, res) => {
-  /* #swagger.tags = ['Donation']
-   #swagger.description = 'Get all donations by a student.'
-   */
+
   try {
     const {donorId} = req.params;
     const donations = await paymentModel
@@ -104,9 +96,7 @@ exports.getSentDonations = async (req, res) => {
 };
 
 exports.getCampaignDonationBalance = async (req, res) => {
-  /* #swagger.tags = ['Donation']
-   #swagger.description = 'Get total donations for a campaign.'
-   */
+
   try {
     const {campaignId} = req.params;
     const donations = await paymentModel
@@ -132,9 +122,7 @@ exports.getCampaignDonationBalance = async (req, res) => {
 };
 
 exports.getStudentWalletBalance = async (req, res) => {
-  /* #swagger.tags = ['Donation']
-   #swagger.description = 'Get student wallet ballance.'
-   */
+
   try {
     const {studentId} = req.params;
     const donations = await paymentModel
@@ -160,9 +148,7 @@ exports.getStudentWalletBalance = async (req, res) => {
 };
 
 exports.getAllDonations = async (req, res) => {
-  /* #swagger.tags = ['Donation']
-   #swagger.description = 'Get all donations.'
-   */
+
   try {
     const donations = await paymentModel.find().populate("senderId");
     const total = donations.length;

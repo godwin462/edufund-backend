@@ -1,62 +1,53 @@
-const academicModel = require('../models/academicModel')
+const academicModel = require('../models/academicModel');
 
 // Create a new academic record
 exports.createAcademicDetails = async (req, res) => {
-  /*
-  #swagger.tags = ['AcademicDetails']
-  #swagger.description = 'Create a new Academic Detail.'
-  */
+
     try {
-        const { studentId } = req.params;
-        const { schoolName, year, matricNumber, jambRegistrationNumber } = req.body || {};
+        const {studentId} = req.params;
+        const {schoolName, year, matricNumber, jambRegistrationNumber} = req.body || {};
         const newAcademicDetails = new academicModel({
             studentId,
             schoolName,
             year,
             matricNumber,
             jambRegistrationNumber
-        })
+        });
         const savedAcademicDetails = await newAcademicDetails.save();
         res.status(201).json({
             message: 'Academic details created successfully',
             academicDetails: savedAcademicDetails
-        })
-    } catch (error) {
+        });
+    } catch(error) {
         res.status(500).json({
             message: 'Error creating academic details',
             error: error.message
-        })
+        });
     }
-}
+};
 
 exports.getAcademicDetails = async (req, res) => {
-  /*
-  #swagger.tags = ['AcademicDetails']
-  #swagger.description = 'Get Academic Detail.'
-  */
+
     try {
-        const { studentId } = req.params
+        const {studentId} = req.params;
         const academicDetails = await academicModel.find({studentId});
         res.status(200).json({
             message: 'Academic details fetched successsfully',
             data: academicDetails
         });
-    } catch (error) {
+    } catch(error) {
         res.status(500).json({
             message: 'Error fetching academic details',
             error: error.message
         });
     }
-}
+};
 
 exports.updateAcademicDetails = async (req, res) => {
-  /*
-  #swagger.tags = ['AcademicDetails']
-  #swagger.description = 'Update the Academic Detail.'
-  */
+
     try {
-        const { academicDetailsId } = req.params;
-        const { schoolName, year, matricNumber, jambRegistrationNumber } = req.body || {};
+        const {academicDetailsId} = req.params;
+        const {schoolName, year, matricNumber, jambRegistrationNumber} = req.body || {};
 
         const updatedAcademicDetails = await academicModel.findByIdAndUpdate(
             academicDetailsId,
@@ -66,9 +57,9 @@ exports.updateAcademicDetails = async (req, res) => {
                 matricNumber,
                 jambRegistrationNumber
             },
-            { new: true }
+            {new: true}
         );
-        if (!updatedAcademicDetails) {
+        if(!updatedAcademicDetails) {
             return res.status(404).json({
                 message: 'Academic details not found'
             });
@@ -77,37 +68,34 @@ exports.updateAcademicDetails = async (req, res) => {
             message: 'Academic details updated successfully',
             academicDetails: updatedAcademicDetails
         });
-    } catch (error) {
+    } catch(error) {
         res.status(500).json({
             message: 'Error updating academic details',
             error: error.message
-        })
+        });
     }
-}
+};
 
 
-// exports.deleteAcademicDetails = async (req, res)=> {
-  /*
-  #swagger.tags = ['AcademicDetails']
-  #swagger.description = 'Delete the Academic Detail.'
-  */
-//     try {
-//         const { academicDetails } = req.params;
-//         const deletedAcademicDetails = await academicModel.findByIdAndDelete(academicDetails);
+exports.deleteAcademicDetails = async (req, res) => {
 
-//         if (!deletedAcademicDetails) {
-//             return res.status(404).json({
-//                 message: 'Academic details not found'
-//             });
-//         }
-//         res.status(200).json({
-//             message: 'Academic details deleted successfully',
-//             academicDetails: deletedAcademicDetails
-//         })
-//     } catch (error) {
-//         res.status(500).json({
-//             message: 'Error deleting academic details',
-//             error: error.message
-//         })
-//     }
-// }
+    try {
+        const {academicDetails} = req.params;
+        const deletedAcademicDetails = await academicModel.findByIdAndDelete(academicDetails);
+
+        if(!deletedAcademicDetails) {
+            return res.status(404).json({
+                message: 'Academic details not found'
+            });
+        }
+        res.status(200).json({
+            message: 'Academic details deleted successfully',
+            academicDetails: deletedAcademicDetails
+        });
+    } catch(error) {
+        res.status(500).json({
+            message: 'Error deleting academic details',
+            error: error.message
+        });
+    }
+};

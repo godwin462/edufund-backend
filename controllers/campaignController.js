@@ -5,10 +5,7 @@ const {createCampaignValidation, updateCampaignValidation} = require("../validat
 
 // Create a new campaign
 exports.createCampaign = async (req, res) => {
-    /*
-    #swagger.tags = ['Campaign']
-    #swagger.description = 'Create a new Campaign.'
-    */
+
     try {
         const {studentId} = req.params;
         const {error} = createCampaignValidation.validate(req.body);
@@ -66,9 +63,7 @@ exports.createCampaign = async (req, res) => {
 };
 
 exports.updateCampaign = async (req, res) => {
-    /*
-    #swagger.ignore = true.'
-    */
+
     try {
         const {campaignId} = req.params;
         const {error} = updateCampaignValidation.validate(req.body);
@@ -119,9 +114,7 @@ exports.updateCampaign = async (req, res) => {
 };
 
 exports.deleteCampaign = async (req, res) => {
-    /*
-    #swagger.ignore = true'
-    */
+
     try {
         const {campaignId} = req.params;
         const campaign = await campaignModel.findByIdAndDelete(campaignId, {new: true});
@@ -147,10 +140,7 @@ exports.deleteCampaign = async (req, res) => {
 };
 
 exports.getStudentCampaigns = async (req, res) => {
-    /*
-    #swagger.tags = ['Campaign']
-    #swagger.description = 'Get all Campaigns.'
-    */
+
     try {
         const {studentId} = req.params;
         const campaigns = await campaignModel.find({studentId});
@@ -172,10 +162,7 @@ exports.getStudentCampaigns = async (req, res) => {
 };
 
 exports.getAllCampaigns = async (req, res) => {
-    /*
-    #swagger.tags = ['Campaign']
-    #swagger.description = 'Get a student Campaigns.'
-    */
+
     try {
         const campaigns = await campaignModel.find().populate("studentId");
         const total = campaigns.length;
@@ -193,10 +180,7 @@ exports.getAllCampaigns = async (req, res) => {
 };
 
 exports.getCampaign = async (req, res) => {
-    /*
-    #swagger.tags = ['Campaign']
-    #swagger.description = 'Get a Campaign.'
-    */
+
     try {
         const {campaignId} = req.params;
         const campaign = await campaignModel.findById(campaignId).populate(

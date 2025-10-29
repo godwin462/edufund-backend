@@ -6,9 +6,7 @@ const { koraMakePayment } = require("../utils/kora");
 const reference = require("crypto").randomUUID();
 
 exports.makeDonation = async (req, res) => {
-  /* #swagger.tags = ['Payment']
-     #swagger.description = 'Make a donation.'
-     */
+
   try {
     const { donorId, receiverId, campaignId } = req.params;
     let { amount } = req.body || {};
@@ -86,9 +84,7 @@ exports.makeDonation = async (req, res) => {
 };
 
 exports.verifyPaymentWebHook = async (req, res) => {
-  /* #swagger.tags = ['Payment']
-     #swagger.description = 'Verify payment webhook note: will be called by KoraPay won't work on swagger ui.'
-     */
+
   try {
     const { event, data } = req.body || {};
     if (event === "charge.success") {
@@ -125,9 +121,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
 };
 
 exports.withdrawDonation = async (req, res) => {
-  /* #swagger.tags = ['Payment']
-     #swagger.description = 'Withdraw donation.'
-     */
+
   try {
     const { campaignId, studentId } = req.params;
     const { purpose, note } = req.body || {};

@@ -17,7 +17,7 @@ const userRouter = require("express").Router();
 
 /**
  * @swagger
- * /users:
+ * /user:
  *   get:
  *     summary: Get all users
  *     tags: [Users]
@@ -31,7 +31,7 @@ userRouter.get("/", getAllUsers);
 
 /**
  * @swagger
- * /users/{userId}:
+ * /user/{userId}:
  *   get:
  *     summary: Get a single user by ID
  *     tags: [Users]
@@ -53,7 +53,7 @@ userRouter.get("/:userId", getUser);
 
 /**
  * @swagger
- * /users/{userId}:
+ * /user/{userId}:
  *   delete:
  *     summary: Delete a user
  *     tags: [Users]
@@ -77,7 +77,7 @@ userRouter.delete("/:userId",
 
 /**
  * @swagger
- * /users/{userId}:
+ * /user/{userId}:
  *   patch:
  *     summary: Update a user's information
  *     tags: [Users]

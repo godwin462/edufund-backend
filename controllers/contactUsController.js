@@ -1,9 +1,7 @@
 const { sendEmail } = require("../email/brevo");
 
 exports.contactUs = async (req, res) => {
-  /* #swagger.tags = ['Contact Us']
-     #swagger.description = 'Contact Us Form Submission Handler'
-     */
+
   try {
     const { email, message } = req.body || {};
     await sendEmail({

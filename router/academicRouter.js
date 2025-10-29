@@ -15,7 +15,7 @@ const academicRouter = require('express').Router();
 
 /**
  * @swagger
- * /academics/{studentId}:
+ * /academic/{studentId}:
  *   post:
  *     summary: Create academic details for a student
  *     tags: [Academics]
@@ -35,11 +35,11 @@ const academicRouter = require('express').Router();
  *               schoolName:
  *                 type: string
  *               year:
- *                 type: string
+ *                 type: number
  *               matricNumber:
- *                 type: string
+ *                 type: number
  *               jambRegistrationNumber:
- *                 type: string
+ *                 type: number
  *     responses:
  *       "201":
  *         description: Academic details created successfully
@@ -50,7 +50,7 @@ academicRouter.post('/:studentId', isAuthenticated, studentAccess, createAcademi
 
 /**
  * @swagger
- * /academics/{studentId}:
+ * /academic/{studentId}:
  *   get:
  *     summary: Get academic details of a student
  *     tags: [Academics]
@@ -70,7 +70,7 @@ academicRouter.get('/:studentId', isAuthenticated, studentAccess, getAcademicDet
 
 /**
  * @swagger
- * /academics/{academicDetailsId}:
+ * /academic/{academicDetailsId}:
  *   put:
  *     summary: Update academic details
  *     tags: [Academics]
@@ -90,11 +90,11 @@ academicRouter.get('/:studentId', isAuthenticated, studentAccess, getAcademicDet
  *               schoolName:
  *                 type: string
  *               year:
- *                 type: string
+ *                 type: number
  *               matricNumber:
- *                 type: string
+ *                 type: number
  *               jambRegistrationNumber:
- *                 type: string
+ *                 type: number
  *     responses:
  *       "200":
  *         description: Academic details updated successfully

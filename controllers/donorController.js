@@ -2,10 +2,7 @@ const paymentModel = require("../models/paymentModel");
 const academicModel = require("../models/academicModel");
 
 exports.totalStudentsHelped = async (req, res) => {
-  /*
-  #swagger.tags = ['Analytics']
-  #swagger.description = 'Total number of students helped.'
-  */
+
   try {
     const { donorId } = req.params;
     const data = await paymentModel
@@ -23,10 +20,7 @@ exports.totalStudentsHelped = async (req, res) => {
 };
 
 exports.myDonations = async (req, res) => {
-  /*
-  #swagger.tags = ['myDonations']
-  #swagger.description = 'All students helped.'
-  */
+
   try {
     const donations = await paymentModel.find();
     if (!donations || donations.length === 0) {
@@ -46,10 +40,7 @@ exports.myDonations = async (req, res) => {
 };
 
 exports.getDonorsForStudent = async (req, res) => {
-  /*
-  #swagger.tags = ['donors']
-  #swagger.description = 'All generous supporters.'
-  */
+
   try {
     const { studentId } = req.params;
     const donors = await academicModel.find({ studentId }).distinct("donorId");
