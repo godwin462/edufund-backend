@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { image } = require('../config/cloudinary');
+const {image} = require('../config/cloudinary');
 
 const campaignSchema = new mongoose.Schema({
     studentId: {
@@ -12,7 +12,7 @@ const campaignSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    target: { 
+    target: {
         type: Number,
         required: true,
     },
@@ -21,22 +21,23 @@ const campaignSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    isActive:{
+    isActive: {
         type: Boolean,
         default: true
     },
     campaignImage: {
-        imageUrl:{
-        type: String,
+        imageUrl: {
+            type: String,
         },
+        publicId: {
+            type: String,
+        },
+    }
 },
-    publicId: {
-        type: String,
-}}, 
-{ 
-    timestamps: true 
-});
+    {
+        timestamps: true
+    });
 
-const campaignModel = mongoose.model('Campaign', campaignSchema);  
+const campaignModel = mongoose.model('Campaign', campaignSchema);
 
-module.exports = campaignModel;  
+module.exports = campaignModel;
