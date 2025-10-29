@@ -164,7 +164,7 @@ exports.getAllDonations = async (req, res) => {
    #swagger.description = 'Get all donations.'
    */
   try {
-    const donations = await paymentModel.find().populate("senderId receiverId campaignId");
+    const donations = await paymentModel.find().populate("senderId");
     const total = donations.length;
     res.status(200).json({
       message: total < 1 ? "No donations yet, donate and help a student today" : "Donations found successfully",
@@ -172,6 +172,7 @@ exports.getAllDonations = async (req, res) => {
       data: donations,
     });
   } catch(error) {
+    console.log(error);
     res.status(500).json({
       message: "Server error getting donations",
       error: error.message,

@@ -16,6 +16,14 @@ const doc = {
       description: "Production server",
     },
   ],
+  definitions: {
+    StudentRegistration: { // Define a reusable schema name
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'email@example.com',
+      password: 'password123',
+    }
+  },
   components: {
     securitySchemes: {
       bearerAuth: {

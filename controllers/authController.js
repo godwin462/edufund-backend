@@ -17,10 +17,6 @@ const {
 } = require("../validations/authControllerValidations");
 
 exports.register = async (req, res) => {
-    /*
-      #swagger.tags = ['Authentication']
-      #swagger.description = 'Register user account.'
-      */
     let file = null;
     try {
         const {error} = registerValidation.validate(req.body);
@@ -95,10 +91,6 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-    /*
-      #swagger.tags = ['Authentication']
-      #swagger.description = 'Login user account.'
-      */
     try {
         const {error} = loginValidation.validate(req.body);
         if (error) {
@@ -143,10 +135,6 @@ exports.login = async (req, res) => {
 };
 
 exports.verifyOtp = async (req, res) => {
-    /*
-      #swagger.tags = ['Authentication']
-      #swagger.description = 'Verify OTP for user account.'
-    */
     try {
         const {error} = verifyOtpValidation.validate({...req.body, ...req.params});
         if (error) {
@@ -206,10 +194,6 @@ exports.verifyOtp = async (req, res) => {
 };
 
 exports.resendOtp = async (req, res) => {
-    /*
-      #swagger.tags = ['Authentication']
-      #swagger.description = 'Resend OTP for user account.'
-      */
     try {
         const {error} = resendOtpValidation.validate(req.body);
         if (error) {
@@ -257,10 +241,6 @@ exports.resendOtp = async (req, res) => {
 };
 
 exports.changePassword = async (req, res) => {
-    /*
-      #swagger.tags = ['Authentication']
-      #swagger.description = 'Change authenticated user account password.'
-      */
     try {
         const {error} = changePasswordValidation.validate({...req.body, ...req.params});
         if (error) {
@@ -316,10 +296,6 @@ exports.changePassword = async (req, res) => {
 };
 
 exports.getCurrentAuthUser = async (req, res) => {
-    /*
-      #swagger.tags = ['Authentication']
-      #swagger.description = 'Get authenticated user'
-      */
     try {
         const user = req.user;
         res.status(200).json({message: "success", data: user});
