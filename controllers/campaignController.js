@@ -67,8 +67,7 @@ exports.createCampaign = async (req, res) => {
 
 exports.updateCampaign = async (req, res) => {
     /*
-    #swagger.tags = ['Campaign']
-    #swagger.description = 'Create a new Campaign.'
+    #swagger.ignore = true.'
     */
     try {
         const {campaignId} = req.params;
@@ -121,8 +120,7 @@ exports.updateCampaign = async (req, res) => {
 
 exports.deleteCampaign = async (req, res) => {
     /*
-    #swagger.tags = ['Campaign']
-    #swagger.description = 'Delete a Campaign.'
+    #swagger.ignore = true'
     */
     try {
         const {campaignId} = req.params;
