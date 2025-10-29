@@ -42,11 +42,14 @@ app.use("/api/v1/academic", academicRouter);
 app.use("/api/v1/donation", donationRouter);
 
 app.get("/", (req, res) => {
+  /* #swagger.tags = ['🌿']
+   #swagger.description = 'Test API.'
+   */
   res.send("Connected to Backend Server");
 });
 
 app.use((error, req, res, next) => {
-  if (error) {
+  if(error) {
     return res.status(500).json({
       message: error.message,
     });

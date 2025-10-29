@@ -18,7 +18,10 @@
   "paths": {
     "/": {
       "get": {
-        "description": "",
+        "tags": [
+          "🌿"
+        ],
+        "description": "Test API.",
         "responses": {
           "200": {
             "description": "OK"
