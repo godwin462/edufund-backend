@@ -51,11 +51,14 @@ exports.verifyOtpValidation = joi.object({
         'string.base': 'OTP must be a string.',
         'any.required': 'OTP is required.'
     }),
-    email: joi.string().email().required().messages({
+    email: joi.string().email().messages({
         'string.base': 'Email must be a string.',
         'string.email': 'Please provide a valid email address.',
-        'any.required': 'Email is required.'
-    }),
+    }).optional(),
+    password: joi.string().min(6).messages({
+        'string.base': 'Password must be a string.',
+        'string.min': 'Password must be at least 6 characters long.',
+    }).optional(),
 });
 
 exports.resendOtpValidation = joi.object({

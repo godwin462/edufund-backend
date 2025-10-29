@@ -1,49 +1,50 @@
 const OtpModel = require("../models/OtpModel");
 const jwt = require("jsonwebtoken");
+const {verifyOtpValidation} = require("../validations/authControllerValidations");
+const UserModel = require("../models/userModel");
+const {verifyJwt, decodeJwt} = require("../utils/jwtUtil");
 
 const OTP_TRIALS = 3;
 const OTP_BLOCK_MINUTES = 10;
 
-exports.verifyOtp = async (req, res, next) => {
-  let auth;
+exports.verifyOtpMiddleware = async (req, res, next) => {
   try {
-    const { userId } = req.params;
-    const { otp } = req.body || {};
-    // console.log("I am working");
-    auth = await OtpModel.findOne({ userId });
+    const {error} = verifyOtpValidation.validate({...req.body, ...req.params});
+    if(error) {
+      return res.status(400).json({message: error.details[0].message});
+    }
+    const {otp} = req.body || {};
+    const {email} = req.params;
 
-    if (!auth) {
+    const user = await UserModel.findOne({email});
+
+    if(!user) {
       return res
-        .status(400)
-        .json({ message: "invalid OTP, Please request a new OTP" });
+        .status(404)
+        .json({message: "User not found, please create an account"});
     }
 
-    const otpIsValid = jwt.verify(auth.otp, process.env.JWT_SECRET);
-    if (!otpIsValid.otp) {
-      return res
-        .status(400)
-        .json({ message: "OTP expired, Please request a new OTP" });
+    const dbOtp = await OtpModel.findOne({userId: user._id});
+    // console.log(dbOtp);
+
+    if(!dbOtp) {
+      return res.status(400).json({message: "Invalid OTP, please request for a new one"});
     }
 
-    if (auth.trials >= OTP_TRIALS) {
-      return res
-        .status(400)
-        .json({ message: "Too many attempts, request new otp" });
+    const isValidOtp = await verifyJwt(dbOtp.otp);
+    if(!isValidOtp.otp) {
+      return res.status(400).json({message: "Invalid OTP, please ensure to get the correct token from your email"});
     }
+    const decodeOtp = await decodeJwt(dbOtp.otp);
+    // console.log(decodeOtp);
 
-    if (otp !== otpIsValid.otp) {
-      auth.trials += 1;
-      await auth.save();
-      return res.status(400).json({
-        message: "Invalid OTP, check your email and try again",
-      });
+    if(decodeOtp.otp !== otp) {
+      return res.status(400).json({message: "Wrong OTP, please check your email and try again"});
     }
-
-    await OtpModel.deleteMany({ userId });
     return next();
-  } catch (error) {
-    if (error.name === "TokenExpiredError") {
-      console.log("Token has expired", error.expiredAt);
+  } catch(error) {
+    if(error.name === "TokenExpiredError") {
+      // console.log("Token has expired", error.expiredAt);
       // if (auth.trials >= OTP_TRIALS) {
       //   auth.trials = 0;
       //   otp = jwt.sign({ otp: otpIsValid.otp }, process.env.JWT_SECRET, {
@@ -55,10 +56,10 @@ exports.verifyOtp = async (req, res, next) => {
       // }
       return res
         .status(400)
-        .json({ message: "OTP expired, please request a new OTP" });
+        .json({message: "OTP expired, please request a new OTP"});
     }
     return res
       .status(500)
-      .json({ message: `Internal server error`, error: error.message });
+      .json({message: `Internal server error`, error: error.message});
   }
 };

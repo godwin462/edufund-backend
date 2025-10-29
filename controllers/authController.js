@@ -20,22 +20,22 @@ exports.register = async (req, res) => {
     let file = null;
     try {
         const {error} = registerValidation.validate(req.body);
-        if (error) {
+        if(error) {
             return res.status(400).json({message: error.details[0].message});
         }
         const {firstName, lastName, email, role, password, phoneNumber, sponsorType, organizationName} = req.body || {};
 
         const existingEmail = await UserModel.findOne({email});
 
-        if (existingEmail) {
+        if(existingEmail) {
             return res
                 .status(400)
                 .json({message: "User with the credentials already exists"});
         }
         let profilePicture;
 
-        if (req.file && req.file.buffer) {
-            file = await cloudinaryUpload( req.file.buffer);
+        if(req.file && req.file.buffer) {
+            file = await cloudinaryUpload(req.file.buffer);
             profilePicture = {
                 imageUrl: file.secure_url,
                 publicId: file.public_id
@@ -81,7 +81,7 @@ exports.register = async (req, res) => {
             message: "OTP sent successfully, check your email to verify your account",
             data: user
         });
-    } catch (error) {
+    } catch(error) {
         console.log(error);
         // if (file && file.path) fs.unlinkSync(file.path);
         res
@@ -93,27 +93,27 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const {error} = loginValidation.validate(req.body);
-        if (error) {
+        if(error) {
             return res.status(400).json({message: error.details[0].message});
         }
         const {email, password} = req.body || {};
 
         const user = await UserModel.findOne({email}).select("+password");
 
-        if (!user) {
+        if(!user) {
             return res.status(404).json({
                 message:
                     "User not found, please check your credentials or create an account"
             });
         }
 
-        if (!user.isVerified) {
+        if(!user.isVerified) {
             return res.status(500).json({
                 message: "User not verified, please verify account to continue"
             });
         }
 
-        if (!compareData(password, user.password)) {
+        if(!compareData(password, user.password)) {
             return res
                 .status(400)
                 .json({message: "Please provide a valid account password"});
@@ -126,7 +126,7 @@ exports.login = async (req, res) => {
         res
             .status(200)
             .json({message: "Success, user logged in", token, data: user});
-    } catch (error) {
+    } catch(error) {
         console.log(error);
         res
             .status(500)
@@ -136,43 +136,14 @@ exports.login = async (req, res) => {
 
 exports.verifyOtp = async (req, res) => {
     try {
-        const {error} = verifyOtpValidation.validate({...req.body, ...req.params});
-        if (error) {
-            return res.status(400).json({message: error.details[0].message});
-        }
-        const {otp} = req.body || {};
-        const {email} = req.params;
+        const {email} = req.params || {};
 
         const user = await UserModel.findOne({email});
-
-        if (!user) {
-            return res
-                .status(404)
-                .json({message: "User not found, please create an account"});
-        }
-        if (user.isVerified) {
+        if(user.isVerified) {
             return res
                 .status(400)
                 .json({message: "user already verified, please login to continue"});
         }
-        const dbOtp = await OtpModel.findOne({userId: user._id});
-        // console.log(dbOtp);
-
-        if (!dbOtp) {
-            return res.status(400).json({message: "Invalid OTP, please request for a new one"});
-        }
-
-        const isValidOtp = await verifyJwt(dbOtp.otp);
-        if (!isValidOtp.otp) {
-            return res.status(400).json({message: "Invalid OTP, please ensure to get the correct token from your email"});
-        }
-        const decodeOtp = await decodeJwt(dbOtp.otp);
-        // console.log(decodeOtp);
-
-        if (decodeOtp.otp !== otp) {
-            return res.status(400).json({message: "Wrong OTP, please check your email and try again"});
-        }
-
         user.isVerified = true;
         const token = await generateJwt({id: user._id}, "1d");
         req.user = {id: user._id};
@@ -181,8 +152,8 @@ exports.verifyOtp = async (req, res) => {
         res
             .status(200)
             .json({message: "OTP verification successful ✅", token, data: user});
-    } catch (error) {
-        if (error.name === "TokenExpiredError") {
+    } catch(error) {
+        if(error.name === "TokenExpiredError") {
             return res.status(400).json({message: "OTP expired, request new otp"});
         }
         console.log(error);
@@ -196,14 +167,14 @@ exports.verifyOtp = async (req, res) => {
 exports.resendOtp = async (req, res) => {
     try {
         const {error} = resendOtpValidation.validate(req.body);
-        if (error) {
+        if(error) {
             return res.status(400).json({message: error.details[0].message});
         }
         const {email} = req.body || {};
 
         const user = await UserModel.findOne({email});
 
-        if (!user) {
+        if(!user) {
             return res
                 .status(404)
                 .json({message: "User not found, please create an account"});
@@ -232,7 +203,7 @@ exports.resendOtp = async (req, res) => {
         res
             .status(200)
             .json({message: "New OTP sent, check your email", data: user});
-    } catch (error) {
+    } catch(error) {
         console.log(error);
         res
             .status(500)
@@ -243,7 +214,7 @@ exports.resendOtp = async (req, res) => {
 exports.changePassword = async (req, res) => {
     try {
         const {error} = changePasswordValidation.validate({...req.body, ...req.params});
-        if (error) {
+        if(error) {
             return res.status(400).json({message: error.details[0].message});
         }
         const {userId} = req.params;
@@ -251,30 +222,30 @@ exports.changePassword = async (req, res) => {
 
         const user = await UserModel.findById(userId).select("+password");
 
-        if (!user) {
+        if(!user) {
             return res
                 .status(404)
                 .json({message: "User not found, please create an account"});
         }
 
-        if (!user.isVerified) {
+        if(!user.isVerified) {
             return res
                 .status(403)
                 .json({message: "User not verified, please verify your account"});
         }
-        if (!compareData(password, user.password)) {
+        if(!compareData(password, user.password)) {
             return res.status(400).json({
                 message:
                     "Initial password account incorrect, please provide correct account password"
             });
         }
 
-        if (compareData(newPassword, user.password)) {
+        if(compareData(newPassword, user.password)) {
             return res
                 .status(400)
                 .json({message: "New password cannot be same as old password"});
         }
-        if (password === newPassword) {
+        if(password === newPassword) {
             return res.status(400).json({
                 message: "New password cannot be same as initial account password"
             });
@@ -287,7 +258,7 @@ exports.changePassword = async (req, res) => {
         res
             .status(200)
             .json({message: "Password changed successfully", data: user});
-    } catch (error) {
+    } catch(error) {
         console.log(error);
         return res
             .status(500)
@@ -299,7 +270,127 @@ exports.getCurrentAuthUser = async (req, res) => {
     try {
         const user = req.user;
         res.status(200).json({message: "success", data: user});
-    } catch (error) {
+    } catch(error) {
+        return res
+            .status(500)
+            .json({message: "internal server error", error: error.message});
+    }
+};
+
+exports.forgotPassword = async (req, res) => {
+    try {
+        // const {error} = resetPasswordValidation.validate(req.body);
+        // if(error) {
+        //     return res.status(400).json({message: error.details[0].message});
+        // }
+        const {email} = req.params || {};
+
+        const user = await UserModel.findOne({email});
+
+        if(!user) {
+            return res
+                .status(404)
+                .json({message: "User not found, please create an account"});
+        }
+
+        let otp = generateOtp();
+
+        const text = `EduFunds password reset request`;
+        const html = loginOtpTemplate(otp);
+        await sendEmail({
+            email: user.email,
+            subject: "EduFunds Account Login",
+            text,
+            html
+        });
+
+        otp = await generateJwt({otp}, constants.otp_expiry);
+
+        await OtpModel.deleteMany({userId: user._id}); // Delete previous OTPs
+        await OtpModel.create({
+            userId: user._id,
+            otp
+        });
+
+        // console.log(otp);
+        res
+            .status(200)
+            .json({message: "Success, check your email for reset password token", data: user});
+    } catch(error) {
+        console.log(error);
+        res
+            .status(500)
+            .json({message: "Internal Server Error", error: error.message});
+    }
+};
+
+exports.verifyResetPasswordOtp = async (req, res) => {
+    try {
+        // const {error} = resetPasswordValidation.validate({...req.body, ...req.params});
+        // if(error) {
+        //     return res.status(400).json({message: error.details[0].message});
+        // }
+        const {email} = req.params;
+
+        const user = await UserModel.findOne({email});
+
+        if(!user) {
+            return res
+                .status(404)
+                .json({message: "User not found, please create an account"});
+        }
+
+        await OtpModel.deleteMany({userId: user._id});
+
+        res
+            .status(200)
+            .json({message: "Success, email verification successful", data: user});
+    } catch(error) {
+        console.log(error);
+        return res
+            .status(500)
+            .json({message: "internal server error", error: error.message});
+    }
+};
+exports.resetPassword = async (req, res) => {
+    try {
+        // const {error} = resetPasswordValidation.validate({...req.body, ...req.params});
+        // if(error) {
+        //     return res.status(400).json({message: error.details[0].message});
+        // }
+        const {email} = req.params;
+        const {password} = req.body || {};
+
+        const user = await UserModel.findOne({email}).select("+password");
+
+        if(!user) {
+            return res
+                .status(404)
+                .json({message: "User not found, please create an account"});
+        }
+        const otp = await OtpModel.findOne({userId: user._id});
+        if(otp) {
+            return res
+                .status(400)
+                .json({message: "Please verify your email to reset password"});
+        }
+
+        if(compareData(password, user.password)) {
+            return res
+                .status(400)
+                .json({message: "New password cannot be same as old password"});
+        }
+
+        user.password = hashData(password);
+        await OtpModel.deleteMany({userId: user._id});
+        await user.save();
+        user.password = undefined;
+
+        res
+            .status(200)
+            .json({message: "Password changed successfully", data: user});
+    } catch(error) {
+        console.log(error);
         return res
             .status(500)
             .json({message: "internal server error", error: error.message});

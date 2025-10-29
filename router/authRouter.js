@@ -12,6 +12,9 @@ const {
   verifyOtp,
   changePassword,
   getCurrentAuthUser,
+  resetPassword,
+  forgotPassword,
+  verifyResetPasswordOtp,
 } = require("../controllers/authController");
 const passport = require("../middleware/passportMiddleware");
 const {
@@ -20,6 +23,7 @@ const {
 const upload = require("../middleware/multerMiddleware");
 const { assignRole } = require("../middleware/roleMiddleware");
 const { isAuthenticated } = require("../middleware/authenticationMiddleware");
+const {verifyOtpMiddleware} = require("../middleware/verifyOtpMiddleware");
 
 /**
  * @swagger
@@ -240,7 +244,94 @@ authRouter.post("/resend-otp/", resendOtp);
  *       "500":
  *         description: Internal server error
  */
-authRouter.post("/verify/:email/", verifyOtp);
+authRouter.post("/verify/:email/", verifyOtpMiddleware, verifyOtp);
+
+/**
+ * @swagger
+ * /auth/forgot-password/{email}:
+ *   post:
+ *     summary: Forgot password
+ *     tags: [Authentication]
+ *     parameters:
+ *       - in: path
+ *         name: email
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       "200":
+ *         description: Success, check your email for reset password token
+ *       "404":
+ *         description: User not found
+ *       "500":
+ *         description: Internal server error
+ */
+authRouter.post("/forgot-password/:email", forgotPassword);
+
+/**
+ * @swagger
+ * /auth/verify-reset-password/{email}:
+ *   post:
+ *     summary: Verify reset password OTP
+ *     tags: [Authentication]
+ *     parameters:
+ *       - in: path
+ *         name: email
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               otp:
+ *                 type: string
+ *     responses:
+ *       "200":
+ *         description: Success, email verification successful
+ *       "404":
+ *         description: User not found
+ *       "500":
+ *         description: Internal server error
+ */
+authRouter.post("/verify-reset-password/:email", verifyOtpMiddleware, verifyResetPasswordOtp);
+
+/**
+ * @swagger
+ * /auth/reset-password/{email}:
+ *   post:
+ *     summary: Reset password
+ *     tags: [Authentication]
+ *     parameters:
+ *       - in: path
+ *         name: email
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *     responses:
+ *       "200":
+ *         description: Password changed successfully
+ *       "400":
+ *         description: New password cannot be same as old password
+ *       "404":
+ *         description: User not found
+ *       "500":
+ *         description: Internal server error
+ */
+authRouter.post("/reset-password/:email", resetPassword);
+
 // Account Google login routes
 
 authRouter.get(
