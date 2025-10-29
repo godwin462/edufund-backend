@@ -5,68 +5,56 @@ const {
   cloudinaryDelete,
 } = require("../utils/cloudinaryUtil");
 
-exports.createUser = async (req, res) => {
-  /*
-  #swagger.tags = ['User']
-  #swagger.description = 'Create a new user.'
-  */
-  let file = null;
-  try {
-    const { firstName, lastName, email, password, role } = req.body;
-    let profilePicture;
-
-    if (req.file && req.file.buffer) {
-      file = await cloudinaryUpload(file.buffer);
-      profilePicture = {
-        imageUrl: file.secure_url,
-        publicId: file.public_id,
-      };
-    }
-
-    const hashedPassword = hashData(password);
-    const student = new UserModel({
-      firstName,
-      lastName,
-      email,
-      password: hashedPassword,
-      role,
-      profilePicture,
-      password,
-    });
-    await student.save();
-    res.status(201).json({
-      message: `${role} created successfully`,
-      data: student,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: `Server error creating ${role}`,
-      error: error.message,
-    });
-  }
-};
-
 exports.updateUser = async (req, res) => {
   /*
   #swagger.tags = ['User']
   #swagger.description = 'Update existing user.'
+  #swagger.requestBody = {
+        required: true,
+        content: {
+            "multipart/form-data": {
+                schema: {
+                    type: "object",
+                    properties: {
+                        firstName: { type: "string" },
+                        lastName: { type: "string" },
+                        role: { type: "string" },
+                        profilePicture: {
+                            type: "string",
+                            format: "binary"
+                        }
+                    }
+                }
+            }
+        }
+    }
   */
   try {
     const { userId } = req.params;
-    const { firstName, lastName, email, password, role } = req.body;
+    const { firstName, lastName, role } = req.body || {};
     const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({
         message: "User not found, please create an account",
       });
     }
-    Object.assign(user, {
-      firstName,
-      lastName,
-      email,
-      password,
-      role,
-    });
+    let profilePicture;
+    if (user.profilePicture && user.profilePicture.publicId && req.file) {
+      await cloudinaryDelete(user.profilePicture.publicId);
+    }
+    if (req.file && req.file.buffer) {
+      const uploadResult = await cloudinaryUpload(req.file.buffer);
+      profilePicture = {
+        imageUrl: uploadResult.secure_url,
+        publicId: uploadResult.public_id,
+      };
+    }
+
+    user.firstName = firstName ?? user.firstName;
+    user.lastName = lastName ?? user.lastName;
+    user.role = role ?? user.role;
+    user.profilePicture = profilePicture ?? user.profilePicture;
+
     await user.save();
     res.status(200).json({
       message: "User updated successfully",
@@ -161,7 +149,7 @@ exports.getUserByEmail = async (req, res) => {
   #swagger.description = 'Get a user by email.'
   */
   try {
-    const { email } = req.body;
+    const { email } = req.body || {};
     const user = await UserModel.findOne({ email });
     if (!user) {
       return res.status(404).json({

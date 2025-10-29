@@ -25,6 +25,7 @@ const UserSchema = new mongoose.Schema(
       type: String,
       unique: true,
       sparse: true,
+      select: false
     },
     password: {
       type: String,

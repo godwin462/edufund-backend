@@ -3,7 +3,7 @@ const UserModel = require("../models/userModel");
 exports.logInRoleValidationMiddleware = async (req, res, next) => {
   try {
     const endpoint = req.url;
-    const { email } = req.body;
+    const { email } = req.body || {};
     const roles = ["admin", "sponsor", "student"];
     const user = await UserModel.findOne({ email });
     // console.log(user);

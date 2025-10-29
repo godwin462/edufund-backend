@@ -5,7 +5,7 @@ exports.contactUs = async (req, res) => {
      #swagger.description = 'Contact Us Form Submission Handler'
      */
   try {
-    const { email, message } = req.body;
+    const { email, message } = req.body || {};
     await sendEmail({
       email: process.env.EMAIL,
       subject: "Contact Us",

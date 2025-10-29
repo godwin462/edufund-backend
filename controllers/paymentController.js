@@ -1,15 +1,17 @@
 const userModel = require("../models/userModel");
 const paymentModel = require("../models/paymentModel");
-const axios = require("axios");
-const reference = require("crypto").randomBytes(16).toString("hex");
+const campaignModel = require("../models/campaignModel");
+const WithdrawalModel = require("../models/withdrawalModel");
+const { koraMakePayment } = require("../utils/kora");
+const reference = require("crypto").randomUUID();
 
 exports.makeDonation = async (req, res) => {
   /* #swagger.tags = ['Payment']
-   #swagger.description = 'Make a donation.'
-   */
+     #swagger.description = 'Make a donation.'
+     */
   try {
-    const { donorId, receiverId } = req.params;
-    const { amount, redirect_url } = req.body;
+    const { donorId, receiverId, campaignId } = req.params;
+    const { amount, redirect_url } = req.body || {};
     if (!amount || typeof amount !== "number" || amount <= 0) {
       return res.status(400).json({
         message: "Please provide a valid donation amount",
@@ -37,33 +39,29 @@ exports.makeDonation = async (req, res) => {
     }
 
     const payload = {
-      amount: amount,
+      amount: parseInt(amount),
       currency: "NGN",
       reference,
+      redirect_url: redirect_url || undefined,
       customer: {
         email: donor.email,
         name: donor.fullName,
       },
     };
-    const url = "https://api.korapay.com/merchant/api/v1/charges/initialize";
-    const response = await axios.post(url, payload, {
-      headers: {
-        Authorization: `Bearer ${process.env.KORA_SECRET_KEY}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const url = "charges/initialize";
+    const response = await koraMakePayment(url, payload);
 
-    if (response.status !== 200) {
+    if (!response) {
       return res.status(500).json({
         message: "Error initializing payment",
-        error: response.data,
       });
     }
 
     const transaction = await paymentModel.create({
+      campaignId,
       senderId: donorId,
       receiverId,
-      amount,
+      amount: parseInt(amount),
       reference,
       redirect_url: req.url,
     });
@@ -75,7 +73,7 @@ exports.makeDonation = async (req, res) => {
     }
     return res.status(200).json({
       message: "Donation test successfully",
-      data: response.data.data,
+      data: response.data,
     });
   } catch (error) {
     console.log(error);
@@ -88,10 +86,10 @@ exports.makeDonation = async (req, res) => {
 
 exports.verifyPaymentWebHook = async (req, res) => {
   /* #swagger.tags = ['Payment']
-   #swagger.description = 'Verify payment webhook note: will be called by KoraPay won't work on swagger ui.'
-   */
+     #swagger.description = 'Verify payment webhook note: will be called by KoraPay won't work on swagger ui.'
+     */
   try {
-    const { event, data } = req.body;
+    const { event, data } = req.body || {};
     if (event === "charge.success") {
       const payment = await paymentModel.findOne({ reference: data.reference });
       if (!payment) {
@@ -99,7 +97,6 @@ exports.verifyPaymentWebHook = async (req, res) => {
           message: "Payment not found",
         });
       }
-      console.log("Payment verification successful");
       payment.status = "successful";
       await payment.save();
       res.status(200).json({
@@ -113,7 +110,6 @@ exports.verifyPaymentWebHook = async (req, res) => {
         });
       }
       payment.status = "failed";
-      console.log('Payment verification failed')
       await payment.save();
       res.status(200).json({
         message: "Payment Failed",
@@ -123,6 +119,75 @@ exports.verifyPaymentWebHook = async (req, res) => {
     console.log(error);
     res.status(500).json({
       message: "Error verifying payment: " + error.message,
+    });
+  }
+};
+
+exports.withdrawDonation = async (req, res) => {
+  /* #swagger.tags = ['Payment']
+     #swagger.description = 'Withdraw donation.'
+     */
+  try {
+    const { campaignId, studentId } = req.params;
+    const { purpose, note } = req.body || {};
+    const campaign = await campaignModel
+      .findOne({ _id: campaignId, studentId })
+      .populate("studentId");
+
+    if (!campaign) {
+      return res.status(404).json({
+        message: "Campaign not found, please create a campaign first",
+      });
+    }
+
+    const donations = await paymentModel
+      .find({ campaignId, status: "successful" })
+      .populate("senderId");
+
+    const amount = donations.reduce(
+      (acc, donation) => acc + donation.amount,
+      0
+    );
+    if (amount < campaign.target) {
+      return res.status(400).json({
+        message: "Cannot withdraw donation, target not met yet!",
+      });
+    }
+    const withdrawal = await WithdrawalModel.create({
+      campaignId,
+      userId: studentId,
+      amount,
+      purpose,
+      note,
+    });
+    const payload = {
+      reference,
+      amount,
+      currency: "NGN",
+      customer: {
+        name: `${campaign.studentId.firstName} ${campaign.studentId.lastName}`,
+        email: campaign.studentId.email,
+      },
+      // account_name, merchant_bears_cost, narration, metadata (optional)
+      narration: `EduFund Donation Withdrawal: ${campaign.title}`,
+    };
+    const url = "charges/bank-transfer";
+    const response = await koraMakePayment(url, payload);
+    const total_donations = donations.length;
+    res.status(200).json({
+      message:
+        total_donations < 1
+          ? "No donations yet"
+          : "Donations found successfully",
+      total_donations,
+      redirect_url: response.data.redirect_url,
+      data: withdrawal,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Error withdrawing donation",
+      error: error.message,
     });
   }
 };

@@ -6,10 +6,9 @@ const {
   verifyOtp,
   changePassword,
   getCurrentAuthUser,
-} = require("../controllers/OtpAuthController");
+} = require("../controllers/authController");
 const passport = require("../middleware/passportMiddleware");
 const {
-  studentAccess,
   logInRoleValidationMiddleware,
 } = require("../middleware/loginRoleValidationMiddleware");
 const upload = require("../middleware/multerMiddleware");
