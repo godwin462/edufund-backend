@@ -17,13 +17,13 @@ const {
 } = require("../validations/authControllerValidations");
 
 exports.register = async (req, res) => {
-    let file = null;
     try {
         const {error} = registerValidation.validate(req.body);
         if(error) {
             return res.status(400).json({message: error.details[0].message});
         }
         const {firstName, lastName, email, role, password, phoneNumber, sponsorType, organizationName} = req.body || {};
+        console.log(req.body);
 
         const existingEmail = await UserModel.findOne({email});
 
@@ -31,15 +31,6 @@ exports.register = async (req, res) => {
             return res
                 .status(400)
                 .json({message: "User with the credentials already exists"});
-        }
-        let profilePicture;
-
-        if(req.file && req.file.buffer) {
-            file = await cloudinaryUpload(req.file.buffer);
-            profilePicture = {
-                imageUrl: file.secure_url,
-                publicId: file.public_id
-            };
         }
 
         const hashedPassword = hashData(password);
@@ -50,7 +41,6 @@ exports.register = async (req, res) => {
             email,
             phoneNumber,
             role,
-            profilePicture,
             password: hashedPassword,
             sponsorType,
             organizationName
