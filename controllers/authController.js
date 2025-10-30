@@ -23,7 +23,6 @@ exports.register = async (req, res) => {
             return res.status(400).json({message: error.details[0].message});
         }
         const {firstName, lastName, email, role, password, phoneNumber, sponsorType, organizationName} = req.body || {};
-        console.log(req.body);
 
         const existingEmail = await UserModel.findOne({email});
 
@@ -34,7 +33,6 @@ exports.register = async (req, res) => {
         }
 
         const hashedPassword = hashData(password);
-        console.log(hashedPassword);
         const user = new UserModel({
             firstName,
             lastName,

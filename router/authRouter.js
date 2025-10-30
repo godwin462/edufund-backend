@@ -74,6 +74,10 @@ authRouter.post(
  *             properties:
  *               organizationName:
  *                 type: string
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
  *               email:
  *                 type: string
  *               password:
