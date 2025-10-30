@@ -53,7 +53,7 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: null,
       required: function () {
-        return this.role === "sponsor";
+        return this.role === "sponsor" && this.sponsorType === "organization";
       },
     },
   },

@@ -31,24 +31,20 @@ const {verifyOtpMiddleware} = require("../middleware/verifyOtpMiddleware");
  *   post:
  *     summary: Register a new student
  *     tags: [Authentication]
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
-*             type: object
- *             properties:
- *               firstName:
- *                 type: string
- *               lastName:
+  *     requestBody:
+  *       required: true
+  *       content:
+  *         application/json:
+  *           schema:
+  *             type: object
+  *             properties:
+  *               firstName:
+  *                 type: string *               lastName:
  *                 type: string
  *               email:
  *                 type: string
  *               password:
  *                 type: string
- *               profilePicture:
- *                 type: string
- *                 format: binary
  *     responses:
  *       "201":
  *         description: OTP sent successfully
@@ -59,7 +55,6 @@ const {verifyOtpMiddleware} = require("../middleware/verifyOtpMiddleware");
  */
 authRouter.post(
   "/register/student",
-  upload.single("profilePicture"),
   assignRole,
   register
 );
@@ -73,7 +68,7 @@ authRouter.post(
  *     requestBody:
  *       required: true
  *       content:
- *         multipart/form-data:
+ *         application/json:
  *           schema:
  *             type: object
  *             properties:
@@ -85,9 +80,6 @@ authRouter.post(
  *                 type: string
  *               phoneNumber:
  *                 type: string
- *               profilePicture:
- *                 type: string
- *                 format: binary
  *     responses:
  *       "201":
  *         description: OTP sent successfully
@@ -98,7 +90,6 @@ authRouter.post(
  */
 authRouter.post(
   "/register/sponsor/organization",
-  upload.single("profilePicture"),
   assignRole,
   register
 );
@@ -112,7 +103,7 @@ authRouter.post(
  *     requestBody:
  *       required: true
  *       content:
- *         multipart/form-data:
+ *         application/json:
  *           schema:
  *             type: object
  *             properties:
@@ -126,9 +117,6 @@ authRouter.post(
  *                 type: string
  *               phoneNumber:
  *                 type: string
- *               profilePicture:
- *                 type: string
- *                 format: binary
  *     responses:
  *       "201":
  *         description: OTP sent successfully
@@ -139,14 +127,12 @@ authRouter.post(
  */
 authRouter.post(
   "/register/sponsor/individual",
-  upload.single("profilePicture"),
   assignRole,
   register
 );
 
 authRouter.post(
   "/register/admin",
-  upload.single("profilePicture"),
   assignRole,
   register
 );
@@ -363,7 +349,7 @@ authRouter.get(
  *     requestBody:
  *       required: true
  *       content:
-- *         application/json:
+ *         application/json:
  *           schema:
  *             type: object
  *             properties:
