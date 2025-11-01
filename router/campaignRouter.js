@@ -24,6 +24,66 @@ const upload = require("../middleware/multerMiddleware");
  *     responses:
  *       "200":
  *         description: A list of campaigns
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Campaigns found successfully
+ *                 total:
+ *                   type: number
+ *                   example: 1
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       studentId:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: string
+ *                             example: 60d5ec49a0d2db2a3c_dummy_id
+ *                           firstName:
+ *                             type: string
+ *                             example: John
+ *                           lastName:
+ *                             type: string
+ *                             example: Doe
+ *                       title:
+ *                         type: string
+ *                         example: Help me fund my education
+ *                       target:
+ *                         type: number
+ *                         example: 5000
+ *                       story:
+ *                         type: string
+ *                         example: I am a student in need of financial assistance...
+ *                       isActive:
+ *                         type: boolean
+ *                         example: true
+ *                       campaignImage:
+ *                         type: object
+ *                         properties:
+ *                           imageUrl:
+ *                             type: string
+ *                             example: http://example.com/image.jpg
+ *                           publicId:
+ *                             type: string
+ *                             example: image_public_id
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
  *       "500":
  *         description: Internal server error
  */
@@ -44,6 +104,57 @@ campaignRouter.get('/', isAuthenticated, getAllCampaigns);
  *     responses:
  *       "200":
  *         description: A list of student's campaigns
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Campaigns found successfully
+ *                 total:
+ *                   type: number
+ *                   example: 1
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       studentId:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       title:
+ *                         type: string
+ *                         example: Help me fund my education
+ *                       target:
+ *                         type: number
+ *                         example: 5000
+ *                       story:
+ *                         type: string
+ *                         example: I am a student in need of financial assistance...
+ *                       isActive:
+ *                         type: boolean
+ *                         example: true
+ *                       campaignImage:
+ *                         type: object
+ *                         properties:
+ *                           imageUrl:
+ *                             type: string
+ *                             example: http://example.com/image.jpg
+ *                           publicId:
+ *                             type: string
+ *                             example: image_public_id
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
  *       "500":
  *         description: Internal server error
  */
@@ -80,6 +191,52 @@ campaignRouter.get('/:studentId', isAuthenticated, studentAccess, getStudentCamp
  *     responses:
  *       "201":
  *         description: Campaign created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Campaign created successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     studentId:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     title:
+ *                       type: string
+ *                       example: Help me fund my education
+ *                     target:
+ *                       type: number
+ *                       example: 5000
+ *                     story:
+ *                       type: string
+ *                       example: I am a student in need of financial assistance...
+ *                     isActive:
+ *                       type: boolean
+ *                       example: true
+ *                     campaignImage:
+ *                       type: object
+ *                       properties:
+ *                         imageUrl:
+ *                           type: string
+ *                           example: http://example.com/image.jpg
+ *                         publicId:
+ *                           type: string
+ *                           example: image_public_id
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
  *       "400":
  *         description: Bad request or active campaign already exists
  *       "404":
@@ -104,6 +261,61 @@ campaignRouter.post('/:studentId', upload.single('campaignImage'), isAuthenticat
  *     responses:
  *       "200":
  *         description: Campaign found successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Campaign found successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     studentId:
+ *                       type: object
+ *                       properties:
+ *                         _id:
+ *                           type: string
+ *                           example: 60d5ec49a0d2db2a3c_dummy_id
+ *                         firstName:
+ *                           type: string
+ *                           example: John
+ *                         lastName:
+ *                           type: string
+ *                           example: Doe
+ *                     title:
+ *                       type: string
+ *                       example: Help me fund my education
+ *                     target:
+ *                       type: number
+ *                       example: 5000
+ *                     story:
+ *                       type: string
+ *                       example: I am a student in need of financial assistance...
+ *                     isActive:
+ *                       type: boolean
+ *                       example: true
+ *                     campaignImage:
+ *                       type: object
+ *                       properties:
+ *                         imageUrl:
+ *                           type: string
+ *                           example: http://example.com/image.jpg
+ *                         publicId:
+ *                           type: string
+ *                           example: image_public_id
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
  *       "404":
  *         description: Campaign not found
  *       "500":
@@ -144,6 +356,52 @@ campaignRouter.get('/campaign-detail/:campaignId', isAuthenticated, getCampaign)
  *     responses:
  *       "200":
  *         description: Campaign updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Campaign updated successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     studentId:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     title:
+ *                       type: string
+ *                       example: Help me fund my education - Updated
+ *                     target:
+ *                       type: number
+ *                       example: 6000
+ *                     story:
+ *                       type: string
+ *                       example: I am a student in need of financial assistance... (updated)
+ *                     isActive:
+ *                       type: boolean
+ *                       example: false
+ *                     campaignImage:
+ *                       type: object
+ *                       properties:
+ *                         imageUrl:
+ *                           type: string
+ *                           example: http://example.com/new_image.jpg
+ *                         publicId:
+ *                           type: string
+ *                           example: new_image_public_id
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-02T12:00:00.000Z
  *       "400":
  *         description: Bad request
  *       "404":
@@ -168,6 +426,52 @@ campaignRouter.put('/:campaignId', upload.single('campaignImage'), isAuthenticat
  *     responses:
  *       "200":
  *         description: Campaign deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Campaign deleted successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     studentId:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     title:
+ *                       type: string
+ *                       example: Help me fund my education - Updated
+ *                     target:
+ *                       type: number
+ *                       example: 6000
+ *                     story:
+ *                       type: string
+ *                       example: I am a student in need of financial assistance... (updated)
+ *                     isActive:
+ *                       type: boolean
+ *                       example: false
+ *                     campaignImage:
+ *                       type: object
+ *                       properties:
+ *                         imageUrl:
+ *                           type: string
+ *                           example: http://example.com/new_image.jpg
+ *                         publicId:
+ *                           type: string
+ *                           example: new_image_public_id
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-02T12:00:00.000Z
  *       "404":
  *         description: Campaign not found
  *       "500":
