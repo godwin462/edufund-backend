@@ -18,6 +18,7 @@ const campaignRouter = require("./router/campaignRouter");
 const academicRouter = require("./router/academicRouter");
 const donationRouter = require("./router/donationRouter");
 const swaggerJSDoc = require("swagger-jsdoc");
+const notificationRouter = require("./router/notificationRouter");
 
 const app = express();
 
@@ -95,6 +96,7 @@ app.use("/api/v1/contact-us", contactUsRouter);
 app.use("/api/v1/campaigns", campaignRouter);
 app.use("/api/v1/academic", academicRouter);
 app.use("/api/v1/donation", donationRouter);
+app.use("/api/v1/notification", notificationRouter);
 
 app.get("/", (req, res) => {
 
@@ -115,7 +117,8 @@ mongoose
   .then(() => {
     console.log("Connected to Database");
     app.listen(PORT, () => {
-      console.log(`EduFund server is running on http://localhost:${PORT}
+      console.log(`EduFund server is running
+        server: http://localhost:${PORT}
         Documentation: http://localhost:${PORT}/api/v1/api-docs`);
     });
   })
