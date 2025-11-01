@@ -5,8 +5,7 @@ const OtpModel = require("../models/OtpModel");
 const {sendEmail} = require("../email/brevo");
 const constants = require("../utils/constants");
 const {generateOtp} = require("../utils/otp");
-const {generateJwt, verifyJwt, decodeJwt} = require("../utils/jwtUtil");
-const {cloudinaryUpload} = require("../utils/cloudinaryUtil");
+const {generateJwt} = require("../utils/jwtUtil");
 const {compareData, hashData} = require("../utils/bcryptUtil");
 const {
     registerValidation,
@@ -15,6 +14,8 @@ const {
     changePasswordValidation
 } = require("../validations/authControllerValidations");
 const {createNotification} = require("./notificationController");
+const {AccountVerificationEmailTemplate} = require("../templates/accountVerification");
+const {resetPasswordOtpEmailTemplate} = require("../templates/resetPasswordOtp");
 
 exports.register = async (req, res) => {
     try {
@@ -46,11 +47,11 @@ exports.register = async (req, res) => {
 
         let otp = generateOtp();
 
-        const text = `EduFunds Account verification`;
-        const html = registrationTemplate(otp);
+        const text = `EduFund Account verification`;
+        const html = AccountVerificationEmailTemplate(firstName, otp);
         await sendEmail({
             email,
-            subject: "EduFunds Account Registration",
+            subject: "EduFund Account Registration",
             text,
             html
         });
@@ -172,11 +173,11 @@ exports.resendOtp = async (req, res) => {
 
         let otp = generateOtp();
 
-        const text = `EduFunds otp resend request`;
-        const html = loginOtpTemplate(otp);
+        const text = `EduFund otp resend request`;
+        const html = AccountVerificationEmailTemplate(user.firstName, otp);;
         await sendEmail({
             email: user.email,
-            subject: "EduFunds Account Login",
+            subject: "EduFund Account verification",
             text,
             html
         });
@@ -285,11 +286,11 @@ exports.forgotPassword = async (req, res) => {
 
         let otp = generateOtp();
 
-        const text = `EduFunds password reset request`;
-        const html = loginOtpTemplate(otp);
+        const text = `EduFund password reset request`;
+        const html = resetPasswordOtpEmailTemplate(user.firstName, otp);
         await sendEmail({
             email: user.email,
-            subject: "EduFunds Account Login",
+            subject: "EduFund password reset",
             text,
             html
         });
