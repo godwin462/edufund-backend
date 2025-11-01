@@ -21,6 +21,60 @@ const receivedDonationRouter = require("express").Router();
  *     responses:
  *       "200":
  *         description: A list of all donations
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Donations found successfully
+ *                 total:
+ *                   type: number
+ *                   example: 1
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       campaignId:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       senderId:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: string
+ *                             example: 60d5ec49a0d2db2a3c_dummy_id
+ *                           firstName:
+ *                             type: string
+ *                             example: John
+ *                           lastName:
+ *                             type: string
+ *                             example: Doe
+ *                       receiverId:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       amount:
+ *                         type: number
+ *                         example: 100
+ *                       reference:
+ *                         type: string
+ *                         example: 1a2b3c4d5e6f7g8h
+ *                       status:
+ *                         type: string
+ *                         example: successful
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
  *       "500":
  *         description: Server error
  */
@@ -46,6 +100,60 @@ receivedDonationRouter.get("/", getAllDonations);
  *     responses:
  *       "200":
  *         description: A list of received donations
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Donations found successfully
+ *                 total:
+ *                   type: number
+ *                   example: 1
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       campaignId:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       senderId:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: string
+ *                             example: 60d5ec49a0d2db2a3c_dummy_id
+ *                           firstName:
+ *                             type: string
+ *                             example: John
+ *                           lastName:
+ *                             type: string
+ *                             example: Doe
+ *                       receiverId:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       amount:
+ *                         type: number
+ *                         example: 100
+ *                       reference:
+ *                         type: string
+ *                         example: 1a2b3c4d5e6f7g8h
+ *                       status:
+ *                         type: string
+ *                         example: successful
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
  *       "500":
  *         description: Server error
  */
@@ -66,6 +174,55 @@ receivedDonationRouter.get("/received-donations/:studentId", isAuthenticated, ge
  *     responses:
  *       "200":
  *         description: Donation found successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Donation found successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     campaignId:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     senderId:
+ *                       type: object
+ *                       properties:
+ *                         _id:
+ *                           type: string
+ *                           example: 60d5ec49a0d2db2a3c_dummy_id
+ *                         firstName:
+ *                           type: string
+ *                           example: John
+ *                         lastName:
+ *                           type: string
+ *                           example: Doe
+ *                     receiverId:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     amount:
+ *                       type: number
+ *                       example: 100
+ *                     reference:
+ *                       type: string
+ *                       example: 1a2b3c4d5e6f7g8h
+ *                     status:
+ *                       type: string
+ *                       example: successful
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
  *       "404":
  *         description: Donation not found
  *       "500":
@@ -88,6 +245,63 @@ receivedDonationRouter.get("/received-donations/donation-detail/:reference", isA
  *     responses:
  *       "200":
  *         description: Student wallet balance retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Donations found successfully
+ *                 total:
+ *                   type: number
+ *                   example: 1
+ *                 balance:
+ *                   type: number
+ *                   example: 100
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       campaignId:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       senderId:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: string
+ *                             example: 60d5ec49a0d2db2a3c_dummy_id
+ *                           firstName:
+ *                             type: string
+ *                             example: John
+ *                           lastName:
+ *                             type: string
+ *                             example: Doe
+ *                       receiverId:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       amount:
+ *                         type: number
+ *                         example: 100
+ *                       reference:
+ *                         type: string
+ *                         example: 1a2b3c4d5e6f7g8h
+ *                       status:
+ *                         type: string
+ *                         example: successful
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
  *       "500":
  *         description: Server error
  */
@@ -108,6 +322,63 @@ receivedDonationRouter.get("/received-donations/student-balance/:studentId", isA
  *     responses:
  *       "200":
  *         description: Campaign donation balance retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Donations found successfully
+ *                 total:
+ *                   type: number
+ *                   example: 1
+ *                 balance:
+ *                   type: number
+ *                   example: 100
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       campaignId:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       senderId:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: string
+ *                             example: 60d5ec49a0d2db2a3c_dummy_id
+ *                           firstName:
+ *                             type: string
+ *                             example: John
+ *                           lastName:
+ *                             type: string
+ *                             example: Doe
+ *                       receiverId:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       amount:
+ *                         type: number
+ *                         example: 100
+ *                       reference:
+ *                         type: string
+ *                         example: 1a2b3c4d5e6f7g8h
+ *                       status:
+ *                         type: string
+ *                         example: successful
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
  *       "500":
  *         description: Server error
  */
@@ -128,6 +399,60 @@ receivedDonationRouter.get("/received-donations/campaign-balance/:campaignId", i
  *     responses:
  *       "200":
  *         description: A list of campaign donations
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Donations found successfully
+ *                 total:
+ *                   type: number
+ *                   example: 1
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       campaignId:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       senderId:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: string
+ *                             example: 60d5ec49a0d2db2a3c_dummy_id
+ *                           firstName:
+ *                             type: string
+ *                             example: John
+ *                           lastName:
+ *                             type: string
+ *                             example: Doe
+ *                       receiverId:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       amount:
+ *                         type: number
+ *                         example: 100
+ *                       reference:
+ *                         type: string
+ *                         example: 1a2b3c4d5e6f7g8h
+ *                       status:
+ *                         type: string
+ *                         example: successful
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
  *       "500":
  *         description: Server error
  */

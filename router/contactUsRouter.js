@@ -28,6 +28,14 @@ const { contactUs } = require("../controllers/contactUsController");
  *     responses:
  *       "200":
  *         description: Message sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Message sent successfully
  *       "500":
  *         description: Server error
  */

@@ -52,6 +52,20 @@ const paymentRouter = require("express").Router();
  *     responses:
  *       "200":
  *         description: Donation initiated successfully. Returns payment link.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Donation initiated successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     checkout_url:
+ *                       type: string
+ *                       example: https://checkout.korapay.com/pay/3y3i3o3i
  *       "400":
  *         description: Invalid amount or receiver is not a student.
  *       "404":
@@ -90,6 +104,14 @@ paymentRouter.post(
  *     responses:
  *       "200":
  *         description: Webhook received and payment status updated.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Payment Verification Successful
  *       "404":
  *         description: Payment not found for the given reference.
  *       "500":
@@ -130,6 +152,52 @@ paymentRouter.post("/verify-payment-webhook", verifyPaymentWebHook);
  *     responses:
  *       "200":
  *         description: Withdrawal request successful. Returns redirect URL.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Donations found successfully
+ *                 total_donations:
+ *                   type: number
+ *                   example: 10
+ *                 redirect_url:
+ *                   type: string
+ *                   example: https://checkout.korapay.com/pay/3y3i3o3i
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     campaignId:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     userId:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     amount:
+ *                       type: number
+ *                       example: 5000
+ *                     purpose:
+ *                       type: string
+ *                       example: School fees
+ *                     note:
+ *                       type: string
+ *                       example: Payment for 2023/2024 session
+ *                     status:
+ *                       type: string
+ *                       example: processing
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
  *       "400":
  *         description: Campaign target not met.
  *       "404":

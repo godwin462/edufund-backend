@@ -43,6 +43,43 @@ const academicRouter = require('express').Router();
  *     responses:
  *       "201":
  *         description: Academic details created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Academic details created successfully
+ *                 academicDetails:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     studentId:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     schoolName:
+ *                       type: string
+ *                       example: University of Example
+ *                     year:
+ *                       type: number
+ *                       example: 2023
+ *                     matricNumber:
+ *                       type: number
+ *                       example: 123456
+ *                     jambRegistrationNumber:
+ *                       type: number
+ *                       example: 789012
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
  *       "500":
  *         description: Error creating academic details
  */
@@ -63,6 +100,45 @@ academicRouter.post('/:studentId', isAuthenticated, studentAccess, createAcademi
  *     responses:
  *       "200":
  *         description: Academic details fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Academic details fetched successfully
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       studentId:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       schoolName:
+ *                         type: string
+ *                         example: University of Example
+ *                       year:
+ *                         type: number
+ *                         example: 2023
+ *                       matricNumber:
+ *                         type: number
+ *                         example: 123456
+ *                       jambRegistrationNumber:
+ *                         type: number
+ *                         example: 789012
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
  *       "500":
  *         description: Error fetching academic details
  */
@@ -98,6 +174,43 @@ academicRouter.get('/:studentId', isAuthenticated, studentAccess, getAcademicDet
  *     responses:
  *       "200":
  *         description: Academic details updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Academic details updated successfully
+ *                 academicDetails:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     studentId:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     schoolName:
+ *                       type: string
+ *                       example: University of Example
+ *                     year:
+ *                       type: number
+ *                       example: 2024
+ *                     matricNumber:
+ *                       type: number
+ *                       example: 123457
+ *                     jambRegistrationNumber:
+ *                       type: number
+ *                       example: 789013
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-02T12:00:00.000Z
  *       "404":
  *         description: Academic details not found
  *       "500":

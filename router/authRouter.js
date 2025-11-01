@@ -20,7 +20,6 @@ const passport = require("../middleware/passportMiddleware");
 const {
   logInRoleValidationMiddleware,
 } = require("../middleware/loginRoleValidationMiddleware");
-const upload = require("../middleware/multerMiddleware");
 const { assignRole } = require("../middleware/roleMiddleware");
 const { isAuthenticated } = require("../middleware/authenticationMiddleware");
 const {verifyOtpMiddleware} = require("../middleware/verifyOtpMiddleware");
@@ -49,6 +48,43 @@ const {verifyOtpMiddleware} = require("../middleware/verifyOtpMiddleware");
  *     responses:
  *       "201":
  *         description: OTP sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: OTP sent successfully, check your email to verify your account
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     email:
+ *                       type: string
+ *                       example: student@example.com
+ *                     firstName:
+ *                       type: string
+ *                       example: Jane
+ *                     lastName:
+ *                       type: string
+ *                       example: Doe
+ *                     isVerified:
+ *                       type: boolean
+ *                       example: false
+ *                     role:
+ *                       type: string
+ *                       example: student
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
  *       "400":
  *         description: Bad request
  *       "500":
@@ -88,6 +124,49 @@ authRouter.post(
  *     responses:
  *       "201":
  *         description: OTP sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: OTP sent successfully, check your email to verify your account
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     email:
+ *                       type: string
+ *                       example: org@example.com
+ *                     firstName:
+ *                       type: string
+ *                       example: Org
+ *                     lastName:
+ *                       type: string
+ *                       example: Sponsor
+ *                     isVerified:
+ *                       type: boolean
+ *                       example: false
+ *                     role:
+ *                       type: string
+ *                       example: sponsor
+ *                     sponsorType:
+ *                       type: string
+ *                       example: organization
+ *                     organizationName:
+ *                       type: string
+ *                       example: Example Corp
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
  *       "400":
  *         description: Bad request
  *       "500":
@@ -125,6 +204,46 @@ authRouter.post(
  *     responses:
  *       "201":
  *         description: OTP sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: OTP sent successfully, check your email to verify your account
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     email:
+ *                       type: string
+ *                       example: individual@example.com
+ *                     firstName:
+ *                       type: string
+ *                       example: Individual
+ *                     lastName:
+ *                       type: string
+ *                       example: Sponsor
+ *                     isVerified:
+ *                       type: boolean
+ *                       example: false
+ *                     role:
+ *                       type: string
+ *                       example: sponsor
+ *                     sponsorType:
+ *                       type: string
+ *                       example: individual
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
  *       "400":
  *         description: Bad request
  *       "500":
@@ -163,6 +282,46 @@ authRouter.post(
  *     responses:
  *       "200":
  *         description: Success, user logged in
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Success, user logged in
+ *                 token:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYx...
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     email:
+ *                       type: string
+ *                       example: user@example.com
+ *                     firstName:
+ *                       type: string
+ *                       example: John
+ *                     lastName:
+ *                       type: string
+ *                       example: Doe
+ *                     isVerified:
+ *                       type: boolean
+ *                       example: true
+ *                     role:
+ *                       type: string
+ *                       example: student
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
  *       "400":
  *         description: Bad request
  *       "404":
@@ -195,6 +354,43 @@ authRouter.post("/login/admin", logInRoleValidationMiddleware, login);
  *     responses:
  *       "200":
  *         description: New OTP sent
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: New OTP sent, check your email
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     email:
+ *                       type: string
+ *                       example: user@example.com
+ *                     firstName:
+ *                       type: string
+ *                       example: John
+ *                     lastName:
+ *                       type: string
+ *                       example: Doe
+ *                     isVerified:
+ *                       type: boolean
+ *                       example: false
+ *                     role:
+ *                       type: string
+ *                       example: student
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
  *       "400":
  *         description: Bad request
  *       "404":
@@ -228,6 +424,46 @@ authRouter.post("/resend-otp/", resendOtp);
  *     responses:
  *       "200":
  *         description: OTP verification successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: OTP verification successful ✅
+ *                 token:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYx...
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     email:
+ *                       type: string
+ *                       example: user@example.com
+ *                     firstName:
+ *                       type: string
+ *                       example: John
+ *                     lastName:
+ *                       type: string
+ *                       example: Doe
+ *                     isVerified:
+ *                       type: boolean
+ *                       example: true
+ *                     role:
+ *                       type: string
+ *                       example: student
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
  *       "400":
  *         description: Bad request
  *       "404":
@@ -252,6 +488,43 @@ authRouter.post("/verify/:email/", verifyOtpMiddleware, verifyOtp);
  *     responses:
  *       "200":
  *         description: Success, check your email for reset password token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Success, check your email for reset password token
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     email:
+ *                       type: string
+ *                       example: user@example.com
+ *                     firstName:
+ *                       type: string
+ *                       example: John
+ *                     lastName:
+ *                       type: string
+ *                       example: Doe
+ *                     isVerified:
+ *                       type: boolean
+ *                       example: true
+ *                     role:
+ *                       type: string
+ *                       example: student
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
  *       "404":
  *         description: User not found
  *       "500":
@@ -283,6 +556,43 @@ authRouter.post("/forgot-password/:email", forgotPassword);
  *     responses:
  *       "200":
  *         description: Success, email verification successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Success, email verification successful
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     email:
+ *                       type: string
+ *                       example: user@example.com
+ *                     firstName:
+ *                       type: string
+ *                       example: John
+ *                     lastName:
+ *                       type: string
+ *                       example: Doe
+ *                     isVerified:
+ *                       type: boolean
+ *                       example: true
+ *                     role:
+ *                       type: string
+ *                       example: student
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
  *       "404":
  *         description: User not found
  *       "500":
@@ -314,6 +624,43 @@ authRouter.post("/verify-reset-password/:email", verifyOtpMiddleware, verifyRese
  *     responses:
  *       "200":
  *         description: Password changed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Password changed successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     email:
+ *                       type: string
+ *                       example: user@example.com
+ *                     firstName:
+ *                       type: string
+ *                       example: John
+ *                     lastName:
+ *                       type: string
+ *                       example: Doe
+ *                     isVerified:
+ *                       type: boolean
+ *                       example: true
+ *                     role:
+ *                       type: string
+ *                       example: student
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
  *       "400":
  *         description: New password cannot be same as old password
  *       "404":
@@ -365,6 +712,43 @@ authRouter.get(
  *     responses:
  *       "200":
  *         description: Password changed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Password changed successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     email:
+ *                       type: string
+ *                       example: user@example.com
+ *                     firstName:
+ *                       type: string
+ *                       example: John
+ *                     lastName:
+ *                       type: string
+ *                       example: Doe
+ *                     isVerified:
+ *                       type: boolean
+ *                       example: true
+ *                     role:
+ *                       type: string
+ *                       example: student
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
  *       "400":
  *         description: Bad request
  *       "403":
@@ -386,6 +770,43 @@ authRouter.post("/change-password/:userId", isAuthenticated, changePassword);
  *     responses:
  *       "200":
  *         description: success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     email:
+ *                       type: string
+ *                       example: user@example.com
+ *                     firstName:
+ *                       type: string
+ *                       example: John
+ *                     lastName:
+ *                       type: string
+ *                       example: Doe
+ *                     isVerified:
+ *                       type: boolean
+ *                       example: true
+ *                     role:
+ *                       type: string
+ *                       example: student
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
  *       "500":
  *         description: Internal server error
  */
