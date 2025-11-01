@@ -36,7 +36,7 @@ const { isAuthenticated } = require("../middleware/authenticationMiddleware");
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Total number of students helped:
+ *                   example: Total number of students helped
  *                 data:
  *                   type: number
  *                   example: 5
