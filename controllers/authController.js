@@ -11,10 +11,10 @@ const {compareData, hashData} = require("../utils/bcryptUtil");
 const {
     registerValidation,
     loginValidation,
-    verifyOtpValidation,
     resendOtpValidation,
     changePasswordValidation
 } = require("../validations/authControllerValidations");
+const {createNotification} = require("./notificationController");
 
 exports.register = async (req, res) => {
     try {
@@ -111,6 +111,8 @@ exports.login = async (req, res) => {
         const token = await generateJwt({id: user._id}, "1d");
         user.password = undefined;
         req.user = user;
+        // testing notification creation
+        await createNotification(user._id, "New account login", user._id, "info");
         res
             .status(200)
             .json({message: "Success, user logged in", token, data: user});

@@ -31,15 +31,16 @@ const {verifyOtpMiddleware} = require("../middleware/verifyOtpMiddleware");
  *   post:
  *     summary: Register a new student
  *     tags: [Authentication]
-  *     requestBody:
-  *       required: true
-  *       content:
-  *         application/json:
-  *           schema:
-  *             type: object
-  *             properties:
-  *               firstName:
-  *                 type: string *               lastName:
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
  *                 type: string
  *               email:
  *                 type: string
