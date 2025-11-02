@@ -8,7 +8,7 @@ const academicSchema = new mongoose.Schema({
     },
     schoolName: {
         type: String,
-        rquired: true,
+        required: true,
         trim: true
     },
     year: {

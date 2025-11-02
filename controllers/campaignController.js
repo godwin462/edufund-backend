@@ -1,14 +1,11 @@
 const campaignModel = require("../models/campaignModel");
 const UserModel = require("../models/userModel");
-const { cloudinaryUpload, cloudinaryDelete } = require("../utils/cloudinaryUtil");
+const {cloudinaryUpload, cloudinaryDelete} = require("../utils/cloudinaryUtil");
 const {createCampaignValidation, updateCampaignValidation} = require("../validations/campaignControllerValidations");
 
 // Create a new campaign
 exports.createCampaign = async (req, res) => {
-    /*
-    #swagger.tags = ['Campaign']
-    #swagger.description = 'Create a new Campaign.'
-    */
+
     try {
         const {studentId} = req.params;
         const {error} = createCampaignValidation.validate(req.body);
@@ -18,7 +15,7 @@ exports.createCampaign = async (req, res) => {
             });
         }
 
-        const {title, target, story, campaignImage} = req.body || {};
+        const {title, target, story} = req.body || {};
         let file = null;
         const student = await UserModel.findById(studentId);
 
@@ -36,8 +33,9 @@ exports.createCampaign = async (req, res) => {
             });
         }
 
+        let campaignImage;
         if(req.file && req.file.buffer) {
-            file = await cloudinaryUpload(file.buffer);
+            file = await cloudinaryUpload(req.file.buffer);
             campaignImage = {
                 imageUrl: file.secure_url,
                 publicId: file.public_id,
@@ -65,10 +63,7 @@ exports.createCampaign = async (req, res) => {
 };
 
 exports.updateCampaign = async (req, res) => {
-    /*
-    #swagger.tags = ['Campaign']
-    #swagger.description = 'Create a new Campaign.'
-    */
+
     try {
         const {campaignId} = req.params;
         const {error} = updateCampaignValidation.validate(req.body);
@@ -98,12 +93,13 @@ exports.updateCampaign = async (req, res) => {
                 publicId: file.public_id,
             };
         }
-        campaign.title = title || campaign.title;
-        campaign.target = target || campaign.target;
-        campaign.story = story || campaign.story;
-        campaign.campaignImage = campaignImage || campaign.campaignImage;
-        campaign.isActive = isActive || campaign.isActive;
+        campaign.title = title ?? campaign.title;
+        campaign.target = target ?? campaign.target;
+        campaign.story = story ?? campaign.story;
+        campaign.campaignImage = campaignImage ?? campaign.campaignImage;
+        campaign.isActive = isActive ?? campaign.isActive;
         await campaign.save();
+
         res.status(200).json({
             message: "Campaign updated successfully",
             data: campaign,
@@ -118,10 +114,7 @@ exports.updateCampaign = async (req, res) => {
 };
 
 exports.deleteCampaign = async (req, res) => {
-    /*
-    #swagger.tags = ['Campaign']
-    #swagger.description = 'Delete a Campaign.'
-    */
+
     try {
         const {campaignId} = req.params;
         const campaign = await campaignModel.findByIdAndDelete(campaignId, {new: true});
@@ -132,7 +125,7 @@ exports.deleteCampaign = async (req, res) => {
             });
         }
         if(campaign.campaignImage && campaign.campaignImage.publicId)
-            cloudinaryDelete(deleteCampaign.campaignImage.publicId);
+            cloudinaryDelete(campaign.campaignImage.publicId);
 
         res.status(200).json({
             message: "Campaign deleted successfully",
@@ -147,10 +140,7 @@ exports.deleteCampaign = async (req, res) => {
 };
 
 exports.getStudentCampaigns = async (req, res) => {
-    /*
-    #swagger.tags = ['Campaign']
-    #swagger.description = 'Get all Campaigns.'
-    */
+
     try {
         const {studentId} = req.params;
         const campaigns = await campaignModel.find({studentId});
@@ -172,10 +162,7 @@ exports.getStudentCampaigns = async (req, res) => {
 };
 
 exports.getAllCampaigns = async (req, res) => {
-    /*
-    #swagger.tags = ['Campaign']
-    #swagger.description = 'Get a student Campaigns.'
-    */
+
     try {
         const campaigns = await campaignModel.find().populate("studentId");
         const total = campaigns.length;
@@ -193,10 +180,7 @@ exports.getAllCampaigns = async (req, res) => {
 };
 
 exports.getCampaign = async (req, res) => {
-    /*
-    #swagger.tags = ['Campaign']
-    #swagger.description = 'Get a Campaign.'
-    */
+
     try {
         const {campaignId} = req.params;
         const campaign = await campaignModel.findById(campaignId).populate(
