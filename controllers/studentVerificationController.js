@@ -46,6 +46,43 @@ exports.getAllStudentsVerificationDocuments = async (req, res) => {
     }
 };
 
+exports.updateStudentVerificationDocuments = async (req, res) => {
+    try {
+        const {verificationId} = req.params;
+        let updatedDocument = {};
+
+        if (req.file && req.file.buffer) {
+            if (req.file.mimetype !== "application/pdf") {
+                return res.status(400).json({
+                    message: "Only PDF files are allowed",
+                    error: "Inalid file type"
+                });
+
+                const existingDocument = await StudentVerificationModel.findById(verificationId);
+                if (existingDocument && existingDocument.document && existingDocument.document.publicId) {
+                    await cloudinaryDelete(existingDocument.document.publicId);
+
+                    const uploadResult = await cloudinaryUpload(req.file.buffer);
+                    updatedDocument.document = {
+                        secureUrl: uploadResult.secure_url,
+                        publicId: uploadResult.publicId
+                    }
+                    const updatedDocumentRecord = await StudentVerificationModel.findByIdAndUpdate(verificationId, updatedDocument, {new: true});
+                    res.status(200).json({
+                        message: "Document updated successfully",
+                        data: updatedDocumentRecord
+                    })
+                }
+            }
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message
+        })
+    }
+}
+
 exports.deleteStudentVerificationDocument = async (req, res) => {
     try {
         const {documentId} = req.params;
