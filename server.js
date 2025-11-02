@@ -89,7 +89,7 @@ const swaggerSpec = swaggerJSDoc(options);
 app.use("/api/v1/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
-app.use("/api/v1/Analytics", donorRouter);
+// app.use("/api/v1/Analytics", donorRouter);
 app.use("/api/v1/donors", donorRouter);
 app.use("/api/v1/payment", paymentRouter);
 app.use("/api/v1/contact-us", contactUsRouter);
