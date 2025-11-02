@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const {image} = require('../config/cloudinary');
 
 const campaignSchema = new mongoose.Schema({
     studentId: {
