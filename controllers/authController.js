@@ -129,7 +129,7 @@ exports.verifyOtp = async (req, res) => {
     try {
         const {email} = req.params || {};
 
-        const user = await UserModel.findOne({email}).populate('academicDocuments').lean({virtuals: true});
+        const user = await UserModel.findOne({email});
         if(user.isVerified) {
             return res
                 .status(400)
