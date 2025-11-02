@@ -10,7 +10,7 @@ exports.updateUser = async (req, res) => {
   try {
     const { userId } = req.params;
     const { firstName, lastName, role } = req.body || {};
-    const user = await UserModel.findById(userId);
+    const user = await UserModel.findById(userId).populate('academicDocuments').lean({virtuals: true});
     if (!user) {
       return res.status(404).json({
         message: "User not found, please create an account",
@@ -50,7 +50,7 @@ exports.deleteUser = async (req, res) => {
 
   try {
     const { userId } = req.params;
-    const user = await UserModel.findById(userId);
+    const user = await UserModel.findById(userId).populate('academicDocuments').lean({virtuals: true});
     if (!user) {
       return res.status(404).json({
         message: "User not found, please create an account",
@@ -77,7 +77,7 @@ exports.getUser = async (req, res) => {
 
   try {
     const { userId } = req.params;
-    const user = await UserModel.findById(userId);
+    const user = await UserModel.findById(userId).populate('academicDocuments').lean({virtuals: true});
     if (!user) {
       return res.status(404).json({
         message: "User not found, please create an account",
@@ -98,7 +98,7 @@ exports.getUser = async (req, res) => {
 exports.getAllUsers = async (req, res) => {
 
   try {
-    const users = await UserModel.find();
+    const users = await UserModel.find().populate('academicDocuments').lean({virtuals: true});
     const total = users.length;
     res.status(200).json({
       message: total < 1 ? "No users found" : "Users found successfully",
@@ -117,7 +117,7 @@ exports.getUserByEmail = async (req, res) => {
 
   try {
     const { email } = req.body || {};
-    const user = await UserModel.findOne({ email });
+    const user = await UserModel.findOne({email}).populate('academicDocuments').lean({virtuals: true});
     if (!user) {
       return res.status(404).json({
         message: "User not found, please create an account",

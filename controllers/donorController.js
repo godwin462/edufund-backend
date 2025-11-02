@@ -43,7 +43,7 @@ exports.getDonorsForStudent = async (req, res) => {
 
   try {
     const { studentId } = req.params;
-    const donors = await academicModel.find({ studentId }).distinct("donorId");
+    const donors = await academicModel.find({studentId}).distinct("donorId").populate('academicDocuments').lean({virtuals: true});
     if (!donors || donors.length === 0) {
       return res.status(404).json({ message: "No donor yet" });
     }

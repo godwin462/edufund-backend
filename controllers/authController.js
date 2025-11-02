@@ -87,7 +87,7 @@ exports.login = async (req, res) => {
         }
         const {email, password} = req.body || {};
 
-        const user = await UserModel.findOne({email}).select("+password");
+        const user = await UserModel.findOne({email}).select("+password").populate('academicDocuments').lean({virtuals: true});
 
         if(!user) {
             return res.status(404).json({
@@ -129,7 +129,7 @@ exports.verifyOtp = async (req, res) => {
     try {
         const {email} = req.params || {};
 
-        const user = await UserModel.findOne({email});
+        const user = await UserModel.findOne({email}).populate('academicDocuments').lean({virtuals: true});
         if(user.isVerified) {
             return res
                 .status(400)
@@ -163,7 +163,7 @@ exports.resendOtp = async (req, res) => {
         }
         const {email} = req.body || {};
 
-        const user = await UserModel.findOne({email});
+        const user = await UserModel.findOne({email}).populate('academicDocuments').lean({virtuals: true});
 
         if(!user) {
             return res
@@ -211,7 +211,7 @@ exports.changePassword = async (req, res) => {
         const {userId} = req.params;
         const {password, newPassword} = req.body || {};
 
-        const user = await UserModel.findById(userId).select("+password");
+        const user = await UserModel.findById(userId).select("+password").populate('academicDocuments').lean({virtuals: true});
 
         if(!user) {
             return res
@@ -276,7 +276,7 @@ exports.forgotPassword = async (req, res) => {
         // }
         const {email} = req.params || {};
 
-        const user = await UserModel.findOne({email});
+        const user = await UserModel.findOne({email}).populate('academicDocuments').lean({virtuals: true});
 
         if(!user) {
             return res
@@ -323,7 +323,7 @@ exports.verifyResetPasswordOtp = async (req, res) => {
         // }
         const {email} = req.params;
 
-        const user = await UserModel.findOne({email});
+        const user = await UserModel.findOne({email}).populate('academicDocuments').lean({virtuals: true});
 
         if(!user) {
             return res
@@ -352,7 +352,7 @@ exports.resetPassword = async (req, res) => {
         const {email} = req.params;
         const {password} = req.body || {};
 
-        const user = await UserModel.findOne({email}).select("+password");
+        const user = await UserModel.findOne({email}).select("+password").populate('academicDocuments').lean({virtuals: true});
 
         if(!user) {
             return res
