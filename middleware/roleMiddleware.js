@@ -5,6 +5,7 @@ exports.assignRole = (req, res, next) => {
   try {
     const endpoint = req.url;
     const roles = ["admin", "sponsor", "student"];
+    // console.log(req.body);
 
     const role = roles.find((key) => endpoint.includes(key));
     const sponsorType = endpoint.includes("organization") ;
