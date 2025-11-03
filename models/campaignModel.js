@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const PaymentModel = require("./paymentModel");
 
 const campaignSchema = new mongoose.Schema(
   {
@@ -47,6 +48,11 @@ const campaignSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    status: {
+      type: String,
+      enum: ['rejected', 'pending', 'approved', 'completed'],
+      default: 'pending'
+    },
     campaignImage: {
       imageUrl: {
         type: String,
@@ -58,8 +64,17 @@ const campaignSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
+
+campaignSchema.virtual("donations", {
+  ref: "Payment",
+  localField: "_id",
+  foreignField: "campaignId",
+  justOne: false,
+});
 
 const campaignModel = mongoose.model("Campaign", campaignSchema);
 
