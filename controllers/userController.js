@@ -10,7 +10,7 @@ exports.updateUser = async (req, res) => {
   try {
     const { userId } = req.params;
     const { firstName, lastName, role } = req.body || {};
-    const user = await UserModel.findById(userId).populate('academicDocuments').lean({virtuals: true});
+    const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({
         message: "User not found, please create an account",
@@ -50,7 +50,7 @@ exports.deleteUser = async (req, res) => {
 
   try {
     const { userId } = req.params;
-    const user = await UserModel.findById(userId).populate('academicDocuments').lean({virtuals: true});
+    const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({
         message: "User not found, please create an account",

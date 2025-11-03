@@ -179,12 +179,30 @@ campaignRouter.get('/:studentId', isAuthenticated, studentAccess, getStudentCamp
  *           schema:
  *             type: object
  *             properties:
+ *               schoolName:
+ *                 type: string
+ *                 example: The Curve Africa
+ *               year:
+ *                 type: number
+ *                 example: 2027
+ *               matricNumber:
+ *                 type: number
+ *                 example: 12345678
+ *               jambRegistrationNumber:
+ *                 type: number
+ *                 example: 87654321
+ *               duration:
+ *                 type: number
+ *                 example: 6
  *               title:
  *                 type: string
+ *                 example: Help me fund my education
  *               target:
  *                 type: number
+ *                 example: 5000
  *               story:
  *                 type: string
+ *                 example: I am a student in need of financial assistance...
  *               campaignImage:
  *                 type: string
  *                 format: binary
@@ -205,6 +223,21 @@ campaignRouter.get('/:studentId', isAuthenticated, studentAccess, getStudentCamp
  *                     _id:
  *                       type: string
  *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     schoolName:
+ *                       type: string
+ *                       example: The Curve Africa
+ *                     year:
+ *                       type: number
+ *                       example: 2027
+ *                     matricNumber:
+ *                       type: number
+ *                       example: 92743947534
+ *                     jambRegistrationNumber:
+ *                       type: number
+ *                       example: 8765432187384
+ *                     duration:
+ *                       type: number
+ *                       example: 12
  *                     studentId:
  *                       type: string
  *                       example: 60d5ec49a0d2db2a3c_dummy_id
