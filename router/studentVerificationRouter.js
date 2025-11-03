@@ -100,7 +100,7 @@ studentVerificationRouter.post('/:studentId', upload.single('verificationDocumen
  * /verification/document-detail/{documentId}:
  *   get:
  *     summary: Get a specific document by its ID
- *     tags: [Verifictions]
+ *     tags: [Verifications]
  *     parameters:
  *       - in: path
  *         name: campaignId
@@ -267,7 +267,7 @@ studentVerificationRouter.put('/:verificationId', upload.single('verificationDoc
  * /verification/{campaignId}:
  *   delete:
  *     summary: Delete a campaign
- *     tags: [Verification]
+ *     tags: [Verifications]
  *     parameters:
  *       - in: path
  *         name: campaignId
@@ -329,6 +329,6 @@ studentVerificationRouter.put('/:verificationId', upload.single('verificationDoc
  *         description: Internal server error
  */
 
-studentVerificationRouter.delete('/:verificationId', isAuthenticated, studentAccess, studentVerificationController.deleteVeriicationDocument);
+studentVerificationRouter.delete('/:verificationId', isAuthenticated, studentAccess, studentVerificationController.deleteStudentVerificationDocument);
 
 module.exports = studentVerificationRouter;

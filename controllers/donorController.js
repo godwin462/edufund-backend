@@ -1,5 +1,4 @@
 const paymentModel = require("../models/paymentModel");
-const academicModel = require("../models/academicModel");
 const campaignModel = require("../models/campaignModel");
 
 exports.totalStudentsHelped = async (req, res) => {
@@ -55,11 +54,9 @@ exports.myDonations = async (req, res) => {
 exports.getDonorsForStudent = async (req, res) => {
   try {
     const { studentId } = req.params;
-    const donors = await academicModel
+    const donors = await campaignModel
       .find({ studentId })
-      .distinct("donorId")
-      .populate("academicDocuments")
-      .lean({ virtuals: true });
+      .distinct("donorId");
     if (!donors || donors.length === 0) {
       return res.status(404).json({ message: "No donor yet" });
     }
