@@ -211,7 +211,7 @@ exports.changePassword = async (req, res) => {
         const {userId} = req.params;
         const {password, newPassword} = req.body || {};
 
-        const user = await UserModel.findById(userId).select("+password").populate('academicDocuments').lean({virtuals: true});
+        const user = await UserModel.findById(userId).select("+password");
 
         if(!user) {
             return res
@@ -352,7 +352,7 @@ exports.resetPassword = async (req, res) => {
         const {email} = req.params;
         const {password} = req.body || {};
 
-        const user = await UserModel.findOne({email}).select("+password").populate('academicDocuments').lean({virtuals: true});
+        const user = await UserModel.findOne({email}).select("+password");
 
         if(!user) {
             return res
