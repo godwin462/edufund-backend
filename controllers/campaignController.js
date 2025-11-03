@@ -1,4 +1,5 @@
 const campaignModel = require("../models/campaignModel");
+const PaymentModel = require("../models/paymentModel");
 const UserModel = require("../models/userModel");
 const {
   cloudinaryUpload,
@@ -218,12 +219,24 @@ exports.getCampaign = async (req, res) => {
     const { campaignId } = req.params;
     const campaign = await campaignModel
       .findById(campaignId)
-      .populate("studentId");
+      .populate("studentId donations").lean({ virtuals: true });
     if (!campaign) {
       return res.status(404).json({
         message: "Campaign not found",
       });
     }
+    const totalDonations = campaign.donations.reduce((acc, donation) => acc + donation.amount, 0);
+    campaign.totalDonations = totalDonations;
+
+    const donors = (await PaymentModel.find({ campaignId: campaign._id, status: "successful" }).distinct('senderId')).length;
+    campaign.donors = donors;
+    const fundedPercentage = ((totalDonations / campaign.target) * 100);
+    campaign.fundedPercentage = fundedPercentage;
+    const remainingAmount = campaign.target - totalDonations;
+    campaign.remainingAmount = remainingAmount < 0 ? 0 : remainingAmount;
+    const daysLeft = Math.ceil((new Date(campaign.createdAt).getTime() + (campaign.duration * 24 * 60 * 60 * 1000) - new Date().getTime()) / (24 * 60 * 60 * 1000));
+    campaign.daysLeft = daysLeft < 0 ? 0 : daysLeft;
+
     res.status(200).json({
       message: "Campaign found successfully",
       data: campaign,
