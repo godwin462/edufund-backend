@@ -93,7 +93,7 @@ app.use("/api/v1/donors", donorRouter);
 app.use("/api/v1/payment", paymentRouter);
 app.use("/api/v1/contact-us", contactUsRouter);
 app.use("/api/v1/campaigns", campaignRouter);
-app.use("/api/v1/donation", donationRouter);
+app.use("/api/v1/donations", donationRouter);
 app.use("/api/v1/notification", notificationRouter);
 
 app.get("/", (req, res) => {
