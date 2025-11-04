@@ -14,12 +14,12 @@ const {
 exports.createCampaign = async (req, res) => {
   try {
     const { studentId } = req.params;
-    // const {error} = createCampaignValidation.validate(req.body);
-    // if(error) {
-    //     return res.status(400).json({
-    //         message: error.message,
-    //     });
-    // }
+    const {error} = createCampaignValidation.validate(req.body);
+    if(error) {
+        return res.status(400).json({
+            message: error.message,
+        });
+    }
 
     let {
       schoolName,
