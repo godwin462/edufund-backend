@@ -1,5 +1,4 @@
 const joi = require("joi");
-const currentYear = new Date().getFullYear();
 
 exports.createCampaignValidation = joi.object({
   schoolName: joi.string().required().trim().messages({
@@ -10,12 +9,10 @@ exports.createCampaignValidation = joi.object({
     .number()
     .integer()
     .min(1000)
-    .max(currentYear)
     .required()
     .messages({
       "number.base": "Year must be a number.",
       "number.min": "Year must be at least minimum 4 digits.",
-      "number.max": `Year must be less than or equal to current year ${currentYear}.`,
       "any.required": "Year is required.",
     }),
   matricNumber: joi.number().required().messages({
@@ -53,11 +50,9 @@ exports.updateCampaignValidation = joi.object({
     .number()
     .integer()
     .min(1000)
-    .max(currentYear)
     .messages({
       "number.base": "Year must be a number.",
       "number.min": "Year must be at least minimum 4 digits.",
-      "number.max": `Year must be less than or equal to current year ${currentYear}.`,
     }),
   matricNumber: joi.number().messages({
     "number.base": "Matric number must be a number.",
