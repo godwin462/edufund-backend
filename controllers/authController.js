@@ -32,6 +32,14 @@ exports.register = async (req, res) => {
                 .status(400)
                 .json({message: "User with the credentials already exists"});
         }
+        if (phoneNumber)
+        const existingPhoneNumber = await UserModel.findOne({phoneNumber})
+
+        if(existingPhoneNumber) {
+            return res
+                .status(400)
+                .json({message: "User with the credentials already exists"});
+        }
 
         const hashedPassword = hashData(password);
         const user = new UserModel({
