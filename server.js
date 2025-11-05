@@ -18,6 +18,7 @@ const campaignRouter = require("./router/campaignRouter");
 const donationRouter = require("./router/donationRouter");
 const swaggerJSDoc = require("swagger-jsdoc");
 const notificationRouter = require("./router/notificationRouter");
+const studentDashboardRouter = require("./router/studentDashboardRouter");
 
 const app = express();
 
@@ -95,6 +96,7 @@ app.use("/api/v1/contact-us", contactUsRouter);
 app.use("/api/v1/campaigns", campaignRouter);
 app.use("/api/v1/donations", donationRouter);
 app.use("/api/v1/notification", notificationRouter);
+app.use("/api/v1/student-dashboard", studentDashboardRouter);
 
 app.get("/", (req, res) => {
 
