@@ -41,10 +41,10 @@ exports.verifyOtpMiddleware = async (req, res, next) => {
     if(decodeOtp.otp !== otp) {
       return res.status(400).json({message: "Wrong OTP, please check your email and try again"});
     }
-    if (!user.isVerified) {
-      user.isVerified = true;
-      await user.save();
-    }
+    // if (!user.isVerified) {
+    //   user.isVerified = true;
+    //   await user.save();
+    // }
     return next();
   } catch(error) {
     if(error.name === "TokenExpiredError") {

@@ -335,12 +335,10 @@ exports.forgotPassword = async (req, res) => {
     });
 
     // console.log(otp);
-    res
-      .status(200)
-      .json({
-        message: "Success, check your email for reset password token",
-        data: user,
-      });
+    res.status(200).json({
+      message: "Success, check your email for reset password token",
+      data: user,
+    });
   } catch (error) {
     console.log(error);
     res
@@ -368,7 +366,7 @@ exports.verifyResetPasswordOtp = async (req, res) => {
     }
 
     await OtpModel.deleteMany({ userId: user._id });
-
+    await UserModel.findByIdAndUpdate(user._id, { isVerified: true });
     res
       .status(200)
       .json({ message: "Success, email verification successful", data: user });
