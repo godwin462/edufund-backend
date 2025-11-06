@@ -24,6 +24,7 @@ exports.createCampaign = async (req, res) => {
     let {
       schoolName,
       year,
+      course,
       matricNumber,
       jambRegistrationNumber,
       duration,
@@ -77,6 +78,7 @@ exports.createCampaign = async (req, res) => {
       studentId,
       schoolName,
       year,
+      course,
       matricNumber,
       jambRegistrationNumber,
       duration,

@@ -17,6 +17,11 @@ const campaignSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    course: {
+      type: String,
+      trim: true,
+      required: true,
+    },
     matricNumber: {
       type: String,
       required: true,
