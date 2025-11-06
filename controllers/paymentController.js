@@ -86,17 +86,31 @@ exports.makeDonation = async (req, res) => {
 exports.verifyPaymentWebHook = async (req, res) => {
   try {
     const { event, data } = req.body || {};
+    console.log(data);
     const payment = await paymentModel.findOne({ reference: data.reference });
     if (!payment) {
       return res.status(404).json({
         message: "Payment not found",
       });
     }
-    const campaign = await campaignModel.findById(payment.campaignId.toString());
+    const campaign = await campaignModel
+      .findById(payment.campaignId.toString())
     if (!campaign) {
       console.log("Campaign not found");
       return res.status(404).json({
         message: "Campaign not found",
+      });
+    }
+    if (!campaign.isActive) {
+      console.log("Campaign is not active");
+      await createNotification(
+        payment.senderId,
+        "Campaign is not active",
+        payment._id,
+        "error"
+      )
+      return res.status(400).json({
+        message: "Campaign is not active",
       });
     }
     const donations = await paymentModel.find({
@@ -112,8 +126,20 @@ exports.verifyPaymentWebHook = async (req, res) => {
       payment.status = "successful";
       totalDonation += payment.amount;
       if (totalDonation >= campaign.target) {
-        campaign.isActive = false;
-        await campaign.save();
+        try {
+          await campaignModel.findByIdAndUpdate(payment.campaignId, {
+            isActive: false,
+          });
+        } catch (error) {
+          console.log(
+            "Error updating campaign, but proceeding with payment verification.",
+            error
+          );
+          return res.status(200).json({
+            message:
+              "Campaign update failed, but payment verification successful",
+          });
+        }
       }
       await payment.save();
       await createNotification(
@@ -128,6 +154,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
         payment._id,
         "success"
       );
+      console.log("payment completed successfully");
       res.status(200).json({
         message: "Payment Verification Successful",
       });
@@ -140,14 +167,18 @@ exports.verifyPaymentWebHook = async (req, res) => {
         payment._id,
         "error"
       );
+      console.log("payment failed");
       res.status(200).json({
         message: "Payment Failed",
       });
+    } else {
+      throw new Error("Invalid event");
     }
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Error verifying payment: " + error.message,
+      message: "Error verifying payment: ",
+      error: error.message,
     });
   }
 };
