@@ -18,21 +18,27 @@ exports.overview = async (req, res) => {
       senderId: donorId,
       status: "successful",
     });
-    totalDonated =
-      totalDonated?.reduce((acc, donation) => acc + donation.amount, 0) || 0;
 
     const activeCampaigns = await campaignModel
       .find({ isActive: true })
       .populate("donations")
       .exec();
-    const recentDonations = await PaymentModel.find({ senderId: donorId, status: "successful" })
+    const recentDonations = await PaymentModel.find({
+      senderId: donorId,
+      status: "successful",
+    })
       .populate("receiverId campaignId")
       .sort({ createdAt: -1 })
       .exec();
+    let studentsHelped = totalDonated.map((donation) => donation.receiverId);
+    studentsHelped = new Set(studentsHelped).size;
+    totalDonated =
+      totalDonated?.reduce((acc, donation) => acc + donation.amount, 0) || 0;
 
     const data = {
       donor,
       totalDonated,
+      studentsHelped,
       activeCampaigns,
       recentDonations,
     };
