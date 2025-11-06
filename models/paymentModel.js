@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const Payment = new mongoose.Schema({
   campaignId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "campaign",
+    ref: "Campaign",
     required: true,
   },
   senderId: {
