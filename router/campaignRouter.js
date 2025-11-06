@@ -171,8 +171,8 @@ campaignRouter.get(
  */
 campaignRouter.get(
   "/:studentId",
-  // isAuthenticated,
-  // studentAccess,
+  isAuthenticated,
+  studentAccess,
   getStudentCampaigns
 );
 

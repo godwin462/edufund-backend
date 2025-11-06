@@ -32,6 +32,10 @@ exports.createCampaignValidation = joi.object({
     "string.base": "Title must be a string.",
     "any.required": "Title is required.",
   }),
+  course: joi.string().required().trim().messages({
+    "string.base": "Course must be a string.",
+    "any.required": "Course is required.",
+  }),
   target: joi.number().required().messages({
     "number.base": "Target must be a number.",
     "any.required": "Target is required.",
@@ -66,6 +70,10 @@ exports.updateCampaignValidation = joi.object({
   }),
   title: joi.string().trim().messages({
     "string.base": "Title must be a string.",
+  }),
+  course: joi.string().trim().messages({
+    "string.base": "Course must be a string.",
+    "any.required": "Course is required.",
   }),
   target: joi.number().messages({
     "number.base": "Target must be a number.",

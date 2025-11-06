@@ -14,12 +14,12 @@ const {
 exports.createCampaign = async (req, res) => {
   try {
     const { studentId } = req.params;
-    const { error } = createCampaignValidation.validate(req.body);
-    if (error) {
-      return res.status(400).json({
-        message: error.message,
-      });
-    }
+    // const { error } = createCampaignValidation.validate(req.body);
+    // if (error) {
+    //   return res.status(400).json({
+    //     message: error.message,
+    //   });
+    // }
 
     let {
       schoolName,
@@ -95,7 +95,7 @@ exports.createCampaign = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      messaage: "Error creating campaign",
+      message: "Error creating campaign",
       error: error.message,
     });
   }
@@ -104,12 +104,12 @@ exports.createCampaign = async (req, res) => {
 exports.updateCampaign = async (req, res) => {
   try {
     const { campaignId } = req.params;
-    const { error } = updateCampaignValidation.validate(req.body);
-    if (error) {
-      return res.status(400).json({
-        message: error.message,
-      });
-    }
+    // const { error } = updateCampaignValidation.validate(req.body);
+    // if (error) {
+    //   return res.status(400).json({
+    //     message: error.message,
+    //   });
+    // }
     const { title, target, story, isActive } = req.body || {};
     let file = null;
     const campaign = await campaignModel.findById(campaignId);
