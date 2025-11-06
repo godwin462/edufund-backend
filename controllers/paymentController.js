@@ -92,7 +92,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
         message: "Payment not found",
       });
     }
-    const campaign = await campaignModel.findById(payment.campaignId);
+    const campaign = await campaignModel.findById(payment.campaignId.toString());
     if (!campaign) {
       console.log("Campaign not found");
       return res.status(404).json({
@@ -100,7 +100,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
       });
     }
     const donations = await paymentModel.find({
-      campaignId: payment.campaignId,
+      campaignId: payment.campaignId.toString(),
       status: "successful",
     });
     let totalDonation = donations.reduce(
