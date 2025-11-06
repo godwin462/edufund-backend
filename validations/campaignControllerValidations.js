@@ -8,11 +8,11 @@ exports.createCampaignValidation = joi.object({
   year: joi
     .number()
     .integer()
-    .min(1000)
+    .min(100)
     .required()
     .messages({
       "number.base": "Year must be a number.",
-      "number.min": "Year must be at least minimum 4 digits.",
+      "number.min": "Year must be at least minimum 3 digits.",
       "any.required": "Year is required.",
     }),
   matricNumber: joi.number().required().messages({
@@ -49,10 +49,10 @@ exports.updateCampaignValidation = joi.object({
   year: joi
     .number()
     .integer()
-    .min(1000)
+    .min(100)
     .messages({
       "number.base": "Year must be a number.",
-      "number.min": "Year must be at least minimum 4 digits.",
+      "number.min": "Year must be at least minimum 3 digits.",
     }),
   matricNumber: joi.number().messages({
     "number.base": "Matric number must be a number.",

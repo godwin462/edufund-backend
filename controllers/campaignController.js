@@ -14,11 +14,11 @@ const {
 exports.createCampaign = async (req, res) => {
   try {
     const { studentId } = req.params;
-    const {error} = createCampaignValidation.validate(req.body);
-    if(error) {
-        return res.status(400).json({
-            message: error.message,
-        });
+    const { error } = createCampaignValidation.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: error.message,
+      });
     }
 
     let {
@@ -178,13 +178,17 @@ exports.deleteCampaign = async (req, res) => {
 
 exports.getStudentCampaigns = async (req, res) => {
   try {
+    const { status, isActive } = req.query;
     const { studentId } = req.params;
-    const campaigns = await campaignModel.find({ studentId });
+    const campaigns = await campaignModel
+      .find({ studentId, isActive, status })
+      .populate("studentId donations")
+      .exec();
     const total = campaigns.length;
     res.status(200).json({
       message:
         total < 1
-          ? "No campaigns yet,create to view campaigns"
+          ? "No campaigns yet, create to view campaigns"
           : "Campaigns found successfully",
       total,
       data: campaigns,
@@ -199,7 +203,10 @@ exports.getStudentCampaigns = async (req, res) => {
 
 exports.getAllCampaigns = async (req, res) => {
   try {
-    const campaigns = await campaignModel.find().populate("studentId");
+    const campaigns = await campaignModel
+      .find()
+      .populate("studentId donations")
+      .exec();
     const total = campaigns.length;
     res.status(200).json({
       message: total < 1 ? "No campaigns yet" : "Campaigns found successfully",
@@ -207,6 +214,7 @@ exports.getAllCampaigns = async (req, res) => {
       data: campaigns,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: "Error getting campaigns",
       error: error.message,
@@ -219,24 +227,12 @@ exports.getCampaign = async (req, res) => {
     const { campaignId } = req.params;
     const campaign = await campaignModel
       .findById(campaignId)
-      .populate("studentId donations").lean({ virtuals: true });
+      .populate("studentId donations").exec();
     if (!campaign) {
       return res.status(404).json({
         message: "Campaign not found",
       });
     }
-    const totalDonations = campaign.donations.reduce((acc, donation) => acc + donation.amount, 0);
-    campaign.totalDonations = totalDonations;
-
-    const donors = (await PaymentModel.find({ campaignId: campaign._id, status: "successful" }).distinct('senderId')).length;
-    campaign.donors = donors;
-    const fundedPercentage = ((totalDonations / campaign.target) * 100);
-    campaign.fundedPercentage = fundedPercentage;
-    const remainingAmount = campaign.target - totalDonations;
-    campaign.remainingAmount = remainingAmount < 0 ? 0 : remainingAmount;
-    const daysLeft = Math.ceil((new Date(campaign.createdAt).getTime() + (campaign.duration * 24 * 60 * 60 * 1000) - new Date().getTime()) / (24 * 60 * 60 * 1000));
-    campaign.daysLeft = daysLeft < 0 ? 0 : daysLeft;
-
     res.status(200).json({
       message: "Campaign found successfully",
       data: campaign,

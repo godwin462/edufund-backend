@@ -18,11 +18,12 @@ const campaignSchema = new mongoose.Schema(
       required: true,
     },
     matricNumber: {
-      type: Number,
+      type: String,
       required: true,
+      trim: true,
     },
     jambRegistrationNumber: {
-      type: Number,
+      type: String,
       required: true,
       trim: true,
     },
@@ -50,8 +51,8 @@ const campaignSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['rejected', 'pending', 'approved', 'completed'],
-      default: 'pending'
+      enum: ["rejected", "pending", "approved", "completed"],
+      default: "pending",
     },
     campaignImage: {
       imageUrl: {
@@ -74,6 +75,55 @@ campaignSchema.virtual("donations", {
   localField: "_id",
   foreignField: "campaignId",
   justOne: false,
+});
+
+campaignSchema.virtual("totalDonations").get(function () {
+  if (!this.donations || this.donations.length === 0) return 0;
+  return this.donations.reduce(
+    (acc, donation) =>
+      donation.status === "successful" ? acc + donation.amount : acc,
+    0
+  );
+});
+
+campaignSchema.virtual("fundedPercentage").get(function () {
+  if (this.target === 0 || !this.donations) return 0;
+  const totalDonations = this.donations.reduce(
+    (acc, donation) => acc + donation.amount,
+    0
+  );
+  const percentage = (totalDonations / this.target) * 100;
+  return percentage > 100 ? 100 : percentage;
+});
+
+campaignSchema.virtual("endDate").get(function () {
+  if (!this.createdAt) {
+    return null;
+  }
+  return new Date(
+    this.createdAt.getTime() + this.duration * 24 * 60 * 60 * 1000
+  );
+});
+
+campaignSchema.virtual("daysLeft").get(function () {
+  if (!this.endDate) {
+    return this.duration;
+  }
+  const msLeft = this.endDate.getTime() - Date.now();
+  const daysLeft = Math.ceil(msLeft / (1000 * 60 * 60 * 24));
+  return daysLeft > 0 ? daysLeft : 0;
+});
+
+campaignSchema.virtual("remainingAmount").get(function () {
+  const remainingAmount = this.target - this.totalDonations;
+  return remainingAmount > 0 ? remainingAmount : 0;
+});
+
+campaignSchema.virtual("donors").get(function () {
+  const donors = this.donations?.map((donation) =>
+    donation.donorId?.toString()
+  );
+  return new Set(donors).size;
 });
 
 const campaignModel = mongoose.model("Campaign", campaignSchema);
