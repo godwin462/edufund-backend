@@ -181,7 +181,7 @@ exports.getStudentCampaigns = async (req, res) => {
     const { status, isActive } = req.query;
     const { studentId } = req.params;
     const campaigns = await campaignModel
-      .find({ studentId, isActive, status })
+      .find({ studentId})
       .populate("studentId donations")
       .exec();
     const total = campaigns.length;
