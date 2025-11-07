@@ -13,6 +13,7 @@ exports.makeDonation = async (req, res) => {
     // console.log(amount);
     amount = parseInt(amount);
     // console.log(amount);
+    const ref = reference.randomUUID();
     if (!amount || typeof amount !== "number" || amount <= 0) {
       return res.status(400).json({
         message: "Please provide a valid donation amount",
@@ -39,7 +40,7 @@ exports.makeDonation = async (req, res) => {
         message: "Donor not found, please create an account to make donation",
       });
     }
-const ref = reference.randomUUID()
+
     const payload = {
       amount: parseInt(amount),
       currency: "NGN",
@@ -72,6 +73,7 @@ const ref = reference.randomUUID()
         message: "Error creating transaction",
       });
     }
+    console.log(payload, transaction, ref);
     return res.status(200).json({
       message: "Donation initiated successfully",
       data: response.data,
