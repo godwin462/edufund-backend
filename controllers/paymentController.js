@@ -160,7 +160,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
       res.status(200).json({
         message: "Payment Verification Successful",
       });
-    } else if (data.status === "failed") {
+    } else if (event === "charge.failed") {
       payment.status = "failed";
       await payment.save();
       await createNotification(
