@@ -154,8 +154,6 @@ donorRouter.get("/allDonors/:studentId", isAuthenticated, getDonorsForStudent);
  *       "500":
  *         description: Server error.
  */
-donorRouter.get("/myDonations/:donorId",
-  //  isAuthenticated,
-    myDonations);
+donorRouter.get("/myDonations/:donorId", isAuthenticated, myDonations);
 
 module.exports = donorRouter;
