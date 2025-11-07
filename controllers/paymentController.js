@@ -12,6 +12,7 @@ exports.makeDonation = async (req, res) => {
     let { amount } = req.body || {};
     // console.log(amount);
     amount = parseInt(amount);
+    console.log(amount);
     if (!amount || typeof amount !== "number" || amount <= 0) {
       return res.status(400).json({
         message: "Please provide a valid donation amount",
@@ -93,8 +94,9 @@ exports.verifyPaymentWebHook = async (req, res) => {
         message: "Payment not found",
       });
     }
-    const campaign = await campaignModel
-      .findById(payment.campaignId.toString())
+    const campaign = await campaignModel.findById(
+      payment.campaignId.toString()
+    );
     if (!campaign) {
       console.log("Campaign not found");
       return res.status(404).json({
@@ -108,7 +110,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
         "Campaign is not active",
         payment._id,
         "error"
-      )
+      );
       return res.status(400).json({
         message: "Campaign is not active",
       });
