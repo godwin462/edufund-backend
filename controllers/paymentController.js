@@ -10,9 +10,9 @@ exports.makeDonation = async (req, res) => {
   try {
     const { donorId, receiverId, campaignId } = req.params;
     let { amount } = req.body || {};
-    console.log(amount);
+    // console.log(amount);
     amount = parseInt(amount);
-    console.log(amount);
+    // console.log(amount);
     if (!amount || typeof amount !== "number" || amount <= 0) {
       return res.status(400).json({
         message: "Please provide a valid donation amount",
@@ -63,7 +63,7 @@ exports.makeDonation = async (req, res) => {
       receiverId,
       amount: parseInt(amount),
       reference: reference.randomUUID(),
-      redirect_url: req.url,
+      redirect_url: `https://edu-fund-gamma.vercel.app/donor_dashboard/donation`,
     });
 
     if (!transaction) {
