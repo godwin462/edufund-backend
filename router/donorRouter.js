@@ -96,10 +96,14 @@ donorRouter.get("/allDonors/:studentId", isAuthenticated, getDonorsForStudent);
 
 /**
  * @swagger
- * /donors/myDonations:
+ * /donors/myDonations/{donorId}:
  *   get:
  *     summary: Get all donations made on the platform
  *     tags: [Donors]
+ *     parameters:
+ *       - in: path
+ *         name: donorId
+ *         required: true
  *     responses:
  *       "200":
  *         description: Successfully retrieved all donations.
@@ -150,6 +154,8 @@ donorRouter.get("/allDonors/:studentId", isAuthenticated, getDonorsForStudent);
  *       "500":
  *         description: Server error.
  */
-donorRouter.get("/myDonations", myDonations);
+donorRouter.get("/myDonations/:donorId",
+  //  isAuthenticated,
+    myDonations);
 
 module.exports = donorRouter;
