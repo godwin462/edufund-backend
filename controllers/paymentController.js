@@ -31,6 +31,7 @@ exports.makeDonation = async (req, res) => {
         message: "Receiver not a student, donation not allowed",
       });
     }
+
     const donor = await userModel.findById(donorId);
 
     if (!donor) {
@@ -38,11 +39,11 @@ exports.makeDonation = async (req, res) => {
         message: "Donor not found, please create an account to make donation",
       });
     }
-
+const ref = reference.randomUUID()
     const payload = {
       amount: parseInt(amount),
       currency: "NGN",
-      reference: reference.randomUUID(),
+      reference: ref,
       customer: {
         email: donor.email,
         name: donor.fullName,
@@ -63,7 +64,7 @@ exports.makeDonation = async (req, res) => {
       senderId: donorId,
       receiverId,
       amount: parseInt(amount),
-      reference: reference.randomUUID(),
+      reference: ref,
     });
 
     if (!transaction) {
