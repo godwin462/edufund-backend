@@ -87,7 +87,9 @@ exports.makeDonation = async (req, res) => {
 exports.verifyPaymentWebHook = async (req, res) => {
   try {
     const { event, data } = req.body || {};
+    console.log("Verifying payment...");
     console.log(data);
+    console.log(event);
     const payment = await paymentModel.findOne({ reference: data.reference });
     if (!payment) {
       return res.status(404).json({
@@ -115,6 +117,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
         message: "Campaign is not active",
       });
     }
+
     const donations = await paymentModel.find({
       campaignId: payment.campaignId.toString(),
       status: "successful",
@@ -125,6 +128,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
     );
 
     if (data.status === "success") {
+      console.log("Payment successful");
       payment.status = "successful";
       totalDonation += payment.amount;
       if (totalDonation >= campaign.target) {
@@ -161,6 +165,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
         message: "Payment Verification Successful",
       });
     } else if (event === "charge.failed") {
+      console.log("Payment failed");
       payment.status = "failed";
       await payment.save();
       await createNotification(
@@ -169,7 +174,6 @@ exports.verifyPaymentWebHook = async (req, res) => {
         payment._id,
         "error"
       );
-      console.log("payment failed");
       res.status(200).json({
         message: "Payment Failed",
       });
