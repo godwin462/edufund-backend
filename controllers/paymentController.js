@@ -10,7 +10,7 @@ exports.makeDonation = async (req, res) => {
   try {
     const { donorId, receiverId, campaignId } = req.params;
     let { amount } = req.body || {};
-    // console.log(amount);
+    console.log(amount);
     amount = parseInt(amount);
     console.log(amount);
     if (!amount || typeof amount !== "number" || amount <= 0) {
