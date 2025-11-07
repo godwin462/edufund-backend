@@ -4,7 +4,7 @@ const campaignModel = require("../models/campaignModel");
 const WithdrawalModel = require("../models/withdrawalModel");
 const { koraMakePayment } = require("../utils/kora");
 const { createNotification } = require("./notificationController");
-const reference = require("crypto").randomUUID();
+const reference = require("crypto");
 
 exports.makeDonation = async (req, res) => {
   try {
@@ -42,7 +42,7 @@ exports.makeDonation = async (req, res) => {
     const payload = {
       amount: parseInt(amount),
       currency: "NGN",
-      reference,
+      reference: reference.randomUUID(),
       customer: {
         email: donor.email,
         name: donor.fullName,
@@ -62,7 +62,7 @@ exports.makeDonation = async (req, res) => {
       senderId: donorId,
       receiverId,
       amount: parseInt(amount),
-      reference,
+      reference: reference.randomUUID(),
       redirect_url: req.url,
     });
 
@@ -220,7 +220,7 @@ exports.withdrawDonation = async (req, res) => {
       note,
     });
     const payload = {
-      reference,
+      reference:reference.randomUUID(),
       amount,
       currency: "NGN",
       customer: {
