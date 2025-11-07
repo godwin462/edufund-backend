@@ -124,7 +124,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
       0
     );
 
-    if (event === "charge.success") {
+    if (data.status === "success") {
       payment.status = "successful";
       totalDonation += payment.amount;
       if (totalDonation >= campaign.target) {
@@ -160,7 +160,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
       res.status(200).json({
         message: "Payment Verification Successful",
       });
-    } else if (event === "charge.failed") {
+    } else if (data.status === "failed") {
       payment.status = "failed";
       await payment.save();
       await createNotification(
