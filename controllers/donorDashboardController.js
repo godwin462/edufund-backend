@@ -34,11 +34,10 @@ exports.overview = async (req, res) => {
     studentsHelped = new Set(studentsHelped).size;
     totalDonated =
       totalDonated?.reduce((acc, donation) => acc + donation.amount, 0) || 0;
-
+    const stats = [totalDonated, studentsHelped, activeCampaigns.length];
     const data = {
       donor,
-      totalDonated,
-      studentsHelped,
+      stats,
       activeCampaigns,
       recentDonations,
     };
