@@ -92,6 +92,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
     console.log(event);
     const payment = await paymentModel.findOne({ reference: data.reference });
     if (!payment) {
+      console.log("Payment not found");
       return res.status(404).json({
         message: "Payment not found",
       });
