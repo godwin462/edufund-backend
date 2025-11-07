@@ -47,6 +47,7 @@ exports.makeDonation = async (req, res) => {
         email: donor.email,
         name: donor.fullName,
       },
+      redirect_url: `https://edu-fund-gamma.vercel.app/donor_dashboard/donation`,
     };
     const url = "charges/initialize";
     const response = await koraMakePayment(url, payload);
@@ -63,7 +64,6 @@ exports.makeDonation = async (req, res) => {
       receiverId,
       amount: parseInt(amount),
       reference: reference.randomUUID(),
-      redirect_url: `https://edu-fund-gamma.vercel.app/donor_dashboard/donation`,
     });
 
     if (!transaction) {
@@ -220,7 +220,7 @@ exports.withdrawDonation = async (req, res) => {
       note,
     });
     const payload = {
-      reference:reference.randomUUID(),
+      reference: reference.randomUUID(),
       amount,
       currency: "NGN",
       customer: {
