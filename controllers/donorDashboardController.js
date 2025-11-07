@@ -34,7 +34,12 @@ exports.overview = async (req, res) => {
     studentsHelped = new Set(studentsHelped).size;
     totalDonated =
       totalDonated?.reduce((acc, donation) => acc + donation.amount, 0) || 0;
-    const stats = [totalDonated, studentsHelped, activeCampaigns.length];
+    const stats = [
+      `₦${totalDonated.toLocaleString()}`,
+      studentsHelped,
+      activeCampaigns.length,
+      `${94}%`,
+    ];
     const data = {
       donor,
       stats,
