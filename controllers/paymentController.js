@@ -41,6 +41,17 @@ exports.makeDonation = async (req, res) => {
       });
     }
 
+    const campaign = await campaignModel.findById(campaignId);
+    if (!campaign) {
+      return res.status(404).json({
+        message: "Campaign not found",
+      });
+    }
+    if (!campaign.isActive) {
+      return res.status(400).json({
+        message: "Action not allowed, can not donate to an inactive campaign",
+      });
+    }
     const payload = {
       amount: parseInt(amount),
       currency: "NGN",
@@ -81,7 +92,7 @@ exports.makeDonation = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Error initializing payment: " + error.message,
+      message: "Server error initializing payment",
       error: error.response,
     });
   }
