@@ -57,8 +57,10 @@ exports.register = async (req, res) => {
 
     const hashedPassword = hashData(password);
     const user = new UserModel({
-      firstName,
-      lastName,
+      firstName:
+        firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase(),
+      lastName:
+        lastName.charAt(0).toUpperCase() + lastName.slice(1).toLowerCase(),
       email,
       phoneNumber,
       role,

@@ -6,7 +6,6 @@ const {
 } = require("../utils/cloudinaryUtil");
 
 exports.updateUser = async (req, res) => {
-
   try {
     const { userId } = req.params;
     const { firstName, lastName, role } = req.body || {};
@@ -28,8 +27,12 @@ exports.updateUser = async (req, res) => {
       };
     }
 
-    user.firstName = firstName ?? user.firstName;
-    user.lastName = lastName ?? user.lastName;
+    user.firstName =
+      charAt(0).toUpperCase() + firstName.slice(1).toLowerCase() ??
+      user.firstName;
+    user.lastName =
+      charAt(0).toUpperCase() + lastName.slice(1).toLowerCase() ??
+      user.lastName;
     user.role = role ?? user.role;
     user.profilePicture = profilePicture ?? user.profilePicture;
 
@@ -47,7 +50,6 @@ exports.updateUser = async (req, res) => {
 };
 
 exports.deleteUser = async (req, res) => {
-
   try {
     const { userId } = req.params;
     const user = await UserModel.findById(userId);
@@ -74,10 +76,11 @@ exports.deleteUser = async (req, res) => {
 };
 
 exports.getUser = async (req, res) => {
-
   try {
     const { userId } = req.params;
-    const user = await UserModel.findById(userId).populate('academicDocuments').lean({virtuals: true});
+    const user = await UserModel.findById(userId)
+      .populate("academicDocuments")
+      .lean({ virtuals: true });
     if (!user) {
       return res.status(404).json({
         message: "User not found, please create an account",
@@ -96,9 +99,10 @@ exports.getUser = async (req, res) => {
 };
 
 exports.getAllUsers = async (req, res) => {
-
   try {
-    const users = await UserModel.find().populate('academicDocuments').lean({virtuals: true});
+    const users = await UserModel.find()
+      .populate("academicDocuments")
+      .lean({ virtuals: true });
     const total = users.length;
     res.status(200).json({
       message: total < 1 ? "No users found" : "Users found successfully",
@@ -114,10 +118,11 @@ exports.getAllUsers = async (req, res) => {
 };
 
 exports.getUserByEmail = async (req, res) => {
-
   try {
     const { email } = req.body || {};
-    const user = await UserModel.findOne({email}).populate('academicDocuments').lean({virtuals: true});
+    const user = await UserModel.findOne({ email })
+      .populate("academicDocuments")
+      .lean({ virtuals: true });
     if (!user) {
       return res.status(404).json({
         message: "User not found, please create an account",
