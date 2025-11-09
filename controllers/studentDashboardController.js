@@ -24,39 +24,9 @@ exports.overview = async (req, res) => {
     const activeCampaign = await campaignModel
       .findOne({ studentId, isActive: true })
       .populate("studentId donations")
-      .lean({ virtuals: true });
-    const activeCampaignTotalDonations =
-      activeCampaign?.donations.reduce(
-        (acc, donation) => acc + donation.amount,
-        0
-      ) || 0;
-    const goalProgress =
-      (activeCampaignTotalDonations / activeCampaign?.target) * 100;
+      .exec();
 
-    const daysRemaining = Math.ceil(
-      (new Date(activeCampaign?.createdAt).getTime() +
-        activeCampaign?.duration * 24 * 60 * 60 * 1000 -
-        new Date().getTime()) /
-        (24 * 60 * 60 * 1000)
-    );
 
-    const donors = (
-      await PaymentModel.find({
-        campaignId: activeCampaign?._id,
-        status: "successful",
-      }).distinct("senderId")
-    ).length;
-
-    if (activeCampaign) {
-      activeCampaign.fundedPercentage = goalProgress;
-      activeCampaign.totalDonations = activeCampaignTotalDonations;
-      activeCampaign.donors = donors;
-      const remainingAmount =
-        activeCampaign.target - activeCampaignTotalDonations;
-      activeCampaign.remainingAmount =
-        remainingAmount < 0 ? 0 : remainingAmount;
-      activeCampaign.daysLeft = daysRemaining < 0 ? 0 : daysRemaining;
-    }
 
     const recentDonors = await PaymentModel.find({
       receiverId: studentId,
@@ -75,9 +45,9 @@ exports.overview = async (req, res) => {
       student,
       totalRaised,
       totalDonors: totalDonors.length || 0,
+      goalProgress: activeCampaign?.fundedPercentage || 0,
+      daysRemaining: activeCampaign?.daysLeft || 0,
       activeCampaign,
-      goalProgress,
-      daysRemaining,
       recentDonors,
       recentActivities,
     };
