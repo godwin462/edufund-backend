@@ -104,7 +104,9 @@ exports.verifyPaymentWebHook = async (req, res) => {
     console.log("Verifying payment...");
     console.log(data);
     console.log(event);
-    const payment = await paymentModel.findOne({ reference: data.reference });
+    const payment = await paymentModel
+      .findOne({ reference: data.reference })
+      .populate("receiverId");
     if (!payment) {
       console.log("Payment not found");
       return res.status(404).json({
@@ -124,7 +126,9 @@ exports.verifyPaymentWebHook = async (req, res) => {
       console.log("Campaign is not active");
       await createNotification(
         payment.senderId,
-        "Campaign is not active",
+        `Your donation of ₦${payment.amount.toLocaleString()} ${
+          payment.receiverId?.fullName && "to " + payment.receiverId?.fullName
+        } was not processed because the campaign is not active`,
         payment._id,
         "error"
       );
@@ -144,13 +148,18 @@ exports.verifyPaymentWebHook = async (req, res) => {
 
     if (data.status === "success") {
       console.log("Payment successful");
-      payment.status = "successful";
       totalDonation += payment.amount;
       if (totalDonation >= campaign.target) {
         try {
           await campaignModel.findByIdAndUpdate(payment.campaignId, {
             isActive: false,
           });
+          createNotification(
+            payment.senderId,
+            `Good news! Your campaign has reached its target donation amount of ₦${campaign.target.toLocaleString()}`,
+            payment._id,
+            "success"
+          );
         } catch (error) {
           console.log(
             "Error updating campaign, but proceeding with payment verification.",
@@ -162,16 +171,22 @@ exports.verifyPaymentWebHook = async (req, res) => {
           });
         }
       }
-      await payment.save();
+      await paymentModel.findByIdAndUpdate(payment._id, {
+        status: "successful",
+      })
       await createNotification(
         payment.senderId,
-        `Donation of ₦${payment.amount.toLocaleString()} was successful`,
+        `Donation of ₦${payment.amount.toLocaleString()} ${
+          payment.receiverId?.fullName && "to " + payment.receiverId?.fullName
+        } was successful`,
         payment._id,
         "success"
       );
       await createNotification(
         payment.receiverId,
-        `New donation of ₦${payment.amount.toLocaleString()}  received`,
+        `New donation of ₦${payment.amount.toLocaleString()}  received ${
+          payment.senderId?.fullName && "from " + payment.senderId?.fullName
+        }`,
         payment._id,
         "success"
       );
@@ -181,11 +196,14 @@ exports.verifyPaymentWebHook = async (req, res) => {
       });
     } else if (event === "charge.failed") {
       console.log("Payment failed");
-      payment.status = "failed";
-      await payment.save();
+      await paymentModel.findByIdAndUpdate(payment._id, {
+        status: "failed",
+      })
       await createNotification(
         payment.senderId,
-        `Your donation of ₦${payment.amount.toLocaleString()} failed`,
+        `Your donation of ₦${payment.amount.toLocaleString()} ${
+          payment.receiverId?.fullName && "to " + payment.receiverId?.fullName
+        } was not successful`,
         payment._id,
         "error"
       );
