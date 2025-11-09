@@ -113,12 +113,28 @@ campaignSchema.virtual("endDate").get(function () {
 });
 
 campaignSchema.virtual("daysLeft").get(function () {
-  if (!this.endDate) {
-    return this.duration;
+  const startDate = this.createdAt;
+  const durationDays = this.duration;
+
+  if (!startDate || !durationDays) {
+    return 0;
   }
-  const msLeft = this.endDate.getTime() - Date.now();
-  const daysLeft = Math.ceil(msLeft / (1000 * 60 * 60 * 24));
-  return daysLeft > 0 ? daysLeft : 0;
+
+  const endDate = new Date(startDate);
+  endDate.setDate(startDate.getDate() + durationDays);
+
+  const today = new Date();
+
+  endDate.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+
+  const timeDifference = endDate.getTime() - today.getTime();
+
+  const oneDayInMilliseconds = 1000 * 60 * 60 * 24;
+
+  let daysLeft = Math.ceil(timeDifference / oneDayInMilliseconds);
+
+  return Math.max(0, daysLeft);
 });
 
 campaignSchema.virtual("remainingAmount").get(function () {
