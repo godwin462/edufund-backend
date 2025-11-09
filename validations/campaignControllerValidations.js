@@ -11,12 +11,12 @@ exports.createCampaignValidation = joi.object({
     "number.max": "Year must be at most 3 digits.",
     "any.required": "Year is required.",
   }),
-  matricNumber: joi.number().required().messages({
-    "number.base": "Matric number must be a number.",
+  matricNumber: joi.string().alphanum().required().messages({
+    "string.base": "Matric number must be a string.",
     "any.required": "Matric number is required.",
   }),
-  jambRegistrationNumber: joi.number().required().messages({
-    "number.base": "Jamb registration number must be a number.",
+  jambRegistrationNumber: joi.string().alphanum().required().messages({
+    "string.base": "Jamb registration number must be a string.",
     "any.required": "Jamb registration number is required.",
   }),
   duration: joi.number().min(1).required().messages({
@@ -57,11 +57,11 @@ exports.updateCampaignValidation = joi.object({
     "number.base": "Year must be a number.",
     "number.min": "Year must be at least minimum 3 digits.",
   }),
-  matricNumber: joi.number().integer().messages({
-    "number.base": "Matric number must be a number.",
+  matricNumber: joi.string().alphanum().messages({
+    "string.base": "Matric number must be a string.",
   }),
-  jambRegistrationNumber: joi.number().messages({
-    "number.base": "Jamb registration number must be a number.",
+  jambRegistrationNumber: joi.string().alphanum().messages({
+    "string.base": "Jamb registration number must be a string.",
   }),
   duration: joi.number().min(1).messages({
     "number.base": "Duration must be a number.",
