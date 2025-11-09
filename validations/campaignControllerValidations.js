@@ -5,16 +5,12 @@ exports.createCampaignValidation = joi.object({
     "string.base": "School name must be a string.",
     "any.required": "School name is required.",
   }),
-  year: joi
-    .number()
-    .integer()
-    .min(100)
-    .required()
-    .messages({
-      "number.base": "Year must be a number.",
-      "number.min": "Year must be at least minimum 3 digits.",
-      "any.required": "Year is required.",
-    }),
+  year: joi.number().integer().min(100).max(999).required().messages({
+    "number.base": "Year must be a number.",
+    "number.min": "Year must be at least minimum 3 digits.",
+    "number.max": "Year must be at most 3 digits.",
+    "any.required": "Year is required.",
+  }),
   matricNumber: joi.number().required().messages({
     "number.base": "Matric number must be a number.",
     "any.required": "Matric number is required.",
@@ -36,29 +32,32 @@ exports.createCampaignValidation = joi.object({
     "string.base": "Course must be a string.",
     "any.required": "Course is required.",
   }),
-  target: joi.number().required().messages({
+  target: joi.number().integer().min(1).required().messages({
     "number.base": "Target must be a number.",
+    "number.min": "Target must be at least 1.",
     "any.required": "Target is required.",
   }),
   story: joi.string().required().trim().messages({
     "string.base": "Story must be a string.",
     "any.required": "Story is required.",
   }),
+  campaignImage: joi
+    .object()
+    .messages({
+      "object.base": "Campaign image must be a buffer.",
+    })
+    .unknown(false),
 });
 
 exports.updateCampaignValidation = joi.object({
   schoolName: joi.string().trim().messages({
     "string.base": "School name must be a string.",
   }),
-  year: joi
-    .number()
-    .integer()
-    .min(100)
-    .messages({
-      "number.base": "Year must be a number.",
-      "number.min": "Year must be at least minimum 3 digits.",
-    }),
-  matricNumber: joi.number().messages({
+  year: joi.number().integer().min(100).max(999).messages({
+    "number.base": "Year must be a number.",
+    "number.min": "Year must be at least minimum 3 digits.",
+  }),
+  matricNumber: joi.number().integer().messages({
     "number.base": "Matric number must be a number.",
   }),
   jambRegistrationNumber: joi.number().messages({
@@ -75,10 +74,17 @@ exports.updateCampaignValidation = joi.object({
     "string.base": "Course must be a string.",
     "any.required": "Course is required.",
   }),
-  target: joi.number().messages({
+  target: joi.number().integer().min(1).messages({
     "number.base": "Target must be a number.",
+    "number.min": "Target must be at least 1.",
   }),
   story: joi.string().trim().messages({
     "string.base": "Story must be a string.",
   }),
+  campaignImage: joi
+    .object()
+    .messages({
+      "object.base": "Campaign image must be a buffer.",
+    })
+    .unknown(false),
 });
