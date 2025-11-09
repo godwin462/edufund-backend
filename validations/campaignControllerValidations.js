@@ -41,12 +41,9 @@ exports.createCampaignValidation = joi.object({
     "string.base": "Story must be a string.",
     "any.required": "Story is required.",
   }),
-  campaignImage: joi
-    .object()
-    .messages({
-      "object.base": "Campaign image must be a buffer.",
-    })
-    .unknown(false),
+  campaignImage: joi.any().optional().messages({
+    "any.base": "Campaign image must be a valid value.",
+  }),
 });
 
 exports.updateCampaignValidation = joi.object({
@@ -81,10 +78,7 @@ exports.updateCampaignValidation = joi.object({
   story: joi.string().trim().messages({
     "string.base": "Story must be a string.",
   }),
-  campaignImage: joi
-    .object()
-    .messages({
-      "object.base": "Campaign image must be a buffer.",
-    })
-    .unknown(false),
+  campaignImage: joi.any().optional().messages({
+    "any.base": "Campaign image must be a valid value.",
+  }),
 });
