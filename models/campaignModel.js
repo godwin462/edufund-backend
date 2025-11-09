@@ -98,8 +98,9 @@ campaignSchema.virtual("fundedPercentage").get(function () {
       donation.status === "successful" && acc + donation.amount,
     0
   );
-  const percentage = (totalDonations / this.target) * 100;
-  return percentage > 100 ? 100 : percentage;
+  let percentage = (totalDonations / this.target) * 100;
+  percentage = percentage > 100 ? 100 : percentage;
+  return Math.round(percentage);
 });
 
 campaignSchema.virtual("endDate").get(function () {
