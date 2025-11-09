@@ -106,7 +106,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
     console.log(event);
     const payment = await paymentModel
       .findOne({ reference: data.reference })
-      .populate("receiverId");
+      .populate("receiverId senderId campaignId");
     if (!payment) {
       console.log("Payment not found");
       return res.status(404).json({
@@ -127,7 +127,9 @@ exports.verifyPaymentWebHook = async (req, res) => {
       await createNotification(
         payment.senderId,
         `Your donation of ₦${payment.amount.toLocaleString()} ${
-          payment.receiverId?.fullName && "to " + payment.receiverId?.fullName
+          payment.receiverId?.fullName
+            ? "to " + payment.receiverId?.fullName
+            : ""
         } was not processed because the campaign is not active`,
         payment._id,
         "error"
@@ -173,11 +175,13 @@ exports.verifyPaymentWebHook = async (req, res) => {
       }
       await paymentModel.findByIdAndUpdate(payment._id, {
         status: "successful",
-      })
+      });
       await createNotification(
         payment.senderId,
         `Donation of ₦${payment.amount.toLocaleString()} ${
-          payment.receiverId?.fullName && "to " + payment.receiverId?.fullName
+          payment.receiverId?.fullName
+            ? "to " + payment.receiverId?.fullName
+            : ""
         } was successful`,
         payment._id,
         "success"
@@ -185,7 +189,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
       await createNotification(
         payment.receiverId,
         `New donation of ₦${payment.amount.toLocaleString()}  received ${
-          payment.senderId?.fullName && "from " + payment.senderId?.fullName
+          payment.senderId?.fullName ? "from " + payment.senderId?.fullName : ""
         }`,
         payment._id,
         "success"
@@ -198,11 +202,13 @@ exports.verifyPaymentWebHook = async (req, res) => {
       console.log("Payment failed");
       await paymentModel.findByIdAndUpdate(payment._id, {
         status: "failed",
-      })
+      });
       await createNotification(
         payment.senderId,
         `Your donation of ₦${payment.amount.toLocaleString()} ${
-          payment.receiverId?.fullName && "to " + payment.receiverId?.fullName
+          payment.receiverId?.fullName
+            ? "to " + payment.receiverId?.fullName
+            : ""
         } was not successful`,
         payment._id,
         "error"
