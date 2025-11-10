@@ -79,7 +79,9 @@ exports.withdrawalHistory = async (req, res) => {
       0
     );
 
-    const withdrawals = await WithdrawalModel.find({ userId: studentId });
+    const withdrawals = await WithdrawalModel.find({ userId: studentId })
+      .sort({ createdAt: -1 })
+      .populate("campaignId");
     const total = withdrawals.length;
     return res.status(200).json({
       message: "Withdrawal history found successfully",
