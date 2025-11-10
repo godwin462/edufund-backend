@@ -105,7 +105,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
     console.log(data);
     console.log(event);
     const payment = await paymentModel
-      .findOne({ reference: data.reference })
+      .findOne({ reference: data.payment_reference })
       .populate("receiverId senderId campaignId");
     if (!payment) {
       console.log("Payment not found");
@@ -114,7 +114,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
       });
     }
     const campaign = await campaignModel.findById(
-      payment.campaignId.toString()
+      payment.campaignId
     );
     if (!campaign) {
       console.log("Campaign not found");
@@ -140,7 +140,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
     }
 
     const donations = await paymentModel.find({
-      campaignId: payment.campaignId.toString(),
+      campaignId: payment.campaignId,
       status: "successful",
     });
     let totalDonation = donations.reduce(
@@ -156,7 +156,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
           await campaignModel.findByIdAndUpdate(payment.campaignId, {
             isActive: false,
           });
-          createNotification(
+          await createNotification(
             payment.senderId,
             `Good news! Your campaign has reached its target donation amount of ₦${campaign.target.toLocaleString()}`,
             payment._id,
