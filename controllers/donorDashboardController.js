@@ -27,8 +27,14 @@ exports.overview = async (req, res) => {
       senderId: donorId,
       status: "successful",
     })
-      .populate("receiverId campaignId")
       .sort({ createdAt: -1 })
+      .populate("receiverId")
+      .populate({
+        path: "campaignId",
+        populate: {
+          path: "donations",
+        },
+      })
       .exec();
     let studentsHelped = totalDonated.map((donation) => donation.receiverId);
     studentsHelped = new Set(studentsHelped).size;
