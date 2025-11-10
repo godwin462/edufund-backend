@@ -64,7 +64,16 @@ exports.createCampaign = async (req, res) => {
           "You already have an active campaign, please end your current campaign before creating a new one",
       });
     }
-
+    const donations = await PaymentModel.find({
+      receiverId: studentId,
+      status: "successful",
+    });
+    if (donations && donations.length > 0) {
+      return res.status(404).json({
+        message:
+          "Please withdraw your donations before creating a new campaign",
+      });
+    }
     let campaignImage;
     if (req.file && req.file.buffer) {
       file = await cloudinaryUpload(req.file.buffer);
@@ -207,7 +216,7 @@ exports.getStudentCampaigns = async (req, res) => {
 exports.getAllCampaigns = async (req, res) => {
   try {
     const campaigns = await campaignModel
-      .find({isActive:true})
+      .find({ isActive: true })
       .sort({ createdAt: -1 })
       .populate("studentId donations")
       .exec();
@@ -231,7 +240,8 @@ exports.getCampaign = async (req, res) => {
     const { campaignId } = req.params;
     const campaign = await campaignModel
       .findById(campaignId)
-      .populate("studentId donations").exec();
+      .populate("studentId donations")
+      .exec();
     if (!campaign) {
       return res.status(404).json({
         message: "Campaign not found",
