@@ -22,7 +22,7 @@ const {
 } = require("../middleware/loginRoleValidationMiddleware");
 const { assignRole } = require("../middleware/roleMiddleware");
 const { isAuthenticated } = require("../middleware/authenticationMiddleware");
-const {verifyOtpMiddleware} = require("../middleware/verifyOtpMiddleware");
+const { verifyOtpMiddleware } = require("../middleware/verifyOtpMiddleware");
 
 /**
  * @swagger
@@ -90,11 +90,7 @@ const {verifyOtpMiddleware} = require("../middleware/verifyOtpMiddleware");
  *       "500":
  *         description: Internal server error
  */
-authRouter.post(
-  "/register/student",
-  assignRole,
-  register
-);
+authRouter.post("/register/student", assignRole, register);
 
 /**
  * @swagger
@@ -172,11 +168,7 @@ authRouter.post(
  *       "500":
  *         description: Internal server error
  */
-authRouter.post(
-  "/register/sponsor/organization",
-  assignRole,
-  register
-);
+authRouter.post("/register/sponsor/organization", assignRole, register);
 
 /**
  * @swagger
@@ -249,18 +241,77 @@ authRouter.post(
  *       "500":
  *         description: Internal server error
  */
-authRouter.post(
-  "/register/sponsor/individual",
-  assignRole,
-  register
-);
+authRouter.post("/register/sponsor/individual", assignRole, register);
 
-authRouter.post(
-  "/register/admin",
-  assignRole,
-  register
-);
-
+/**
+ * @swagger
+ * /auth/register/admin:
+ *   post:
+ *     summary: Register a new admin
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               phoneNumber:
+ *                 type: string
+ *     responses:
+ *       "201":
+ *         description: Admin registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Admin registered successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60d5ec49a0d2db2a3c_dummy_id
+ *                     email:
+ *                       type: string
+ *                       example: admin@example.com
+ *                     firstName:
+ *                       type: string
+ *                       example: Admin
+ *                     lastName:
+ *                       type: string
+ *                       example: User
+ *                     isVerified:
+ *                       type: boolean
+ *                       example: false
+ *                     role:
+ *                       type: string
+ *                       example: admin
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-01-01T12:00:00.000Z
+ *       "400":
+ *         description: Bad request
+ *       "500":
+ *         description: Internal server error
+ */
+authRouter.post("/register/admin", assignRole, register);
 
 /**
  * @swagger
@@ -329,10 +380,7 @@ authRouter.post(
  *       "500":
  *         description: Internal server error
  */
-authRouter.post(
-  "/login",
-  login
-);
+authRouter.post("/login", login);
 
 authRouter.post("/login/admin", logInRoleValidationMiddleware, login);
 // Account verification routes
@@ -598,7 +646,11 @@ authRouter.post("/forgot-password/:email", forgotPassword);
  *       "500":
  *         description: Internal server error
  */
-authRouter.post("/verify-reset-password/:email", verifyOtpMiddleware, verifyResetPasswordOtp);
+authRouter.post(
+  "/verify-reset-password/:email",
+  verifyOtpMiddleware,
+  verifyResetPasswordOtp
+);
 
 /**
  * @swagger

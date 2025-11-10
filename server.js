@@ -19,9 +19,9 @@ const academicRouter = require("./router/academicRouter");
 const donationRouter = require("./router/donationRouter");
 const swaggerJSDoc = require("swagger-jsdoc");
 const notificationRouter = require("./router/notificationRouter");
+const adminRouter = require("./router/adminRouter");
 
 const app = express();
-
 
 app.use(express.json());
 app.use(cors());
@@ -41,8 +41,7 @@ const swaggerDefinition = {
   info: {
     title: "Api documentation for Edufund backend application",
     version: "1.0.0",
-    description:
-      "This is a REST API application for Edufund.",
+    description: "This is a REST API application for Edufund.",
     license: {
       name: "Licensed Under MIT",
       url: "https://spdx.org/licenses/MIT.html",
@@ -97,14 +96,14 @@ app.use("/api/v1/campaigns", campaignRouter);
 app.use("/api/v1/academic", academicRouter);
 app.use("/api/v1/donation", donationRouter);
 app.use("/api/v1/notification", notificationRouter);
+app.use("/api/v1/admins", adminRouter);
 
 app.get("/", (req, res) => {
-
   res.send("Connected to Backend Server");
 });
 
 app.use((error, req, res, next) => {
-  if(error) {
+  if (error) {
     return res.status(500).json({
       message: error.message,
     });
