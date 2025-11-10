@@ -183,7 +183,8 @@ exports.getStudentCampaigns = async (req, res) => {
     const { status, isActive } = req.query;
     const { studentId } = req.params;
     const campaigns = await campaignModel
-      .find({ studentId})
+      .find({ studentId })
+      .sort({ createdAt: -1 })
       .populate("studentId donations")
       .exec();
     const total = campaigns.length;
@@ -207,6 +208,7 @@ exports.getAllCampaigns = async (req, res) => {
   try {
     const campaigns = await campaignModel
       .find({isActive:true})
+      .sort({ createdAt: -1 })
       .populate("studentId donations")
       .exec();
     const total = campaigns.length;

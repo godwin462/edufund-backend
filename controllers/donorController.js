@@ -39,6 +39,7 @@ exports.myDonations = async (req, res) => {
     const { donorId } = req.params;
     const donations = await paymentModel
       .find({ senderId: donorId, status: "successful" })
+      .sort({ createdAt: -1 })
       .populate("receiverId")
       .populate({
         path: "campaignId",
