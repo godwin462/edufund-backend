@@ -39,7 +39,13 @@ exports.myDonations = async (req, res) => {
     const { donorId } = req.params;
     const donations = await paymentModel
       .find({ senderId: donorId, status: "successful" })
-      .populate("receiverId campaignId")
+      .populate("receiverId")
+      .populate({
+        path: "campaignId",
+        populate: {
+          path: "donations",
+        },
+      })
       .exec();
 
     const total = donations.length;

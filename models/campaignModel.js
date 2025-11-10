@@ -95,7 +95,7 @@ campaignSchema.virtual("fundedPercentage").get(function () {
   if (this.target === 0 || !this.donations) return 0;
   const totalDonations = this.donations.reduce(
     (acc, donation) =>
-      donation.status === "successful" && acc + donation.amount,
+      donation.status === "successful" ? acc + donation.amount : acc,
     0
   );
   let percentage = (totalDonations / this.target) * 100;
@@ -145,7 +145,7 @@ campaignSchema.virtual("remainingAmount").get(function () {
 campaignSchema.virtual("donors").get(function () {
   const donors = this.donations
     ?.filter((d) => d.status === "successful")
-    ?.map((donation) => donation.donorId?.toString());
+    ?.map((donation) => donation.senderId?.toString());
   return new Set(donors).size;
 });
 
