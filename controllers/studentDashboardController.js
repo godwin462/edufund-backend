@@ -70,15 +70,22 @@ exports.withdrawalHistory = async (req, res) => {
         message: "Student not found, please login or create a student account",
       });
     }
+    const payments = await PaymentModel.find({
+      receiverId: studentId,
+      status: "successful",
+    });
+    let walletBallance = payments.reduce(
+      (acc, payment) => acc + payment.amount,
+      0
+    );
+
     const withdrawals = await WithdrawalModel.find({ userId: studentId });
     const total = withdrawals.length;
-    return res
-      .status(200)
-      .json({
-        message: "Withdrawal history found successfully",
-        total,
-        data: withdrawals,
-      });
+    return res.status(200).json({
+      message: "Withdrawal history found successfully",
+      total,
+      data: { withdrawals, walletBallance, payments },
+    });
   } catch (error) {
     console.log(error);
     return res

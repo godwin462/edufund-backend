@@ -335,7 +335,7 @@ exports.withdrawWalletBalance = async (req, res) => {
 
     await paymentModel.updateMany(
       { campaignId, status: "successful" },
-      { status: "withdrawn", withdrawalId: withdrawal._id }
+      { status: "withdrawn" }
     );
 
     await campaignModel.findOneAndUpdate(
