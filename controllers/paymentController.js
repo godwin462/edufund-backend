@@ -113,9 +113,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
         message: "Payment not found",
       });
     }
-    const campaign = await campaignModel.findById(
-      payment.campaignId
-    );
+    const campaign = await campaignModel.findById(payment.campaignId);
     if (!campaign) {
       console.log("Campaign not found");
       return res.status(404).json({
@@ -234,7 +232,8 @@ exports.withdrawDonation = async (req, res) => {
     const { purpose, note } = req.body || {};
     const campaign = await campaignModel
       .findOne({ _id: campaignId, studentId })
-      .populate("studentId");
+      .populate("studentId donations")
+      .exec();
 
     if (!campaign) {
       return res.status(404).json({
@@ -242,47 +241,42 @@ exports.withdrawDonation = async (req, res) => {
       });
     }
 
-    const donations = await paymentModel
-      .find({ campaignId, status: "successful" })
-      .populate("senderId");
-
-    const amount = donations.reduce(
-      (acc, donation) => acc + donation.amount,
-      0
-    );
-    if (amount < campaign.target) {
+    if (campaign.status == "withdrawn") {
       return res.status(400).json({
-        message: "Cannot withdraw donation, target not met yet!",
+        message: "You have already withdrawn from this campaign",
       });
     }
+
+    if (
+      !campaign.totalDonations ||
+      campaign.totalDonations !== campaign.target
+    ) {
+      // console.log(campaign.totalDonations, campaign);
+      return res.status(400).json({
+        message: "You cannot withdraw amount not equal to total donations",
+      });
+    }
+
     const withdrawal = await WithdrawalModel.create({
       campaignId,
       userId: studentId,
-      amount,
+      amount: campaign.totalDonations,
       purpose,
       note,
     });
-    const payload = {
-      reference: reference.randomUUID(),
-      amount,
-      currency: "NGN",
-      customer: {
-        name: `${campaign.studentId.firstName} ${campaign.studentId.lastName}`,
-        email: campaign.studentId.email,
-      },
-      // account_name, merchant_bears_cost, narration, metadata (optional)
-      narration: `EduFund Donation Withdrawal: ${campaign.title}`,
-    };
-    const url = "charges/bank-transfer";
-    const response = await koraMakePayment(url, payload);
-    const total_donations = donations.length;
+
+    await paymentModel.updateMany(
+      { campaignId, status: "successful" },
+      { status: "withdrawn", withdrawalId: withdrawal._id }
+    );
+
+    await campaignModel.findOneAndUpdate(
+      { _id: campaignId, studentId },
+      { status: "withdrawn", isActive: false }
+    );
+
     res.status(200).json({
-      message:
-        total_donations < 1
-          ? "No donations yet"
-          : "Donations found successfully",
-      total_donations,
-      redirect_url: response.data.redirect_url,
+      message: "Donation withdrawn initiated",
       data: withdrawal,
     });
   } catch (error) {
