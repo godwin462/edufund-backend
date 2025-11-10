@@ -9,7 +9,7 @@ const WithdrawalSchema = new mongoose.Schema(
     },
     campaignId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "campaign",
+      ref: "Campaign",
       required: true,
     },
     amount: {
