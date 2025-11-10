@@ -41,15 +41,25 @@ exports.makeDonation = async (req, res) => {
       });
     }
 
-    const campaign = await campaignModel.findById(campaignId);
+    const campaign = await campaignModel
+      .findById(campaignId)
+      .populate("donations")
+      .exec();
     if (!campaign) {
       return res.status(404).json({
         message: "Campaign not found",
       });
     }
+    // console.log(campaign.remainingAmount, campaign);
+
     if (!campaign.isActive) {
       return res.status(400).json({
         message: "Action not allowed, can not donate to an inactive campaign",
+      });
+    }
+    if (amount > campaign.remainingAmount) {
+      return res.status(400).json({
+        message: `Amount is greater than the remaining campaign target`,
       });
     }
     const payload = {
@@ -261,6 +271,64 @@ exports.withdrawDonation = async (req, res) => {
       campaignId,
       userId: studentId,
       amount: campaign.totalDonations,
+      purpose,
+      note,
+    });
+
+    await paymentModel.updateMany(
+      { campaignId, status: "successful" },
+      { status: "withdrawn", withdrawalId: withdrawal._id }
+    );
+
+    await campaignModel.findOneAndUpdate(
+      { _id: campaignId, studentId },
+      { status: "withdrawn", isActive: false }
+    );
+
+    res.status(200).json({
+      message: "Donation withdrawn initiated",
+      data: withdrawal,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Error withdrawing donation",
+      error: error.message,
+    });
+  }
+};
+
+exports.withdrawWalletBalance = async (req, res) => {
+  try {
+    const { campaignId, studentId } = req.params;
+    const { amount, purpose, note } = req.body || {};
+    const campaign = await campaignModel.findOne({
+      _id: campaignId,
+      studentId,
+    });
+
+    if (!campaign) {
+      return res.status(404).json({
+        message: "Campaign not found, please create a campaign first",
+      });
+    }
+
+    if (campaign.status == "withdrawn") {
+      return res.status(400).json({
+        message: "You have already withdrawn from this campaign",
+      });
+    }
+
+    if (amount > campaign.target) {
+      return res.status(400).json({
+        message: "You cannot withdraw more than your campaign balance",
+      });
+    }
+
+    const withdrawal = await WithdrawalModel.create({
+      campaignId,
+      userId: studentId,
+      amount,
       purpose,
       note,
     });

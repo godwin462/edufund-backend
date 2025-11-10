@@ -2,6 +2,7 @@ const {
   makeDonation,
   verifyPaymentWebHook,
   withdrawDonation,
+  withdrawWalletBalance,
 } = require("../controllers/paymentController");
 const { isAuthenticated } = require("../middleware/authenticationMiddleware");
 const { studentAccess } = require("../middleware/roleMiddleware");
@@ -75,55 +76,23 @@ const paymentRouter = require("express").Router();
  */
 paymentRouter.post(
   "/make-donation/:donorId/:receiverId/:campaignId",
-  isAuthenticated,
+  // isAuthenticated,
   makeDonation
+);
+
+
+paymentRouter.post(
+  "/request-withdrawal/:studentId/:campaignId",
+  // isAuthenticated,
+  // studentAccess,
+  withdrawDonation
 );
 
 /**
  * @swagger
- * /payment/verify-payment-webhook:
+ * /payment/withdraw-wallet-balance/{studentId}/{campaignId}:
  *   post:
- *     summary: Webhook to verify payment status from payment provider (KoraPay)
- *     tags: [Payments]
- *     description: This endpoint is called by the payment provider (KoraPay) to update the status of a transaction. It should not be called directly.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               event:
- *                 type: string
- *                 example: charge.success
- *               data:
- *                 type: object
- *                 properties:
- *                   reference:
- *                     type: string
- *     responses:
- *       "200":
- *         description: Webhook received and payment status updated.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Payment Verification Successful
- *       "404":
- *         description: Payment not found for the given reference.
- *       "500":
- *         description: Error verifying payment.
- */
-paymentRouter.post("/verify-payment-webhook", verifyPaymentWebHook);
-
-/**
- * @swagger
- * /payment/request-withdrawal/{studentId}/{campaignId}:
- *   post:
- *     summary: Request a withdrawal for a campaign that has met its target
+ *     summary: Withdraw from wallet balance for a campaign
  *     tags: [Payments]
  *     parameters:
  *       - in: path
@@ -145,13 +114,15 @@ paymentRouter.post("/verify-payment-webhook", verifyPaymentWebHook);
  *           schema:
  *             type: object
  *             properties:
+ *               amount:
+ *                 type: number
  *               purpose:
  *                 type: string
  *               note:
  *                 type: string
  *     responses:
  *       "200":
- *         description: Withdrawal request successful. Returns redirect URL.
+ *         description: Donation withdrawn initiated.
  *         content:
  *           application/json:
  *             schema:
@@ -159,13 +130,7 @@ paymentRouter.post("/verify-payment-webhook", verifyPaymentWebHook);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Donations found successfully
- *                 total_donations:
- *                   type: number
- *                   example: 10
- *                 redirect_url:
- *                   type: string
- *                   example: https://checkout.korapay.com/pay/3y3i3o3i
+ *                   example: Donation withdrawn initiated
  *                 data:
  *                   type: object
  *                   properties:
@@ -199,17 +164,17 @@ paymentRouter.post("/verify-payment-webhook", verifyPaymentWebHook);
  *                       format: date-time
  *                       example: 2023-01-01T12:00:00.000Z
  *       "400":
- *         description: Campaign target not met.
+ *         description: You have already withdrawn from this campaign.
  *       "404":
  *         description: Campaign not found.
  *       "500":
- *         description: Error processing withdrawal.
+ *         description: Error withdrawing donation.
  */
 paymentRouter.post(
-  "/request-withdrawal/:studentId/:campaignId",
+  "/withdraw-wallet-balance/:studentId/:campaignId",
   isAuthenticated,
   studentAccess,
-  withdrawDonation
+  withdrawWalletBalance
 );
 
 module.exports = paymentRouter;
