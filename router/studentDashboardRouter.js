@@ -1,5 +1,5 @@
 const studentDashboardRouter = require("express").Router();
-const { overview } = require("../controllers/studentDashboardController");
+const { overview, withdrawalHistory } = require("../controllers/studentDashboardController");
 /**
  * @swagger
  * tags:
@@ -196,5 +196,73 @@ const { overview } = require("../controllers/studentDashboardController");
  *         description: Internal server error
  */
 studentDashboardRouter.get("/overview/:studentId", overview);
+
+
+
+/**
+ * @swagger
+ * /student-dashboard/withdrawal/{studentId}:
+ *   get:
+ *     summary: Get student withdrawal history
+ *     tags: [Student Dashboard]
+ *     parameters:
+ *       - in: path
+ *         name: studentId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The student ID
+ *     responses:
+ *       200:
+ *         description: Withdrawal history found successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Withdrawal history found successfully
+ *                 total:
+ *                   type: integer
+ *                   example: 1
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: "69075a401704c2b025d49f06"
+ *                       userId:
+ *                         type: string
+ *                         example: "6907053fbd60ad4e1200fb93"
+ *                       campaignId:
+ *                         type: string
+ *                         example: "690758991fad79238269f27f"
+ *                       amount:
+ *                         type: number
+ *                         example: 200
+ *                       purpose:
+ *                         type: string
+ *                         example: "School Fees"
+ *                       note:
+ *                         type: string
+ *                         example: "First semester fees"
+ *                       status:
+ *                         type: string
+ *                         example: "processing"
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *       404:
+ *         description: Student not found
+ *       500:
+ *         description: Internal server error
+ */
+studentDashboardRouter.get("/withdrawal/:studentId", withdrawalHistory);
 
 module.exports = studentDashboardRouter;

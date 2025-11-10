@@ -1,6 +1,7 @@
 const campaignModel = require("../models/campaignModel");
 const NotificationModel = require("../models/notificationModel");
 const PaymentModel = require("../models/paymentModel");
+const WithdrawalModel = require("../models/withdrawalModel");
 const UserModel = require("../models/userModel");
 
 exports.overview = async (req, res) => {
@@ -26,8 +27,6 @@ exports.overview = async (req, res) => {
       .populate("studentId donations")
       .exec();
 
-
-
     const recentDonors = await PaymentModel.find({
       receiverId: studentId,
       status: "successful",
@@ -52,6 +51,34 @@ exports.overview = async (req, res) => {
       recentActivities,
     };
     return res.status(200).json({ message: "success", data });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "internal server error", error: error.message });
+  }
+};
+
+exports.withdrawalHistory = async (req, res) => {
+  try {
+    const { studentId } = req.params;
+    const student = await UserModel.findById(studentId)
+      .populate("academicDocuments")
+      .lean({ virtuals: true });
+    if (!student) {
+      return res.status(404).json({
+        message: "Student not found, please login or create a student account",
+      });
+    }
+    const withdrawals = await WithdrawalModel.find({ userId: studentId });
+    const total = withdrawals.length;
+    return res
+      .status(200)
+      .json({
+        message: "Withdrawal history found successfully",
+        total,
+        data: withdrawals,
+      });
   } catch (error) {
     console.log(error);
     return res
