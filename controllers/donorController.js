@@ -1,5 +1,6 @@
 const paymentModel = require("../models/paymentModel");
 const campaignModel = require("../models/campaignModel");
+const {listeners} = require("../models/studentVerificationModel");
 
 exports.totalStudentsHelped = async (req, res) => {
   try {
@@ -37,7 +38,7 @@ exports.totalStudentsHelped = async (req, res) => {
 exports.myDonations = async (req, res) => {
   try {
     const { donorId } = req.params;
-    const donations = await paymentModel
+    let donations = await paymentModel
       .find({ senderId: donorId, status: "successful" })
       .sort({ createdAt: -1 })
       .populate("receiverId")
@@ -48,6 +49,17 @@ exports.myDonations = async (req, res) => {
         },
       })
       .exec();
+    donations = donations.concat( await paymentModel
+      .find({ senderId: donorId, status: "withdrawn" })
+      .sort({ createdAt: -1 })
+      .populate("receiverId")
+      .populate({
+        path: "campaignId",
+        populate: {
+          path: "donations",
+        },
+      })
+      .exec());
 
     const total = donations.length;
     return res.status(200).json({
@@ -66,10 +78,14 @@ exports.myDonations = async (req, res) => {
 exports.getDonorsForStudent = async (req, res) => {
   try {
     const { studentId } = req.params;
-    const donors = await paymentModel
+    let donors = await paymentModel
       .find({ receiverId: studentId, status: "successful" })
       .populate("senderId")
       .exec();
+      donors = donors.concat( await paymentModel
+      .find({ receiverId: studentId, status: "withdrawn" })
+      .populate("senderId")
+      .exec());
     const total = donors.length;
 
     return res.status(200).json({
