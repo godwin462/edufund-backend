@@ -1,5 +1,6 @@
 const studentDashboardRouter = require("express").Router();
 const { overview, withdrawalHistory } = require("../controllers/studentDashboardController");
+const {isAuthenticated} = require("../middleware/authenticationMiddleware");
 /**
  * @swagger
  * tags:
@@ -195,7 +196,7 @@ const { overview, withdrawalHistory } = require("../controllers/studentDashboard
  *       500:
  *         description: Internal server error
  */
-studentDashboardRouter.get("/overview/:studentId", overview);
+studentDashboardRouter.get("/overview/:studentId", isAuthenticated, overview);
 
 
 
@@ -263,6 +264,6 @@ studentDashboardRouter.get("/overview/:studentId", overview);
  *       500:
  *         description: Internal server error
  */
-studentDashboardRouter.get("/withdrawal/:studentId", withdrawalHistory);
+studentDashboardRouter.get("/withdrawal/:studentId", isAuthenticated, withdrawalHistory);
 
 module.exports = studentDashboardRouter;

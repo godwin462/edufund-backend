@@ -1,12 +1,13 @@
 const donorDashboardRouter = require("express").Router();
 const { overview } = require("../controllers/donorDashboardController");
+const { isAuthenticated } = require("../middleware/authenticationMiddleware");
+const { sponsorAccess } = require("../middleware/roleMiddleware");
 /**
  * @swagger
  * tags:
  *   name: donor Dashboard
  *   description: donor dashboard endpoints
-*/
-
+ */
 
 /**
  * @swagger
@@ -195,6 +196,11 @@ const { overview } = require("../controllers/donorDashboardController");
  *       500:
  *         description: Internal server error
  */
-donorDashboardRouter.get("/overview/:donorId", overview);
+donorDashboardRouter.get(
+  "/overview/:donorId",
+  isAuthenticated,
+  sponsorAccess,
+  overview
+);
 
 module.exports = donorDashboardRouter;

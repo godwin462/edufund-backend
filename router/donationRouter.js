@@ -78,7 +78,7 @@ const receivedDonationRouter = require("express").Router();
  *       "500":
  *         description: Server error
  */
-receivedDonationRouter.get("/", getAllDonations);
+receivedDonationRouter.get("/",isAuthenticated, getAllDonations);
 
 /**
  * @swagger

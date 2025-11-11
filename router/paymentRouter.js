@@ -76,7 +76,7 @@ const paymentRouter = require("express").Router();
  */
 paymentRouter.post(
   "/make-donation/:donorId/:receiverId/:campaignId",
-  // isAuthenticated,
+  isAuthenticated,
   makeDonation
 );
 
@@ -122,8 +122,8 @@ paymentRouter.post("/verify-payment-webhook", verifyPaymentWebHook);
 
 paymentRouter.post(
   "/request-withdrawal/:studentId/:campaignId",
-  // isAuthenticated,
-  // studentAccess,
+  isAuthenticated,
+  studentAccess,
   withdrawDonation
 );
 
