@@ -172,7 +172,6 @@ campaignRouter.get(
 campaignRouter.get(
   "/:studentId",
   isAuthenticated,
-  studentAccess,
   getStudentCampaigns
 );
 
@@ -303,7 +302,6 @@ campaignRouter.post(
   "/:studentId",
   upload.single("campaignImage"),
   isAuthenticated,
-  studentAccess,
   createCampaign
 );
 
@@ -478,7 +476,6 @@ campaignRouter.put(
   "/:campaignId",
   upload.single("campaignImage"),
   isAuthenticated,
-  studentAccess,
   updateCampaign
 );
 
@@ -551,7 +548,6 @@ campaignRouter.put(
 campaignRouter.delete(
   "/:campaignId",
   isAuthenticated,
-  studentAccess,
   deleteCampaign
 );
 
