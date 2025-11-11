@@ -18,10 +18,6 @@ const Payment = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    withdrawalId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Withdrawal",
-    },
     amount: {
       type: Number,
       required: true,
