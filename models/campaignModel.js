@@ -56,7 +56,7 @@ const campaignSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["rejected", "pending", "approved", "completed","withdrawn"],
+      enum: ["rejected", "pending", "approved", "completed", "withdrawn"],
       default: "pending",
     },
     campaignImage: {
@@ -86,19 +86,16 @@ campaignSchema.virtual("totalDonations").get(function () {
   if (!this.donations || this.donations.length === 0) return 0;
   return this.donations.reduce(
     (acc, donation) =>
-      donation.status === "successful" ? acc + donation.amount : acc,
+      donation.status === "successful" || donation.status === "withdrawn"
+        ? acc + donation.amount
+        : acc,
     0
   );
 });
 
 campaignSchema.virtual("fundedPercentage").get(function () {
   if (this.target === 0 || !this.donations) return 0;
-  const totalDonations = this.donations.reduce(
-    (acc, donation) =>
-      donation.status === "successful" ? acc + donation.amount : acc,
-    0
-  );
-  let percentage = (totalDonations / this.target) * 100;
+  let percentage = (this.totalDonations / this.target) * 100;
   percentage = percentage > 100 ? 100 : percentage;
   return Math.round(percentage);
 });

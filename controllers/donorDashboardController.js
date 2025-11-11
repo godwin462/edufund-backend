@@ -18,6 +18,10 @@ exports.overview = async (req, res) => {
       senderId: donorId,
       status: "successful",
     });
+    let withdrawnDonations = await PaymentModel.find({
+      senderId: donorId,
+      status: "withdrawn",
+    });
 
     const activeCampaigns = await campaignModel
       .find({ isActive: true })
@@ -37,9 +41,16 @@ exports.overview = async (req, res) => {
       })
       .exec();
     let studentsHelped = totalDonated.map((donation) => donation.receiverId);
+    studentsHelped = studentsHelped.concat(
+      withdrawnDonations.map((donation) => donation.receiverId)
+    );
     studentsHelped = new Set(studentsHelped).size;
     totalDonated =
       totalDonated?.reduce((acc, donation) => acc + donation.amount, 0) || 0;
+    totalDonated += withdrawnDonations.reduce(
+      (acc, donation) => acc + donation.amount,
+      0
+    );
     const stats = [
       `₦${totalDonated.toLocaleString()}`,
       studentsHelped,
