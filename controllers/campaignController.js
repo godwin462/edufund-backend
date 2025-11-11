@@ -194,7 +194,8 @@ exports.getStudentCampaigns = async (req, res) => {
     const campaigns = await campaignModel
       .find({ studentId })
       .sort({ createdAt: -1 })
-      .populate("studentId donations")
+      .populate("studentId")
+      .populate("donations")
       .exec();
     const total = campaigns.length;
     res.status(200).json({
