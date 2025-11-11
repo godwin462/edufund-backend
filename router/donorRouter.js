@@ -16,9 +16,9 @@ const { isAuthenticated } = require("../middleware/authenticationMiddleware");
 
 /**
  * @swagger
- * /donors/students-helped/{donorId}:
+ * /donors/analytics/students-helped/{donorId}:
  *   get:
- *     summary: Get the total number of students helped by a specific donor
+ *     summary: Get the count of students helped, total donations, and active campaigns for a specific donor
  *     tags: [Donors]
  *     parameters:
  *       - in: path
@@ -31,17 +31,30 @@ const { isAuthenticated } = require("../middleware/authenticationMiddleware");
  *         description: Successfully retrieved the count of students helped.
  *         content:
  *           application/json:
+
  *             schema:
  *               type: object
  *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Success
  *                 data:
- *                   type: number
- *                   example: 5
+ *                   type: object
+ *                   properties:
+ *                     totalDonated:
+ *                       type: number
+ *                       example: 1000
+ *                     totalStudentsHelped:
+ *                       type: number
+ *                       example: 10
+ *                     activeCampaigns:
+ *                       type: number
+ *                       example: 5
  *       "500":
  *         description: Server error.
  */
 donorRouter.get(
-  "/students-helped/:donorId",
+  "/analytics/students-helped/:donorId",
   isAuthenticated,
   totalStudentsHelped
 );
@@ -83,10 +96,14 @@ donorRouter.get("/allDonors/:studentId", isAuthenticated, getDonorsForStudent);
 
 /**
  * @swagger
- * /donors/myDonations:
+ * /donors/myDonations/{donorId}:
  *   get:
  *     summary: Get all donations made on the platform
  *     tags: [Donors]
+ *     parameters:
+ *       - in: path
+ *         name: donorId
+ *         required: true
  *     responses:
  *       "200":
  *         description: Successfully retrieved all donations.
@@ -137,6 +154,6 @@ donorRouter.get("/allDonors/:studentId", isAuthenticated, getDonorsForStudent);
  *       "500":
  *         description: Server error.
  */
-donorRouter.get("/myDonations", myDonations);
+donorRouter.get("/myDonations/:donorId", isAuthenticated, myDonations);
 
 module.exports = donorRouter;

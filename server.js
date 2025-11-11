@@ -15,10 +15,11 @@ const swaggerUi = require("swagger-ui-express");
 // const swaggerDocument = require("./swagger-output.json");
 const contactUsRouter = require("./router/contactUsRouter");
 const campaignRouter = require("./router/campaignRouter");
-const academicRouter = require("./router/academicRouter");
 const donationRouter = require("./router/donationRouter");
 const swaggerJSDoc = require("swagger-jsdoc");
 const notificationRouter = require("./router/notificationRouter");
+const studentDashboardRouter = require("./router/studentDashboardRouter");
+const donorDashboardRouter = require("./router/donorDashboardRouter");
 const adminRouter = require("./router/adminRouter");
 
 const app = express();
@@ -88,14 +89,15 @@ const swaggerSpec = swaggerJSDoc(options);
 app.use("/api/v1/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
-app.use("/api/v1/Analytics", donorRouter);
+// app.use("/api/v1/Analytics", donorRouter);
 app.use("/api/v1/donors", donorRouter);
 app.use("/api/v1/payment", paymentRouter);
 app.use("/api/v1/contact-us", contactUsRouter);
 app.use("/api/v1/campaigns", campaignRouter);
-app.use("/api/v1/academic", academicRouter);
-app.use("/api/v1/donation", donationRouter);
+app.use("/api/v1/donations", donationRouter);
 app.use("/api/v1/notification", notificationRouter);
+app.use("/api/v1/student-dashboard", studentDashboardRouter);
+app.use("/api/v1/donor-dashboard", donorDashboardRouter);
 app.use("/api/v1/admins", adminRouter);
 
 app.get("/", (req, res) => {

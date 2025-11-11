@@ -1,13 +1,6 @@
-const campaignRouter = require("express").Router();
+const studentVerificationRouter = require('express').Router();
 
-const {
-  createCampaign,
-  deleteCampaign,
-  getStudentCampaigns,
-  getAllCampaigns,
-  getCampaign,
-  updateCampaign,
-} = require("../controllers/campaignController");
+const studentVerificationController = require("../controllers/studentVerificationController");
 
 const { isAuthenticated } = require("../middleware/authenticationMiddleware");
 
@@ -17,171 +10,10 @@ const upload = require("../middleware/multerMiddleware");
 
 /**
  * @swagger
- * tags:
- *   name: Campaigns
- *   description: Campaign management endpoints
- */
-
-/**
- * @swagger
- * /campaigns:
- *   get:
- *     summary: Get all campaigns
- *     tags: [Campaigns]
- *     responses:
- *       "200":
- *         description: A list of campaigns
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Campaigns found successfully
- *                 total:
- *                   type: number
- *                   example: 1
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       _id:
- *                         type: string
- *                         example: 60d5ec49a0d2db2a3c_dummy_id
- *                       studentId:
- *                         type: object
- *                         properties:
- *                           _id:
- *                             type: string
- *                             example: 60d5ec49a0d2db2a3c_dummy_id
- *                           firstName:
- *                             type: string
- *                             example: John
- *                           lastName:
- *                             type: string
- *                             example: Doe
- *                       title:
- *                         type: string
- *                         example: Help me fund my education
- *                       target:
- *                         type: number
- *                         example: 5000
- *                       story:
- *                         type: string
- *                         example: I am a student in need of financial assistance...
- *                       isActive:
- *                         type: boolean
- *                         example: true
- *                       campaignImage:
- *                         type: object
- *                         properties:
- *                           imageUrl:
- *                             type: string
- *                             example: http://example.com/image.jpg
- *                           publicId:
- *                             type: string
- *                             example: image_public_id
- *                       createdAt:
- *                         type: string
- *                         format: date-time
- *                         example: 2023-01-01T12:00:00.000Z
- *                       updatedAt:
- *                         type: string
- *                         format: date-time
- *                         example: 2023-01-01T12:00:00.000Z
- *       "500":
- *         description: Internal server error
- */
-campaignRouter.get(
-  "/",
-  isAuthenticated,
-  getAllCampaigns
-);
-
-/**
- * @swagger
- * /campaigns/{studentId}:
- *   get:
- *     summary: Get all campaigns for a specific student
- *     tags: [Campaigns]
- *     parameters:
- *       - in: path
- *         name: studentId
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       "200":
- *         description: A list of student's campaigns
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Campaigns found successfully
- *                 total:
- *                   type: number
- *                   example: 1
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       _id:
- *                         type: string
- *                         example: 60d5ec49a0d2db2a3c_dummy_id
- *                       studentId:
- *                         type: string
- *                         example: 60d5ec49a0d2db2a3c_dummy_id
- *                       title:
- *                         type: string
- *                         example: Help me fund my education
- *                       target:
- *                         type: number
- *                         example: 5000
- *                       story:
- *                         type: string
- *                         example: I am a student in need of financial assistance...
- *                       isActive:
- *                         type: boolean
- *                         example: true
- *                       campaignImage:
- *                         type: object
- *                         properties:
- *                           imageUrl:
- *                             type: string
- *                             example: http://example.com/image.jpg
- *                           publicId:
- *                             type: string
- *                             example: image_public_id
- *                       createdAt:
- *                         type: string
- *                         format: date-time
- *                         example: 2023-01-01T12:00:00.000Z
- *                       updatedAt:
- *                         type: string
- *                         format: date-time
- *                         example: 2023-01-01T12:00:00.000Z
- *       "500":
- *         description: Internal server error
- */
-campaignRouter.get(
-  "/:studentId",
-  isAuthenticated,
-  studentAccess,
-  getStudentCampaigns
-);
-
-/**
- * @swagger
- * /campaigns/{studentId}:
+ * /Verification/{studentId}:
  *   post:
- *     summary: Create a new campaign for a student
- *     tags: [Campaigns]
+ *     summary: Upload verified documents for a student
+ *     tags: [Verifications]
  *     parameters:
  *       - in: path
  *         name: studentId
@@ -195,39 +27,18 @@ campaignRouter.get(
  *           schema:
  *             type: object
  *             properties:
- *               schoolName:
- *                 type: string
- *                 example: The Curve Africa
- *               year:
- *                 type: number
- *                 example: 2027
- *               course:
- *                 type: string
- *                 example: Backend
- *               matricNumber:
- *                 type: number
- *                 example: 12345678
- *               jambRegistrationNumber:
- *                 type: number
- *                 example: 87654321
- *               duration:
- *                 type: number
- *                 example: 6
  *               title:
  *                 type: string
- *                 example: Help me fund my education
  *               target:
  *                 type: number
- *                 example: 5000
  *               story:
  *                 type: string
- *                 example: I am a student in need of financial assistance...
  *               campaignImage:
  *                 type: string
  *                 format: binary
  *     responses:
  *       "201":
- *         description: Campaign created successfully
+ *         description: Documents uploaded successfully
  *         content:
  *           application/json:
  *             schema:
@@ -235,31 +46,13 @@ campaignRouter.get(
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Campaign created successfully
+ *                   example: Documents uploaded successfully
  *                 data:
  *                   type: object
  *                   properties:
  *                     _id:
  *                       type: string
  *                       example: 60d5ec49a0d2db2a3c_dummy_id
- *                     schoolName:
- *                       type: string
- *                       example: The Curve Africa
- *                     year:
- *                       type: number
- *                       example: 2027
- *                     course:
- *                       type: string
- *                       example: Backend
- *                     matricNumber:
- *                       type: number
- *                       example: 92743947534
- *                     jambRegistrationNumber:
- *                       type: number
- *                       example: 8765432187384
- *                     duration:
- *                       type: number
- *                       example: 12
  *                     studentId:
  *                       type: string
  *                       example: 60d5ec49a0d2db2a3c_dummy_id
@@ -299,20 +92,15 @@ campaignRouter.get(
  *       "500":
  *         description: Internal server error
  */
-campaignRouter.post(
-  "/:studentId",
-  upload.single("campaignImage"),
-  isAuthenticated,
-  studentAccess,
-  createCampaign
-);
+
+studentVerificationRouter.post('/:studentId', upload.single('verificationDocument'), isAuthenticated, studentAccess, studentVerificationController.submitVerification);
 
 /**
  * @swagger
- * /campaigns/campaign-detail/{campaignId}:
+ * /verification/document-detail/{documentId}:
  *   get:
- *     summary: Get a specific campaign by its ID
- *     tags: [Campaigns]
+ *     summary: Get a specific document by its ID
+ *     tags: [Verifications]
  *     parameters:
  *       - in: path
  *         name: campaignId
@@ -321,7 +109,7 @@ campaignRouter.post(
  *           type: string
  *     responses:
  *       "200":
- *         description: Campaign found successfully
+ *         description: Documents found successfully
  *         content:
  *           application/json:
  *             schema:
@@ -329,7 +117,7 @@ campaignRouter.post(
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Campaign found successfully
+ *                   example: Documents found successfully
  *                 data:
  *                   type: object
  *                   properties:
@@ -382,18 +170,15 @@ campaignRouter.post(
  *       "500":
  *         description: Internal server error
  */
-campaignRouter.get(
-  "/campaign-detail/:campaignId",
-  isAuthenticated,
-  getCampaign
-);
+
+studentVerificationRouter.get('/:studentId', isAuthenticated, studentAccess, studentVerificationController.getVerificationStatus);
 
 /**
  * @swagger
- * /campaigns/{campaignId}:
+ * /verifications/{campaignId}:
  *   put:
  *     summary: Update a campaign
- *     tags: [Campaigns]
+ *     tags: [Verifications]
  *     parameters:
  *       - in: path
  *         name: campaignId
@@ -420,7 +205,7 @@ campaignRouter.get(
  *                 format: binary
  *     responses:
  *       "200":
- *         description: Campaign updated successfully
+ *         description: Documents updated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -428,7 +213,7 @@ campaignRouter.get(
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Campaign updated successfully
+ *                   example: Documents updated successfully
  *                 data:
  *                   type: object
  *                   properties:
@@ -474,20 +259,15 @@ campaignRouter.get(
  *       "500":
  *         description: Internal server error
  */
-campaignRouter.put(
-  "/:campaignId",
-  upload.single("campaignImage"),
-  isAuthenticated,
-  studentAccess,
-  updateCampaign
-);
+
+studentVerificationRouter.put('/:verificationId', upload.single('verificationDocument'), isAuthenticated, studentAccess, studentVerificationController.updateVerificationDocument);
 
 /**
  * @swagger
- * /campaigns/{campaignId}:
+ * /verification/{campaignId}:
  *   delete:
  *     summary: Delete a campaign
- *     tags: [Campaigns]
+ *     tags: [Verifications]
  *     parameters:
  *       - in: path
  *         name: campaignId
@@ -496,7 +276,7 @@ campaignRouter.put(
  *           type: string
  *     responses:
  *       "200":
- *         description: Campaign deleted successfully
+ *         description: Documents deleted successfully
  *         content:
  *           application/json:
  *             schema:
@@ -504,7 +284,7 @@ campaignRouter.put(
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Campaign deleted successfully
+ *                   example: Documents deleted successfully
  *                 data:
  *                   type: object
  *                   properties:
@@ -548,11 +328,7 @@ campaignRouter.put(
  *       "500":
  *         description: Internal server error
  */
-campaignRouter.delete(
-  "/:campaignId",
-  isAuthenticated,
-  studentAccess,
-  deleteCampaign
-);
 
-module.exports = campaignRouter;
+studentVerificationRouter.delete('/:verificationId', isAuthenticated, studentAccess, studentVerificationController.deleteStudentVerificationDocument);
+
+module.exports = studentVerificationRouter;
