@@ -54,9 +54,15 @@ exports.overview = async (req, res) => {
       })
       .exec();
     recentDonations = recentDonations.concat(recentWithdrawnDonations);
-    let studentsHelped = totalDonated.map((donation) => donation.receiverId);
+    let studentsHelped = await PaymentModel.find({
+      senderId: donorId,
+      status: "successful",
+    }).distinct("receiverId");
     studentsHelped = studentsHelped.concat(
-      withdrawnDonations.map((donation) => donation.receiverId)
+      await PaymentModel.find({
+        senderId: donorId,
+        status: "withdrawn",
+      }).distinct("receiverId")
     );
     studentsHelped = new Set(studentsHelped).size;
     totalDonated =
