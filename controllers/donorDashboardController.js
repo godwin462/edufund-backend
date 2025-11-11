@@ -27,7 +27,7 @@ exports.overview = async (req, res) => {
       .find({ isActive: true })
       .populate("donations")
       .exec();
-    const recentDonations = await PaymentModel.find({
+    let recentDonations = await PaymentModel.find({
       senderId: donorId,
       status: "successful",
     })
@@ -40,6 +40,20 @@ exports.overview = async (req, res) => {
         },
       })
       .exec();
+    const recentWithdrawnDonations = await PaymentModel.find({
+      senderId: donorId,
+      status: "withdrawn",
+    })
+      .sort({ createdAt: -1 })
+      .populate("receiverId")
+      .populate({
+        path: "campaignId",
+        populate: {
+          path: "donations",
+        },
+      })
+      .exec();
+    recentDonations = recentDonations.concat(recentWithdrawnDonations);
     let studentsHelped = totalDonated.map((donation) => donation.receiverId);
     studentsHelped = studentsHelped.concat(
       withdrawnDonations.map((donation) => donation.receiverId)
