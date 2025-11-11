@@ -80,6 +80,45 @@ paymentRouter.post(
   makeDonation
 );
 
+/**
+ * @swagger
+ * /payment/verify-payment-webhook:
+ *   post:
+ *     summary: Webhook to verify payment status from payment provider (KoraPay)
+ *     tags: [Payments]
+ *     description: This endpoint is called by the payment provider (KoraPay) to update the status of a transaction. It should not be called directly.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               event:
+ *                 type: string
+ *                 example: charge.success
+ *               data:
+ *                 type: object
+ *                 properties:
+ *                   reference:
+ *                     type: string
+ *     responses:
+ *       "200":
+ *         description: Webhook received and payment status updated.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Payment Verification Successful
+ *       "404":
+ *         description: Payment not found for the given reference.
+ *       "500":
+ *         description: Error verifying payment.
+ */
+paymentRouter.post("/verify-payment-webhook", verifyPaymentWebHook);
 
 paymentRouter.post(
   "/request-withdrawal/:studentId/:campaignId",
