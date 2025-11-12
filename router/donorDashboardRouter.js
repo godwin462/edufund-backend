@@ -1,4 +1,4 @@
-er();
+const donorDashboardRouter = require("express").Router();
 const { overview } = require("../controllers/donorDashboardController");
 /**
  * @swagger

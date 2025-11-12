@@ -21,6 +21,7 @@ const notificationRouter = require("./router/notificationRouter");
 const studentDashboardRouter = require("./router/studentDashboardRouter");
 const donorDashboardRouter = require("./router/donorDashboardRouter");
 const adminRouter = require("./router/adminRouter");
+const adminDashRouter = require("./router/adminDashboardRouter");
 
 const app = express();
 
@@ -99,6 +100,7 @@ app.use("/api/v1/notification", notificationRouter);
 app.use("/api/v1/student-dashboard", studentDashboardRouter);
 app.use("/api/v1/donor-dashboard", donorDashboardRouter);
 app.use("/api/v1/admins", adminRouter);
+app.use("/api/v1/admin/dashboard", adminDashRouter);
 
 app.get("/", (req, res) => {
   res.send("Connected to Backend Server");
