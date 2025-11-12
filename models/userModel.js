@@ -75,13 +75,13 @@ UserSchema.virtual("academicDocuments", {
   justOne: false,
 });
 
-const REQUIRED_DOCUMENTS = [
-  "admission-letter",
-  "id-card",
-  "prev-semester-receipt",
-  "nin",
-  "result",
-];
+// const REQUIRED_DOCUMENTS = [
+//   "admission-letter",
+//   "id-card",
+//   "prev-semester-receipt",
+//   "nin",
+//   "result",
+// ];
 
 UserSchema.virtual("isFullyVerifiedStudent").get(function () {
   if (this.role !== "student") {
@@ -94,13 +94,15 @@ UserSchema.virtual("isFullyVerifiedStudent").get(function () {
     return false;
   }
 
-  const verifiedTypes = new Set(
-    docs.filter((doc) => doc.isVerified === true).map((doc) => doc.documentType)
-  );
+  // const verifiedTypes = new Set(
+  //   docs.filter((doc) => doc.isVerified === true).map((doc) => doc.documentType)
+  // );
 
-  const hasAllRequired = REQUIRED_DOCUMENTS.every((requiredType) =>
-    verifiedTypes.has(requiredType)
-  );
+  // const hasAllRequired = REQUIRED_DOCUMENTS.every((requiredType) =>
+  //   verifiedTypes.has(requiredType)
+  // );
+
+  const hasAllRequired = docs.every((doc) => doc.isVerified === true);
 
   return hasAllRequired;
 });

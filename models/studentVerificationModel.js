@@ -1,4 +1,4 @@
-const {default: mongoose} = require("mongoose");
+const mongoose = require("mongoose");
 
 const StudentVerificationSchema = new mongoose.Schema({
     studentId: {
@@ -20,11 +20,11 @@ const StudentVerificationSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    documentType: {
-        type: String,
-        enum: ["admission-letter", "id-card", "prev-semester-receipt", "nin", "result"],
-        required: true,
-    },
+    // documentType: {
+    //     type: String,
+    //     enum: ["admission-letter", "id-card", "prev-semester-receipt", "nin", "result"],
+    //     required: true,
+    // },
 },
     {timestamps: true}
 );
