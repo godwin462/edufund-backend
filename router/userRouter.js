@@ -6,6 +6,7 @@ const {
 } = require("../controllers/userController");
 const { isAuthenticated } = require("../middleware/authenticationMiddleware");
 const upload = require("../middleware/multerMiddleware");
+const {adminAccess} = require("../middleware/roleMiddleware");
 const userRouter = require("express").Router();
 
 /**
@@ -188,7 +189,8 @@ userRouter.get("/:userId", getUser);
  *         description: Server error.
  */
 userRouter.delete("/:userId",
-  //  isAuthenticated,
+   isAuthenticated,
+   adminAccess,
     deleteUser);
 
 /**
