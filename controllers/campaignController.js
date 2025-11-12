@@ -44,21 +44,21 @@ exports.createCampaign = async (req, res) => {
       });
     }
 
-    if (
-       student.academicDocuments.length < 3
-    ) {
-      return res.status(400).json({
-        message:
-          "Please upload your academic documents to get verified before you can create a campaign",
-      });
-    }
-    if (!student.isFullyVerifiedStudent)
-    {
-      return res.status(400).json({
-        message:
-          "Your documents need to be verified before you can create a campaign",
-      });
-    }
+    // if (
+    //    student.academicDocuments.length < 3
+    // ) {
+    //   return res.status(400).json({
+    //     message:
+    //       "Please upload your academic documents to get verified before you can create a campaign",
+    //   });
+    // }
+    // if (!student.isFullyVerifiedStudent)
+    // {
+    //   return res.status(400).json({
+    //     message:
+    //       "Your documents need to be verified before you can create a campaign",
+    //   });
+    // }
 
     const campaignIsActive = await campaignModel.findOne({
       studentId,
