@@ -93,7 +93,7 @@ const upload = require("../middleware/multerMiddleware");
  *         description: Internal server error
  */
 
-studentVerificationRouter.post('/:studentId', upload.single('verificationDocument'), isAuthenticated, studentAccess, studentVerificationController.submitVerification);
+studentVerificationRouter.post('/:studentId', upload.array('verificationDocuments', 5), isAuthenticated, studentAccess, studentVerificationController.submitVerification);
 
 /**
  * @swagger
