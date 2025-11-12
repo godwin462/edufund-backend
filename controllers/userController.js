@@ -1,3 +1,4 @@
+const campaignModel = require("../models/campaignModel");
 const UserModel = require("../models/userModel");
 const { hashData } = require("../utils/bcryptUtil");
 const {
@@ -81,16 +82,25 @@ exports.getUser = async (req, res) => {
     const user = await UserModel.findById(userId)
       .populate("academicDocuments")
       .lean({ virtuals: true });
+    const educationInformation = await campaignModel
+      .findOne({ studentId: userId })
+      .sort({ createdAt: -1 })
+      .select(
+        "studentId schoolName year course matricNumber jambRegistrationNumber"
+      )
+      ;
     if (!user) {
       return res.status(404).json({
         message: "User not found, please create an account",
       });
     }
+    user.educationInfo = educationInformation;
     res.status(200).json({
       message: "User found successfully",
       data: user,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: "Server error getting user",
       error: error.message,
