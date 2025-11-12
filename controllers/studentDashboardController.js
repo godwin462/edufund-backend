@@ -9,7 +9,7 @@ exports.overview = async (req, res) => {
     const { studentId } = req.params;
     const student = await UserModel.findById(studentId)
       .populate("academicDocuments")
-      .lean({ virtuals: true });
+      .exec();
     if (!student) {
       return res.status(404).json({
         message: "Student not found, please login or create a student account",
