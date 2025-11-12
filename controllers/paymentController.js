@@ -319,11 +319,11 @@ exports.withdrawWalletBalance = async (req, res) => {
       });
     }
 
-    // if (amount > campaign.target) {
-    //   return res.status(400).json({
-    //     message: "You cannot withdraw more than your campaign balance",
-    //   });
-    // }
+    if (amount > campaign.target) {
+      return res.status(400).json({
+        message: "You cannot withdraw more than your campaign set target",
+      });
+    }
 
     const withdrawal = await WithdrawalModel.create({
       campaignId,
