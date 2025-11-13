@@ -77,7 +77,12 @@ exports.makeDonation = async (req, res) => {
 
     if (!response) {
       return res.status(500).json({
-        message: "Error initializing payment",
+        message: "Internal server error, error initializing payment",
+      });
+    }
+    if (!response.data.status) {
+      return res.status(500).json({
+        message: response.data.message,
       });
     }
 
@@ -100,10 +105,9 @@ exports.makeDonation = async (req, res) => {
       data: response.data,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       message: "Server error initializing payment",
-      error: error.response,
+      error: error.message,
     });
   }
 };
@@ -322,7 +326,8 @@ exports.withdrawWalletBalance = async (req, res) => {
     if (amount < campaign.target || amount > campaign.target) {
       return res.status(400).json({
         // message: "You cannot withdraw more than your campaign set target",
-        message: "You can only withdraw amount equal to your campaign set target",
+        message:
+          "You can only withdraw amount equal to your campaign set target",
       });
     }
 
