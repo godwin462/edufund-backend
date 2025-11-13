@@ -10,7 +10,7 @@ exports.makeDonation = async (req, res) => {
   try {
     const { donorId, receiverId, campaignId } = req.params;
     let { amount } = req.body || {};
-    // console.log(amount);
+    console.log(req.body);
     amount = parseInt(amount);
     // console.log(amount);
     const ref = reference.randomUUID();
