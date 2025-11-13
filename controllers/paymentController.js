@@ -99,7 +99,7 @@ exports.makeDonation = async (req, res) => {
         message: "Error creating transaction",
       });
     }
-    // console.log(payload, transaction, ref);
+    console.log(response.data);
     return res.status(200).json({
       message: "Donation initiated successfully",
       data: response.data,

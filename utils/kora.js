@@ -14,7 +14,7 @@ exports.koraMakePayment = async (endpoint, payload) => {
         },
       }
     );
-    console.log(response);
+    // console.log(response);
     return response?.data;
   } catch (error) {
     if (error.response.data.message) {
