@@ -319,9 +319,10 @@ exports.withdrawWalletBalance = async (req, res) => {
       });
     }
 
-    if (amount > campaign.target) {
+    if (amount < campaign.target || amount > campaign.target) {
       return res.status(400).json({
-        message: "You cannot withdraw more than your campaign set target",
+        // message: "You cannot withdraw more than your campaign set target",
+        message: "You can only withdraw amount equal to your campaign set target",
       });
     }
 
