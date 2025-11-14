@@ -80,7 +80,8 @@ exports.makeDonation = async (req, res) => {
         message: "Internal server error, error initializing payment",
       });
     }
-    if (!response.data.status) {
+    if (response.data.status == false) {
+      console.log("response.data");
       return res.status(500).json({
         message: response.data.message,
       });
