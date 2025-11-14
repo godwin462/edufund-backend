@@ -99,8 +99,8 @@ const {
 studentVerificationRouter.post(
   "/:studentId",
   upload.array("verificationDocuments", 5),
-//   isAuthenticated,
-//   studentAccess,
+  isAuthenticated,
+  studentAccess,
   createVerificationDocument
 );
 
