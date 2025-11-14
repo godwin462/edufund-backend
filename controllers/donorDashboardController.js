@@ -78,6 +78,9 @@ exports.overview = async (req, res) => {
       `${94}%`,
     ];
     const data = {
+      totalDonated,
+      studentsHelped,
+      activeCampaigns,
       donor,
       stats,
       activeCampaigns,
