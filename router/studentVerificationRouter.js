@@ -1,25 +1,68 @@
-const studentVerificationRouter = require('express').Router();
-
-const studentVerificationController = require("../controllers/studentVerificationController");
-
+const studentVerificationRouter = require("express").Router();
 const { isAuthenticated } = require("../middleware/authenticationMiddleware");
-
 const { studentAccess } = require("../middleware/roleMiddleware");
-
 const upload = require("../middleware/multerMiddleware");
+const {
+  createVerificationDocument,
+  getAllStudentsVerificationDocuments,
+  deleteStudentVerificationDocument,
+  updateStudentVerificationDocuments,
+} = require("../controllers/studentVerificationController");
 
 /**
  * @swagger
- * /Verification/{studentId}:
+ * tags:
+ *   name: Student Verification
+ *   description: API for student verification documents
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     StudentVerification:
+ *       type: object
+ *       required:
+ *         - studentId
+ *         - document
+ *       properties:
+ *         studentId:
+ *           type: string
+ *           description: The ID of the student
+ *         document:
+ *           type: object
+ *           properties:
+ *             secureUrl:
+ *               type: string
+ *               description: The secure URL of the uploaded document
+ *             publicId:
+ *               type: string
+ *               description: The public ID of the uploaded document
+ *         isVerified:
+ *           type: boolean
+ *           description: Whether the document is verified or not
+ *           default: false
+ *       example:
+ *         studentId: "60d5ec49a0d2db2a3c_dummy_id"
+ *         document:
+ *           secureUrl: "http://example.com/document.pdf"
+ *           publicId: "document_public_id"
+ *         isVerified: false
+ */
+
+/**
+ * @swagger
+ * /student-verification/{studentId}:
  *   post:
- *     summary: Upload verified documents for a student
- *     tags: [Verifications]
+ *     summary: Upload verification documents for a student
+ *     tags: [Student Verification]
  *     parameters:
  *       - in: path
  *         name: studentId
  *         required: true
  *         schema:
  *           type: string
+ *         description: The ID of the student
  *     requestBody:
  *       required: true
  *       content:
@@ -27,18 +70,14 @@ const upload = require("../middleware/multerMiddleware");
  *           schema:
  *             type: object
  *             properties:
- *               title:
- *                 type: string
- *               target:
- *                 type: number
- *               story:
- *                 type: string
- *               campaignImage:
- *                 type: string
- *                 format: binary
+ *               verificationDocuments:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
  *     responses:
- *       "201":
- *         description: Documents uploaded successfully
+ *       "200":
+ *         description: Verification documents created successfully
  *         content:
  *           application/json:
  *             schema:
@@ -46,70 +85,41 @@ const upload = require("../middleware/multerMiddleware");
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Documents uploaded successfully
  *                 data:
- *                   type: object
- *                   properties:
- *                     _id:
- *                       type: string
- *                       example: 60d5ec49a0d2db2a3c_dummy_id
- *                     studentId:
- *                       type: string
- *                       example: 60d5ec49a0d2db2a3c_dummy_id
- *                     title:
- *                       type: string
- *                       example: Help me fund my education
- *                     target:
- *                       type: number
- *                       example: 5000
- *                     story:
- *                       type: string
- *                       example: I am a student in need of financial assistance...
- *                     isActive:
- *                       type: boolean
- *                       example: true
- *                     campaignImage:
- *                       type: object
- *                       properties:
- *                         imageUrl:
- *                           type: string
- *                           example: http://example.com/image.jpg
- *                         publicId:
- *                           type: string
- *                           example: image_public_id
- *                     createdAt:
- *                       type: string
- *                       format: date-time
- *                       example: 2023-01-01T12:00:00.000Z
- *                     updatedAt:
- *                       type: string
- *                       format: date-time
- *                       example: 2023-01-01T12:00:00.000Z
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/StudentVerification'
  *       "400":
- *         description: Bad request or active campaign already exists
+ *         description: Bad request
  *       "404":
  *         description: Student not found
  *       "500":
  *         description: Internal server error
  */
-
-studentVerificationRouter.post('/:studentId', upload.array('verificationDocuments', 5), isAuthenticated, studentAccess, studentVerificationController.submitVerification);
+studentVerificationRouter.post(
+  "/:studentId",
+  upload.array("verificationDocuments", 5),
+//   isAuthenticated,
+//   studentAccess,
+  createVerificationDocument
+);
 
 /**
  * @swagger
- * /verification/document-detail/{documentId}:
+ * /student-verification/{studentId}:
  *   get:
- *     summary: Get a specific document by its ID
- *     tags: [Verifications]
+ *     summary: Get all verification documents for a student
+ *     tags: [Student Verification]
  *     parameters:
  *       - in: path
- *         name: campaignId
+ *         name: studentId
  *         required: true
  *         schema:
  *           type: string
+ *         description: The ID of the student
  *     responses:
  *       "200":
- *         description: Documents found successfully
+ *         description: Documents fetched successfully
  *         content:
  *           application/json:
  *             schema:
@@ -117,74 +127,35 @@ studentVerificationRouter.post('/:studentId', upload.array('verificationDocument
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Documents found successfully
+ *                 total:
+ *                   type: integer
  *                 data:
- *                   type: object
- *                   properties:
- *                     _id:
- *                       type: string
- *                       example: 60d5ec49a0d2db2a3c_dummy_id
- *                     studentId:
- *                       type: object
- *                       properties:
- *                         _id:
- *                           type: string
- *                           example: 60d5ec49a0d2db2a3c_dummy_id
- *                         firstName:
- *                           type: string
- *                           example: John
- *                         lastName:
- *                           type: string
- *                           example: Doe
- *                     title:
- *                       type: string
- *                       example: Help me fund my education
- *                     target:
- *                       type: number
- *                       example: 5000
- *                     story:
- *                       type: string
- *                       example: I am a student in need of financial assistance...
- *                     isActive:
- *                       type: boolean
- *                       example: true
- *                     campaignImage:
- *                       type: object
- *                       properties:
- *                         imageUrl:
- *                           type: string
- *                           example: http://example.com/image.jpg
- *                         publicId:
- *                           type: string
- *                           example: image_public_id
- *                     createdAt:
- *                       type: string
- *                       format: date-time
- *                       example: 2023-01-01T12:00:00.000Z
- *                     updatedAt:
- *                       type: string
- *                       format: date-time
- *                       example: 2023-01-01T12:00:00.000Z
- *       "404":
- *         description: Campaign not found
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/StudentVerification'
  *       "500":
  *         description: Internal server error
  */
-
-studentVerificationRouter.get('/:studentId', isAuthenticated, studentAccess, studentVerificationController.getVerificationStatus);
+studentVerificationRouter.get(
+  "/:studentId",
+  isAuthenticated,
+  studentAccess,
+  getAllStudentsVerificationDocuments
+);
 
 /**
  * @swagger
- * /verifications/{campaignId}:
- *   put:
- *     summary: Update a campaign
- *     tags: [Verifications]
+ * /student-verification/{documentId}:
+ *   patch:
+ *     summary: Update a verification document
+ *     tags: [Student Verification]
  *     parameters:
  *       - in: path
- *         name: campaignId
+ *         name: documentId
  *         required: true
  *         schema:
  *           type: string
+ *         description: The ID of the document
  *     requestBody:
  *       required: true
  *       content:
@@ -192,143 +163,61 @@ studentVerificationRouter.get('/:studentId', isAuthenticated, studentAccess, stu
  *           schema:
  *             type: object
  *             properties:
- *               title:
- *                 type: string
- *               target:
- *                 type: number
- *               story:
- *                 type: string
- *               isActive:
- *                 type: boolean
- *               campaignImage:
+ *               verificationDocument:
  *                 type: string
  *                 format: binary
  *     responses:
  *       "200":
- *         description: Documents updated successfully
+ *         description: Document updated successfully
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Documents updated successfully
- *                 data:
- *                   type: object
- *                   properties:
- *                     _id:
- *                       type: string
- *                       example: 60d5ec49a0d2db2a3c_dummy_id
- *                     studentId:
- *                       type: string
- *                       example: 60d5ec49a0d2db2a3c_dummy_id
- *                     title:
- *                       type: string
- *                       example: Help me fund my education - Updated
- *                     target:
- *                       type: number
- *                       example: 6000
- *                     story:
- *                       type: string
- *                       example: I am a student in need of financial assistance... (updated)
- *                     isActive:
- *                       type: boolean
- *                       example: false
- *                     campaignImage:
- *                       type: object
- *                       properties:
- *                         imageUrl:
- *                           type: string
- *                           example: http://example.com/new_image.jpg
- *                         publicId:
- *                           type: string
- *                           example: new_image_public_id
- *                     createdAt:
- *                       type: string
- *                       format: date-time
- *                       example: 2023-01-01T12:00:00.000Z
- *                     updatedAt:
- *                       type: string
- *                       format: date-time
- *                       example: 2023-01-02T12:00:00.000Z
+ *               $ref: '#/components/schemas/StudentVerification'
  *       "400":
  *         description: Bad request
  *       "404":
- *         description: Campaign not found
+ *         description: Document not found
  *       "500":
  *         description: Internal server error
  */
-
-studentVerificationRouter.put('/:verificationId', upload.single('verificationDocument'), isAuthenticated, studentAccess, studentVerificationController.updateVerificationDocument);
+studentVerificationRouter.patch(
+  "/:documentId",
+  upload.single("verificationDocument"),
+  isAuthenticated,
+  studentAccess,
+  updateStudentVerificationDocuments
+);
 
 /**
  * @swagger
- * /verification/{campaignId}:
+ * /student-verification/{documentId}:
  *   delete:
- *     summary: Delete a campaign
- *     tags: [Verifications]
+ *     summary: Delete a verification document
+ *     tags: [Student Verification]
  *     parameters:
  *       - in: path
- *         name: campaignId
+ *         name: documentId
  *         required: true
  *         schema:
  *           type: string
+ *         description: The ID of the document
  *     responses:
  *       "200":
- *         description: Documents deleted successfully
+ *         description: Document deleted successfully
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Documents deleted successfully
- *                 data:
- *                   type: object
- *                   properties:
- *                     _id:
- *                       type: string
- *                       example: 60d5ec49a0d2db2a3c_dummy_id
- *                     studentId:
- *                       type: string
- *                       example: 60d5ec49a0d2db2a3c_dummy_id
- *                     title:
- *                       type: string
- *                       example: Help me fund my education - Updated
- *                     target:
- *                       type: number
- *                       example: 6000
- *                     story:
- *                       type: string
- *                       example: I am a student in need of financial assistance... (updated)
- *                     isActive:
- *                       type: boolean
- *                       example: false
- *                     campaignImage:
- *                       type: object
- *                       properties:
- *                         imageUrl:
- *                           type: string
- *                           example: http://example.com/new_image.jpg
- *                         publicId:
- *                           type: string
- *                           example: new_image_public_id
- *                     createdAt:
- *                       type: string
- *                       format: date-time
- *                       example: 2023-01-01T12:00:00.000Z
- *                     updatedAt:
- *                       type: string
- *                       format: date-time
- *                       example: 2023-01-02T12:00:00.000Z
+ *               $ref: '#/components/schemas/StudentVerification'
  *       "404":
- *         description: Campaign not found
+ *         description: Document not found
  *       "500":
  *         description: Internal server error
  */
-
-studentVerificationRouter.delete('/:verificationId', isAuthenticated, studentAccess, studentVerificationController.deleteStudentVerificationDocument);
+studentVerificationRouter.delete(
+  "/:documentId",
+  isAuthenticated,
+  studentAccess,
+  deleteStudentVerificationDocument
+);
 
 module.exports = studentVerificationRouter;
