@@ -5,6 +5,7 @@ const WithdrawalModel = require("../models/withdrawalModel");
 const { koraMakePayment } = require("../utils/kora");
 const { createNotification } = require("./notificationController");
 const reference = require("crypto");
+const { sendEmail } = require("../email/brevo");
 
 exports.makeDonation = async (req, res) => {
   try {
@@ -175,6 +176,17 @@ exports.verifyPaymentWebHook = async (req, res) => {
             payment._id,
             "success"
           );
+          const html = campaignTargetMetTemplate(
+            campaign.target,
+            payment.senderId?.firstName,
+            payment.campaignId?.title
+          );
+          const subject = "EduGoal Achieved!";
+          await sendEmail({
+            to: payment.senderId?.email,
+            subject,
+            html,
+          });
         } catch (error) {
           console.log(
             "Error updating campaign, but proceeding with payment verification.",
@@ -307,6 +319,13 @@ exports.withdrawWalletBalance = async (req, res) => {
   try {
     const { campaignId, studentId } = req.params;
     const { amount, purpose, note } = req.body || {};
+
+    const student = await userModel.findById(studentId);
+    if (!student) {
+      return res.status(404).json({
+        message: "User not found, please create an account",
+      });
+    }
     const campaign = await campaignModel.findOne({
       _id: campaignId,
       studentId,
@@ -349,7 +368,18 @@ exports.withdrawWalletBalance = async (req, res) => {
       { _id: campaignId, studentId },
       { status: "withdrawn", isActive: false }
     );
-
+    const html = withdrawalRequestTemplate(
+      student.fullName,
+      student.studentId,
+      withdrawal.createdAt,
+      withdrawal.status
+    );
+    await sendEmail({
+      email: student.email,
+      subject: "EduWallet withdrawal request",
+      text: "Withdrawal request",
+      html: html,
+    });
     res.status(200).json({
       message: "Donation withdrawn initiated",
       data: withdrawal,
