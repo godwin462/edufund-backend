@@ -374,7 +374,7 @@ exports.withdrawWalletBalance = async (req, res) => {
     );
     const html = withdrawalRequestTemplate(
       student.fullName,
-      student.studentId,
+      student._id,
       withdrawal.createdAt,
       withdrawal.status
     );

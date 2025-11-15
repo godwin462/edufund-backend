@@ -3,7 +3,16 @@ const withdrawalRequestTemplate = (
   studentId,
   requestDate,
   status
-) => `<!DOCTYPE html>
+) => {
+  const date = new Date(requestDate);
+
+  const formattedDate = date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  return `<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -74,7 +83,7 @@ const withdrawalRequestTemplate = (
 
                                 <tr>
                                     <td style="font-size:13px; color:#555;">Request Date:</td>
-                                    <td style="text-align:right; font-size:13px; font-weight:bold; color:#222;">${requestDate}</td>
+                                    <td style="text-align:right; font-size:13px; font-weight:bold; color:#222;">${formattedDate}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="2" height="10"></td>
@@ -129,5 +138,5 @@ const withdrawalRequestTemplate = (
 
 </html>
 `;
-
-module.exports = withdrawalRequestTemplate
+};
+module.exports = withdrawalRequestTemplate;
