@@ -140,3 +140,4 @@ const campaignTargetMetTemplate = (target, firstName, campaignTitle) => `
 
 </html>
     `;
+module.exports = campaignTargetMetTemplate

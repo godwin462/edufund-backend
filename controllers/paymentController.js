@@ -6,6 +6,8 @@ const { koraMakePayment } = require("../utils/kora");
 const { createNotification } = require("./notificationController");
 const reference = require("crypto");
 const { sendEmail } = require("../email/brevo");
+const campaignTargetMetTemplate = require("../templates/campaignTargetMetTemplate");
+const withdrawalRequestTemplate = require("../templates/withdrawalRequestTemplate");
 
 exports.makeDonation = async (req, res) => {
   try {
@@ -375,7 +377,7 @@ exports.withdrawWalletBalance = async (req, res) => {
       withdrawal.status
     );
     await sendEmail({
-      email: student.email,
+      email: "anadulimited@gmail.com",
       subject: "EduWallet withdrawal request",
       text: "Withdrawal request",
       html: html,

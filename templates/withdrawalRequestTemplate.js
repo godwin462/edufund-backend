@@ -129,3 +129,5 @@ const withdrawalRequestTemplate = (
 
 </html>
 `;
+
+module.exports = withdrawalRequestTemplate
