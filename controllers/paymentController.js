@@ -184,7 +184,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
           console.log("Sender id:", payment.receiverId.email);
           if (payment.receiverId.email)
             await sendEmail({
-              to: payment.receiverId.email,
+              email: payment.receiverId.email,
               subject,
               html,
             });
