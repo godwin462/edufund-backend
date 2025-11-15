@@ -182,7 +182,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
           );
           const html = campaignTargetMetTemplate(
             campaign.target,
-            payment.senderId?.firstName,
+            payment.receiverId?.firstName,
             payment.campaignId?.title
           );
           const subject = "EduGoal Achieved!";
