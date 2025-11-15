@@ -21,6 +21,7 @@ const notificationRouter = require("./router/notificationRouter");
 const studentDashboardRouter = require("./router/studentDashboardRouter");
 const donorDashboardRouter = require("./router/donorDashboardRouter");
 const studentVerificationRouter = require("./router/studentVerificationRouter");
+const seedAnonymousUser = require("./seed/seed");
 
 const app = express();
 
@@ -109,12 +110,10 @@ app.use((req, res, next) => {
   const error = new Error("Route not found.");
   error.status = 404;
   // next(error);
-  return res
-    .status(404)
-    .json({
-      message: "Action not allowed, please login to continue",
-      error: error.message,
-    });
+  return res.status(404).json({
+    message: "Action not allowed, please login to continue",
+    error: error.message,
+  });
 });
 
 // Error handling middleware
@@ -128,8 +127,10 @@ app.use((error, req, res, next) => {
 
 mongoose
   .connect(DB)
-  .then(() => {
+  .then(async () => {
     console.log("Connected to Database");
+    await seedAnonymousUser();
+    console.log("✅ Anonymous Donor user record created successfully.");
     app.listen(PORT, () => {
       console.log(`EduFund server is running
         server: http://localhost:${PORT}

@@ -8,11 +8,13 @@ const reference = require("crypto");
 const { sendEmail } = require("../email/brevo");
 const campaignTargetMetTemplate = require("../templates/campaignTargetMetTemplate");
 const withdrawalRequestTemplate = require("../templates/withdrawalRequestTemplate");
+const {ANONYMOUS_DONOR_ID} = require("../constants/anonymousUser");
 
 exports.makeDonation = async (req, res) => {
   try {
-    const { donorId, receiverId, campaignId } = req.params;
+    let { donorId, receiverId, campaignId } = req.params;
     let { amount } = req.body || {};
+    donorId = donorId || ANONYMOUS_DONOR_ID;
     console.log(req.body);
     amount = parseInt(amount);
     // console.log(amount);

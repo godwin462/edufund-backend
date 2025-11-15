@@ -76,7 +76,7 @@ const paymentRouter = require("express").Router();
  */
 paymentRouter.post(
   "/make-donation/:donorId/:receiverId/:campaignId",
-  isAuthenticated,
+  // isAuthenticated,
   makeDonation
 );
 
