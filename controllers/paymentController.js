@@ -55,6 +55,11 @@ exports.makeDonation = async (req, res) => {
     }
     // console.log(campaign.remainingAmount, campaign);
 
+    if (campaign.remainingAmount < 1) {
+      return res.status(400).json({
+        message: "Campaign target has been met, no more donations allowed",
+      });
+    }
     if (!campaign.isActive) {
       return res.status(400).json({
         message: "Action not allowed, can not donate to an inactive campaign",
