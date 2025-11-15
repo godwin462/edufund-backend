@@ -141,7 +141,7 @@ campaignSchema.virtual("remainingAmount").get(function () {
 
 campaignSchema.virtual("donors").get(function () {
   const donors = this.donations
-    ?.filter((d) => d.status === "successful")
+    ?.filter((d) => d.status === "successful" || d.status === "withdrawn")
     ?.map((donation) => donation.senderId?.toString());
   return new Set(donors).size;
 });
