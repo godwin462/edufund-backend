@@ -181,6 +181,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
             payment.campaignId?.title
           );
           const subject = "EduGoal Achieved!";
+          console.log("Sender id:", payment.receiverId.email);
           if (payment.receiverId.email)
             await sendEmail({
               to: payment.receiverId.email,
