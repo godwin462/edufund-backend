@@ -109,14 +109,19 @@ app.use((req, res, next) => {
   const error = new Error("Route not found.");
   error.status = 404;
   // next(error);
-  return res.redirect(`https://edu-fund-gamma.vercel.app/login`);
+  return res
+    .status(404)
+    .json({
+      message: "Action not allowed, please login to continue",
+      error: error.message,
+    });
 });
 
 // Error handling middleware
 app.use((error, req, res, next) => {
   const statusCode = error.status || 500;
   res.status(statusCode).json({
-    status: "Unknown server error",
+    status: "error",
     message: error.message,
   });
 });
