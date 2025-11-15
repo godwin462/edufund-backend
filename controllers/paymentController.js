@@ -169,9 +169,7 @@ exports.verifyPaymentWebHook = async (req, res) => {
       totalDonation += payment.amount;
       if (totalDonation >= campaign.target) {
         try {
-          await campaignModel.findByIdAndUpdate(payment.campaignId, {
-            isActive: false,
-          });
+
           await createNotification(
             payment.senderId,
             `Good news! Your campaign has reached its target donation amount of ₦${campaign.target.toLocaleString()}`,
@@ -188,6 +186,9 @@ exports.verifyPaymentWebHook = async (req, res) => {
             to: payment.senderId?.email,
             subject,
             html,
+          });
+          await campaignModel.findByIdAndUpdate(payment.campaignId, {
+            isActive: false,
           });
         } catch (error) {
           console.log(
