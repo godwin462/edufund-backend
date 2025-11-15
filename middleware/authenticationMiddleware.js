@@ -12,7 +12,7 @@ exports.isAuthenticated = async (req, res, next) => {
       // return res.status(401).json({
       //   message: "User not authenticated, please login",
       // });
-      return res.redirect(303, loginUrl);
+      return res.redirect(loginUrl);
     }
     const decoded = await verifyJwt(token);
     const user = await userModel.findById(decoded.id);
@@ -21,7 +21,7 @@ exports.isAuthenticated = async (req, res, next) => {
       // return res.status(404).json({
       //   message: "Cannot perform action please create an account",
       // });
-      return res.redirect(303, registerUrl);
+      return res.redirect(registerUrl);
     }
     if (!user.isVerified) {
       return res.status(403).json({
@@ -37,7 +37,7 @@ exports.isAuthenticated = async (req, res, next) => {
       // return res.status(401).json({
       //   message: "Session expired, Please login again to continue",
       // });
-      return res.redirect(303, loginUrl);
+      return res.redirect(loginUrl);
     }
     res.status(500).json({
       message: error.message,

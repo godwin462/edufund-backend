@@ -24,7 +24,6 @@ const studentVerificationRouter = require("./router/studentVerificationRouter");
 
 const app = express();
 
-
 app.use(express.json());
 app.use(cors());
 app.use(
@@ -43,8 +42,7 @@ const swaggerDefinition = {
   info: {
     title: "Api documentation for Edufund backend application",
     version: "1.0.0",
-    description:
-      "This is a REST API application for Edufund.",
+    description: "This is a REST API application for Edufund.",
     license: {
       name: "Licensed Under MIT",
       url: "https://spdx.org/licenses/MIT.html",
@@ -103,17 +101,24 @@ app.use("/api/v1/donor-dashboard", donorDashboardRouter);
 app.use("/api/v1/student-verification", studentVerificationRouter);
 
 app.get("/", (req, res) => {
-
   res.send("Connected to Backend Server");
 });
 
+// Not found middleware
+app.use((req, res, next) => {
+  const error = new Error("Route not found.");
+  error.status = 404;
+  // next(error);
+  return res.redirect(`https://edu-fund-gamma.vercel.app/login`);
+});
+
+// Error handling middleware
 app.use((error, req, res, next) => {
-  if(error) {
-    return res.status(500).json({
-      message: error.message,
-    });
-  }
-  next();
+  const statusCode = error.status || 500;
+  res.status(statusCode).json({
+    status: "Unknown server error",
+    message: error.message,
+  });
 });
 
 mongoose
