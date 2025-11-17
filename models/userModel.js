@@ -36,6 +36,10 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isFullyVerifiedStudent: {
+      type: Boolean,
+      default: false,
+    },
     role: {
       type: String,
       enum: ["student", "institution", "sponsor", "admin"],
@@ -83,17 +87,17 @@ UserSchema.virtual("academicDocuments", {
 //   "result",
 // ];
 
-UserSchema.virtual("isFullyVerifiedStudent").get(function () {
-  return true;
-  if (this.role !== "student") {
-    return false;
-  }
+// UserSchema.virtual("isFullyVerifiedStudent").get(function () {
+//   return true;
+//   if (this.role !== "student") {
+//     return false;
+//   }
 
-  const docs = this.academicDocuments;
+//   const docs = this.academicDocuments;
 
-  if (!docs || docs.length === 0) {
-    return false;
-  }
+//   if (!docs || docs.length === 0) {
+//     return false;
+//   }
 
   // const verifiedTypes = new Set(
   //   docs.filter((doc) => doc.isVerified === true).map((doc) => doc.documentType)
@@ -103,10 +107,10 @@ UserSchema.virtual("isFullyVerifiedStudent").get(function () {
   //   verifiedTypes.has(requiredType)
   // );
 
-  const hasAllRequired = docs.every((doc) => doc.isVerified === true);
+//   const hasAllRequired = docs.every((doc) => doc.isVerified === true);
 
-  return hasAllRequired;
-});
+//   return hasAllRequired;
+// });
 
 const UserModel = mongoose.model("User", UserSchema);
 

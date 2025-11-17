@@ -52,12 +52,12 @@ const campaignSchema = new mongoose.Schema(
     },
     isActive: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     status: {
       type: String,
-      enum: ["rejected", "pending", "approved", "completed", "withdrawn"],
-      default: "approved",
+      enum: ["rejected", "pending", "approved", "completed", "withdrawn", "uncompleted"],
+      default: "pending",
     },
     campaignImage: {
       imageUrl: {

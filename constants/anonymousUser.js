@@ -7,6 +7,7 @@ exports.anonymousDonor = {
   email: "anonymous@edufiund.com",
   role: "sponsor",
   isVerified: true,
+  sponsorType: "individual",
   password: "placeholder-hash",
 };
 
