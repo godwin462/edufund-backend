@@ -8,41 +8,61 @@ const {
 exports.createVerificationDocument = async (req, res) => {
   try {
     const { studentId } = req.params;
-    // const { documentType } = req.body;
     const student = await UserModel.findOne({ _id: studentId });
 
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
     }
+    if (student.role !== "student") {
+      return res.status(403).json({ message: "User is not a student" });
+    }
 
-    if (!req.files || req.files.length < 3) {
+    if (!req.files) {
+      return res.status(400).json({
+        message:
+          "Verification documents must not be empty. Please provide at least the required ones.",
+      });
+    }
+    if (!req.files.admissionLetter) {
       return res
         .status(400)
-        .json({ message: "Please provide at least 3 documents" });
+        .json({
+          message:
+            "Admission letter is required, please provide admission letter",
+        });
+    }
+    if (!req.files.studentIdCard) {
+      return res
+        .status(400)
+        .json({
+          message:
+            "Student ID card is required, please provide student ID card",
+        });
+    }
+    if (!req.files.nin) {
+      return res.status(400).json({ message: "NIN is required, please provide NIN" });
     }
 
-    const verificationDocuments = [];
-    for (const file of req.files) {
+    const files = Object.values(req.files).flat();
+
+    for (const file of files) {
       if (file.mimetype !== "application/pdf") {
-        // TODO: consider deleting already uploaded files if one fails
-        return res.status(400).json({ message: "Only PDF files are allowed" });
+        return res.status(400).json({ message: "Only PDF files are allowed, please ensure all files are PDF" });
       }
     }
-    for (const file of req.files) {
+
+    const uploadPromises = Object.keys(req.files).map(async (field) => {
+      const file = req.files[field][0];
       const uploadResult = await cloudinaryUpload(file.buffer);
-      console.log(uploadResult);
       const document = {
         secureUrl: uploadResult.secure_url,
         publicId: uploadResult.public_id,
       };
-      //   const payloadObject = { studentId, document, documentType };
-      const payloadObject = { studentId, document };
+      const payloadObject = { studentId, document, documentType: field };
+      return StudentVerificationModel.create(payloadObject);
+    });
 
-      const verificationDocument = await StudentVerificationModel.create(
-        payloadObject
-      );
-      verificationDocuments.push(verificationDocument);
-    }
+    const verificationDocuments = await Promise.all(uploadPromises);
 
     res.status(200).json({
       message: "Verification documents created successfully",
@@ -52,7 +72,7 @@ exports.createVerificationDocument = async (req, res) => {
     console.log(error);
     res
       .status(500)
-      .json({ message: "Internal server error", error: a.message });
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 

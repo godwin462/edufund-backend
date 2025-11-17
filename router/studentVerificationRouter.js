@@ -25,7 +25,11 @@ const {
  *       required:
  *         - studentId
  *         - document
+ *         - documentType
  *       properties:
+ *         _id:
+ *           type: string
+ *           description: The auto-generated ID of the verification document
  *         studentId:
  *           type: string
  *           description: The ID of the student
@@ -42,12 +46,28 @@ const {
  *           type: boolean
  *           description: Whether the document is verified or not
  *           default: false
+ *         documentType:
+ *           type: string
+ *           enum: [admissionLetter, studentIdCard, semesterReceipt, academicResult, nin]
+ *           description: The type of the verification document
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: The time the document was created
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: The time the document was last updated
  *       example:
+ *         _id: "60d5f3f7a0d2db2a3c000008"
  *         studentId: "60d5ec49a0d2db2a3c_dummy_id"
  *         document:
  *           secureUrl: "http://example.com/document.pdf"
  *           publicId: "document_public_id"
  *         isVerified: false
+ *         documentType: "admissionLetter"
+ *         createdAt: "2025-11-02T07:16:16.703Z"
+ *         updatedAt: "2025-11-02T07:16:16.703Z"
  */
 
 /**
@@ -70,11 +90,26 @@ const {
  *           schema:
  *             type: object
  *             properties:
- *               verificationDocuments:
- *                 type: array
- *                 items:
- *                   type: string
- *                   format: binary
+ *               admissionLetter:
+ *                 type: string
+ *                 format: binary
+ *                 description: Admission letter in PDF format.
+ *               studentIdCard:
+ *                 type: string
+ *                 format: binary
+ *                 description: Student ID card in PDF format.
+ *               semesterReceipt:
+ *                 type: string
+ *                 format: binary
+ *                 description: Semester receipt in PDF format.
+ *               academicResult:
+ *                 type: string
+ *                 format: binary
+ *                 description: Academic result in PDF format.
+ *               nin:
+ *                 type: string
+ *                 format: binary
+ *                 description: NIN in PDF format.
  *     responses:
  *       "200":
  *         description: Verification documents created successfully
@@ -85,12 +120,15 @@ const {
  *               properties:
  *                 message:
  *                   type: string
+ *                   example: Verification documents created successfully
  *                 data:
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/StudentVerification'
  *       "400":
  *         description: Bad request
+ *       "403":
+ *         description: User is not a student
  *       "404":
  *         description: Student not found
  *       "500":
@@ -98,7 +136,13 @@ const {
  */
 studentVerificationRouter.post(
   "/:studentId",
-  upload.array("verificationDocuments", 5),
+  upload.fields([
+    { name: "admissionLetter", maxCount: 1 },
+    { name: "studentIdCard", maxCount: 1 },
+    { name: "semesterReceipt", maxCount: 1 },
+    { name: "academicResult", maxCount: 1 },
+    { name: "nin", maxCount: 1 },
+  ]),
   isAuthenticated,
   studentAccess,
   createVerificationDocument
