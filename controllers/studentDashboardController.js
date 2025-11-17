@@ -22,10 +22,22 @@ exports.overview = async (req, res) => {
     totalRaised =
       totalRaised?.reduce((acc, donation) => acc + donation.amount, 0) || 0;
 
-    const activeCampaign = await campaignModel
+    let activeCampaign = await campaignModel
       .findOne({ studentId, isActive: true })
       .populate("studentId donations")
       .exec();
+      if (!activeCampaign) {
+        await campaignModel
+          .findOne({ studentId, isActive: false })
+          .populate("studentId donations")
+          .exec();
+      }
+      if (!activeCampaign) {
+        await campaignModel
+          .findOne({ studentId, status: "withdrawn" })
+          .populate("studentId donations")
+          .exec();
+      }
 
     const recentDonors = await PaymentModel.find({
       receiverId: studentId,
