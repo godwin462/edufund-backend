@@ -18,60 +18,6 @@ const {
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     StudentVerification:
- *       type: object
- *       required:
- *         - studentId
- *         - document
- *         - documentType
- *       properties:
- *         _id:
- *           type: string
- *           description: The auto-generated ID of the verification document
- *         studentId:
- *           type: string
- *           description: The ID of the student
- *         document:
- *           type: object
- *           properties:
- *             secureUrl:
- *               type: string
- *               description: The secure URL of the uploaded document
- *             publicId:
- *               type: string
- *               description: The public ID of the uploaded document
- *         isVerified:
- *           type: boolean
- *           description: Whether the document is verified or not
- *           default: false
- *         documentType:
- *           type: string
- *           enum: [admissionLetter, studentIdCard, semesterReceipt, academicResult, nin]
- *           description: The type of the verification document
- *         createdAt:
- *           type: string
- *           format: date-time
- *           description: The time the document was created
- *         updatedAt:
- *           type: string
- *           format: date-time
- *           description: The time the document was last updated
- *       example:
- *         _id: "60d5f3f7a0d2db2a3c000008"
- *         studentId: "60d5ec49a0d2db2a3c_dummy_id"
- *         document:
- *           secureUrl: "http://example.com/document.pdf"
- *           publicId: "document_public_id"
- *         isVerified: false
- *         documentType: "admissionLetter"
- *         createdAt: "2025-11-02T07:16:16.703Z"
- *         updatedAt: "2025-11-02T07:16:16.703Z"
- */
-
-/**
- * @swagger
  * /student-verification/{studentId}:
  *   post:
  *     summary: Upload verification documents for a student
