@@ -22,6 +22,7 @@ const studentDashboardRouter = require("./router/studentDashboardRouter");
 const donorDashboardRouter = require("./router/donorDashboardRouter");
 const studentVerificationRouter = require("./router/studentVerificationRouter");
 const seedAnonymousUser = require("./seed/seed");
+const adminDashboardRouter = require("./router/adminDashboardRouter");
 
 const app = express();
 
@@ -99,6 +100,7 @@ app.use("/api/v1/donations", donationRouter);
 app.use("/api/v1/notification", notificationRouter);
 app.use("/api/v1/student-dashboard", studentDashboardRouter);
 app.use("/api/v1/donor-dashboard", donorDashboardRouter);
+app.use("/api/v1/admin-dashboard", adminDashboardRouter);
 app.use("/api/v1/student-verification", studentVerificationRouter);
 
 app.get("/", (req, res) => {

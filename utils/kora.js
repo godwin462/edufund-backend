@@ -14,14 +14,15 @@ exports.koraMakePayment = async (endpoint, payload) => {
         },
       }
     );
-    // console.log(response);
+    console.log(response);
     return response?.data;
   } catch (error) {
     if (error.response.data.message) {
-      console.log(error.response.data);
+      console.log(error);
+      // console.log(error.response.data);
       return error.response;
     }
-    console.log(error);
+    console.log('kora error',error);
     throw new Error(error.response.data.message || error);
   }
 };
