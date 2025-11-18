@@ -69,7 +69,7 @@ exports.makeDonation = async (req, res) => {
     }
     if (amount > campaign.remainingAmount) {
       return res.status(400).json({
-        message: `Amount is greater than the remaining campaign target`,
+        message: `Amount ₦${amount.toLocaleString()} is greater than the remaining campaign amount ₦${campaign.remainingAmount.toLocaleString()}`,
       });
     }
     const payload = {
