@@ -35,7 +35,10 @@ const StudentVerificationSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+StudentVerificationSchema.index(
+  { studentId: 1, documentType: 1 },
+  { unique: true }
+);
 const StudentVerificationModel = mongoose.model(
   "StudentVerification",
   StudentVerificationSchema

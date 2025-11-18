@@ -23,31 +23,56 @@ exports.createVerificationDocument = async (req, res) => {
           "Verification documents must not be empty. Please provide at least the required ones.",
       });
     }
-    if (!req.files.admissionLetter) {
-      return res
-        .status(400)
-        .json({
+    const previousVerification = await StudentVerificationModel.find({
+      studentId,
+    });
+    if (previousVerification.length > 0) {
+      if (previousVerification.length >= 5) {
+        return res.status(400).json({
           message:
-            "Admission letter is required, please provide admission letter",
+            "Documents already uploaded, please wait fro verification or change documents",
         });
+      }
+      const uploadedDocumentTYpes = previousVerification.map(
+        (doc) => doc.documentType
+      );
+      const duplicatedDocuments = Object.keys(req.files).filter((field) =>
+        uploadedDocumentTYpes.includes(field)
+      );
+      if (duplicatedDocuments.length > 0) {
+        return res.status(400).json({
+          message: `${duplicatedDocuments.join(
+            ", "
+          )} have already been uploaded, please avoid duplicates uploads.`,
+        });
+      }
+    }
+
+    if (!req.files.admissionLetter) {
+      return res.status(400).json({
+        message:
+          "Admission letter is required, please provide admission letter",
+      });
     }
     if (!req.files.studentIdCard) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "Student ID card is required, please provide student ID card",
-        });
+      return res.status(400).json({
+        message: "Student ID card is required, please provide student ID card",
+      });
     }
     if (!req.files.nin) {
-      return res.status(400).json({ message: "NIN is required, please provide NIN" });
+      return res
+        .status(400)
+        .json({ message: "NIN is required, please provide NIN" });
     }
 
     const files = Object.values(req.files).flat();
 
     for (const file of files) {
       if (file.mimetype !== "application/pdf") {
-        return res.status(400).json({ message: "Only PDF files are allowed, please ensure all files are PDF" });
+        return res.status(400).json({
+          message:
+            "Only PDF files are allowed, please ensure all files are PDF",
+        });
       }
     }
 
@@ -99,54 +124,86 @@ exports.getAllStudentsVerificationDocuments = async (req, res) => {
 
 exports.updateStudentVerificationDocuments = async (req, res) => {
   try {
-    const { documentId } = req.params;
-
-    if (!req.file || !req.file.buffer) {
+    const { studentId } = req.params;
+    const student = await UserModel.findOne({
+      _id: studentId,
+      role: "student",
+    });
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+    if (!req.files || Object.keys(req.files).length === 0) {
       return res.status(400).json({
-        message: "Please provide a file",
-        error: "Invalid file",
+        message: "At least one file is required for update.",
+        error: "No file uploaded",
       });
     }
-    if (req.file.mimetype !== "application/pdf") {
-      return res.status(400).json({
-        message: "Only PDF files are allowed",
-        error: "Invalid file type",
+
+    const updatedDocuments = [];
+
+    for (const field in req.files) {
+      const file = req.files[field][0];
+
+      if (file.mimetype !== "application/pdf") {
+        return res.status(400).json({
+          message: "Only PDF files are allowed",
+          error: `Invalid file type for ${field}`,
+        });
+      }
+
+      const existingDocument = await StudentVerificationModel.findOne({
+        studentId,
+        documentType: field,
       });
-    }
-    const existingDocument = await StudentVerificationModel.findById(
-      documentId
-    );
-    if (!existingDocument) {
-      return res
-        .status(404)
-        .json({ message: "Cannot find the document you're trying to update" });
-    }
-    if (
-      existingDocument &&
-      existingDocument.document &&
-      existingDocument.document.publicId
-    ) {
-      await cloudinaryDelete(existingDocument.document.publicId);
+
+      if (!existingDocument) {
+        // As per instruction "updating exiting file and not creating new ones"
+        // We will not create a new one, just ignore it.
+        // Or we can send a message to the user.
+        console.log(
+          `No document found for type ${field} for student ${studentId}. Skipping.`
+        );
+        continue;
+      }
+
+      if (
+        existingDocument &&
+        existingDocument.document &&
+        existingDocument.document.publicId
+      ) {
+        await cloudinaryDelete(existingDocument.document.publicId);
+      }
+
+      const uploadResult = await cloudinaryUpload(file.buffer);
+      const document = {
+        secureUrl: uploadResult.secure_url,
+        publicId: uploadResult.public_id,
+      };
+
+      const updatedDocumentRecord =
+        await StudentVerificationModel.findByIdAndUpdate(
+          existingDocument._id,
+          { document, documentType: field },
+          { new: true }
+        );
+
+      updatedDocuments.push(updatedDocumentRecord);
     }
 
-    const uploadResult = await cloudinaryUpload(req.file.buffer);
-    let document = {
-      secureUrl: uploadResult.secure_url,
-      publicId: uploadResult.publicId,
-    };
-    const updatedDocumentRecord =
-      await StudentVerificationModel.findByIdAndUpdate(
-        documentId,
-        { document },
-        { new: true }
-      );
+    if (updatedDocuments.length === 0) {
+      return res.status(404).json({
+        message: "No matching documents found to update.",
+      });
+    }
+
     res.status(200).json({
-      message: "Document updated successfully",
-      data: updatedDocumentRecord,
+      message: "Documents updated successfully",
+      data: updatedDocuments,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
-      message: "Internal server error",
+      message: "Internal server error, failed to update documents",
       error: error.message,
     });
   }

@@ -135,13 +135,13 @@ studentVerificationRouter.get(
 
 /**
  * @swagger
- * /student-verification/{documentId}:
+ * /student-verification/{studentId}:
  *   patch:
  *     summary: Update a verification document
  *     tags: [Student Verification]
  *     parameters:
  *       - in: path
- *         name: documentId
+ *         name: studentId
  *         required: true
  *         schema:
  *           type: string
@@ -171,8 +171,14 @@ studentVerificationRouter.get(
  *         description: Internal server error
  */
 studentVerificationRouter.patch(
-  "/:documentId",
-  upload.single("verificationDocument"),
+  "/:studentId",
+  upload.fields([
+    { name: "admissionLetter", maxCount: 1 },
+    { name: "studentIdCard", maxCount: 1 },
+    { name: "semesterReceipt", maxCount: 1 },
+    { name: "academicResult", maxCount: 1 },
+    { name: "nin", maxCount: 1 },
+  ]),
   isAuthenticated,
   studentAccess,
   updateStudentVerificationDocuments
