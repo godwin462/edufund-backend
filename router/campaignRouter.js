@@ -96,7 +96,7 @@ const upload = require("../middleware/multerMiddleware");
  */
 campaignRouter.get(
   "/",
-  isAuthenticated,
+  // isAuthenticated,
   getAllCampaigns
 );
 
@@ -545,10 +545,6 @@ campaignRouter.put(
  *       "500":
  *         description: Internal server error
  */
-campaignRouter.delete(
-  "/:campaignId",
-  isAuthenticated,
-  deleteCampaign
-);
+campaignRouter.delete("/:campaignId", isAuthenticated, deleteCampaign);
 
 module.exports = campaignRouter;
