@@ -1,4 +1,5 @@
 const campaignModel = require("../models/campaignModel");
+const PaymentModel = require("../models/paymentModel");
 const UserModel = require("../models/userModel");
 const {
   cloudinaryUpload,
@@ -11,10 +12,6 @@ const {
 
 // Create a new campaign
 exports.createCampaign = async (req, res) => {
-  /*
-    #swagger.tags = ['Campaign']
-    #swagger.description = 'Create a new Campaign.'
-    */
   try {
     const { studentId } = req.params;
     const { error } = createCampaignValidation.validate(req.body);
@@ -24,9 +21,21 @@ exports.createCampaign = async (req, res) => {
       });
     }
 
-    const { title, target, story, campaignImage } = req.body || {};
+    let {
+      schoolName,
+      year,
+      matricNumber,
+      jambRegistrationNumber,
+      duration,
+      title,
+      course,
+      target,
+      story,
+    } = req.body || {};
     let file = null;
-    const student = await UserModel.findById(studentId);
+    const student = await UserModel.findOne({ _id: studentId, role: "student" })
+      .populate("academicDocuments")
+      .lean({ virtuals: true });
 
     if (!student) {
       return res.status(404).json({
@@ -34,6 +43,22 @@ exports.createCampaign = async (req, res) => {
           "Student not found, please create a student account to create campaign",
       });
     }
+
+    // if (
+    //    student.academicDocuments.length < 3
+    // ) {
+    //   return res.status(400).json({
+    //     message:
+    //       "Please upload your academic documents to get verified before you can create a campaign",
+    //   });
+    // }
+    // if (!student.isFullyVerifiedStudent)
+    // {
+    //   return res.status(400).json({
+    //     message:
+    //       "Your documents need to be verified before you can create a campaign",
+    //   });
+    // }
 
     const campaignIsActive = await campaignModel.findOne({
       studentId,
@@ -46,9 +71,19 @@ exports.createCampaign = async (req, res) => {
           "You already have an active campaign, please end your current campaign before creating a new one",
       });
     }
-
+    const donations = await PaymentModel.find({
+      receiverId: studentId,
+      status: "successful",
+    });
+    if (donations && donations.length > 0) {
+      return res.status(404).json({
+        message:
+          "Please withdraw your donations before creating a new campaign",
+      });
+    }
+    let campaignImage;
     if (req.file && req.file.buffer) {
-      file = await cloudinaryUpload(file.buffer);
+      file = await cloudinaryUpload(req.file.buffer);
       campaignImage = {
         imageUrl: file.secure_url,
         publicId: file.public_id,
@@ -57,6 +92,12 @@ exports.createCampaign = async (req, res) => {
 
     const newCampaign = new campaignModel({
       studentId,
+      schoolName,
+      year,
+      course,
+      matricNumber,
+      jambRegistrationNumber,
+      duration,
       title,
       target,
       story,
@@ -68,18 +109,65 @@ exports.createCampaign = async (req, res) => {
       data: newCampaign,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
-      messaage: "Error creating campaign",
+      message: "Internal server error: Error creating campaign",
+      error: error.message,
+    });
+  }
+};
+
+exports.updateCampaign = async (req, res) => {
+  try {
+    const { campaignId } = req.params;
+    const { error } = updateCampaignValidation.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: error.message,
+      });
+    }
+    const { title, target, story, isActive } = req.body || {};
+    let file = null;
+    const campaign = await campaignModel.findById(campaignId);
+    if (!campaign) {
+      return res.status(404).json({
+        message: "Campaign not found",
+        error: error.message,
+      });
+    }
+
+    let campaignImage;
+    if (campaign.campaignImage && campaign.campaignImage.publicId && req.file) {
+      cloudinaryDelete(campaign.campaignImage.publicId);
+    }
+    if (req.file && req.file.buffer) {
+      file = await cloudinaryUpload(req.file.buffer);
+      campaignImage = {
+        imageUrl: file.secure_url,
+        publicId: file.public_id,
+      };
+    }
+    campaign.title = title ?? campaign.title;
+    campaign.target = target ?? campaign.target;
+    campaign.story = story ?? campaign.story;
+    campaign.campaignImage = campaignImage ?? campaign.campaignImage;
+    campaign.isActive = isActive ?? campaign.isActive;
+    await campaign.save();
+
+    res.status(200).json({
+      message: "Campaign updated successfully",
+      data: campaign,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Error updating campaign",
       error: error.message,
     });
   }
 };
 
 exports.deleteCampaign = async (req, res) => {
-  /*
-    #swagger.tags = ['Campaign']
-    #swagger.description = 'Delete a Campaign.'
-    */
   try {
     const { campaignId } = req.params;
     const campaign = await campaignModel.findByIdAndDelete(campaignId, {
@@ -92,7 +180,7 @@ exports.deleteCampaign = async (req, res) => {
       });
     }
     if (campaign.campaignImage && campaign.campaignImage.publicId)
-      cloudinaryDelete(deleteCampaign.campaignImage.publicId);
+      cloudinaryDelete(campaign.campaignImage.publicId);
 
     res.status(200).json({
       message: "Campaign deleted successfully",
@@ -107,18 +195,20 @@ exports.deleteCampaign = async (req, res) => {
 };
 
 exports.getStudentCampaigns = async (req, res) => {
-  /*
-    #swagger.tags = ['Campaign']
-    #swagger.description = 'Get all Campaigns.'
-    */
   try {
+    const { status, isActive } = req.query;
     const { studentId } = req.params;
-    const campaigns = await campaignModel.find({ studentId });
+    const campaigns = await campaignModel
+      .find({ studentId })
+      .sort({ createdAt: -1 })
+      .populate("studentId")
+      .populate("donations")
+      .exec();
     const total = campaigns.length;
     res.status(200).json({
       message:
         total < 1
-          ? "No campaigns yet,create to view campaigns"
+          ? "No campaigns yet, create to view campaigns"
           : "Campaigns found successfully",
       total,
       data: campaigns,
@@ -132,12 +222,13 @@ exports.getStudentCampaigns = async (req, res) => {
 };
 
 exports.getAllCampaigns = async (req, res) => {
-  /*
-    #swagger.tags = ['Campaign']
-    #swagger.description = 'Get a student Campaigns.'
-    */
   try {
-    const campaigns = await campaignModel.find().populate("studentId");
+    const campaigns = await campaignModel
+      .find({ isActive: true })
+      .sort({ createdAt: -1 })
+      .populate("studentId")
+      .populate("donations")
+      .exec();
     const total = campaigns.length;
     res.status(200).json({
       message: total < 1 ? "No campaigns yet" : "Campaigns found successfully",
@@ -145,6 +236,7 @@ exports.getAllCampaigns = async (req, res) => {
       data: campaigns,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: "Error getting campaigns",
       error: error.message,
@@ -153,15 +245,12 @@ exports.getAllCampaigns = async (req, res) => {
 };
 
 exports.getCampaign = async (req, res) => {
-  /*
-    #swagger.tags = ['Campaign']
-    #swagger.description = 'Get a Campaign.'
-    */
   try {
     const { campaignId } = req.params;
     const campaign = await campaignModel
       .findById(campaignId)
-      .populate("studentId");
+      .populate("studentId donations")
+      .exec();
     if (!campaign) {
       return res.status(404).json({
         message: "Campaign not found",

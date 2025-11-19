@@ -7,7 +7,7 @@ const doc = {
   info: {
     version: "1.0.0",
     title: "API Documentation",
-    description: "EduFunds backend api",
+    description: "EduFund's backend api",
   },
   servers: [
     { url: `http://localhost:${port}`, description: "Local server" },
@@ -16,6 +16,14 @@ const doc = {
       description: "Production server",
     },
   ],
+  definitions: {
+    StudentRegistration: { // Define a reusable schema name
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'email@example.com',
+      password: 'password123',
+    }
+  },
   components: {
     securitySchemes: {
       bearerAuth: {

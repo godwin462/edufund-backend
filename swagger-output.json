@@ -3,7 +3,7 @@
   "info": {
     "version": "1.0.0",
     "title": "API Documentation",
-    "description": "EduFunds backend api"
+    "description": "EduFund's backend api"
   },
   "servers": [
     {
@@ -18,10 +18,7 @@
   "paths": {
     "/": {
       "get": {
-        "tags": [
-          "🌿"
-        ],
-        "description": "Test API.",
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"
@@ -31,10 +28,7 @@
     },
     "/api/v1/auth/register/student": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "description": "Register user account.",
+        "description": "",
         "responses": {
           "201": {
             "description": "Created"
@@ -88,10 +82,7 @@
     },
     "/api/v1/auth/register/sponsor/organization": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "description": "Register user account.",
+        "description": "",
         "responses": {
           "201": {
             "description": "Created"
@@ -145,10 +136,7 @@
     },
     "/api/v1/auth/register/sponsor/individual": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "description": "Register user account.",
+        "description": "",
         "responses": {
           "201": {
             "description": "Created"
@@ -202,10 +190,7 @@
     },
     "/api/v1/auth/register/admin": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "description": "Register user account.",
+        "description": "",
         "responses": {
           "201": {
             "description": "Created"
@@ -257,105 +242,15 @@
         }
       }
     },
-    "/api/v1/auth/login/student": {
+    "/api/v1/auth/login": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "description": "Login user account.",
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"
           },
           "400": {
             "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "example": "any"
-                  },
-                  "password": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/auth/login/sponsor/individual": {
-      "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "description": "Login user account.",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "example": "any"
-                  },
-                  "password": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/auth/login/sponsor/organization": {
-      "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "description": "Login user account.",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
           },
           "404": {
             "description": "Not Found"
@@ -385,10 +280,7 @@
     },
     "/api/v1/auth/login/admin": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "description": "Login user account.",
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"
@@ -427,10 +319,7 @@
     },
     "/api/v1/auth/resend-otp/": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "description": "Resend OTP for user account.",
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"
@@ -463,10 +352,7 @@
     },
     "/api/v1/auth/verify/{email}/": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "description": "Verify OTP for user account.",
+        "description": "",
         "parameters": [
           {
             "name": "email",
@@ -507,6 +393,118 @@
         }
       }
     },
+    "/api/v1/auth/forgot-password/{email}": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/verify-reset-password/{email}": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "otp": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/reset-password/{email}": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/auth/auth/google": {
       "get": {
         "description": "",
@@ -529,10 +527,7 @@
     },
     "/api/v1/auth/change-password/{userId}": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "description": "Change authenticated user account password.",
+        "description": "",
         "parameters": [
           {
             "name": "userId",
@@ -591,10 +586,7 @@
     },
     "/api/v1/auth/me": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "description": "Get authenticated user",
+        "description": "",
         "parameters": [
           {
             "name": "authorization",
@@ -625,10 +617,7 @@
     },
     "/api/v1/user/": {
       "get": {
-        "tags": [
-          "User"
-        ],
-        "description": "Get all users.",
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"
@@ -641,10 +630,7 @@
     },
     "/api/v1/user/{userId}": {
       "get": {
-        "tags": [
-          "User"
-        ],
-        "description": "Get a user by ID.",
+        "description": "",
         "parameters": [
           {
             "name": "userId",
@@ -668,10 +654,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "User"
-        ],
-        "description": "Delete a new user.",
+        "description": "",
         "parameters": [
           {
             "name": "userId",
@@ -695,10 +678,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "User"
-        ],
-        "description": "Update existing user.",
+        "description": "",
         "parameters": [
           {
             "name": "userId",
@@ -734,24 +714,19 @@
           }
         },
         "requestBody": {
-          "required": true,
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "firstName": {
-                    "type": "string"
+                    "example": "any"
                   },
                   "lastName": {
-                    "type": "string"
+                    "example": "any"
                   },
                   "role": {
-                    "type": "string"
-                  },
-                  "profilePicture": {
-                    "type": "string",
-                    "format": "binary"
+                    "example": "any"
                   }
                 }
               }
@@ -762,10 +737,7 @@
     },
     "/api/v1/Analytics/students-helped/{donorId}": {
       "get": {
-        "tags": [
-          "Analytics"
-        ],
-        "description": "Total number of students helped.",
+        "description": "",
         "parameters": [
           {
             "name": "donorId",
@@ -804,10 +776,7 @@
     },
     "/api/v1/Analytics/allDonors/{studentId}": {
       "get": {
-        "tags": [
-          "donors"
-        ],
-        "description": "All generous supporters.",
+        "description": "",
         "parameters": [
           {
             "name": "studentId",
@@ -846,10 +815,7 @@
     },
     "/api/v1/Analytics/myDonations": {
       "get": {
-        "tags": [
-          "myDonations"
-        ],
-        "description": "All students helped.",
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"
@@ -865,10 +831,7 @@
     },
     "/api/v1/donors/students-helped/{donorId}": {
       "get": {
-        "tags": [
-          "Analytics"
-        ],
-        "description": "Total number of students helped.",
+        "description": "",
         "parameters": [
           {
             "name": "donorId",
@@ -907,10 +870,7 @@
     },
     "/api/v1/donors/allDonors/{studentId}": {
       "get": {
-        "tags": [
-          "donors"
-        ],
-        "description": "All generous supporters.",
+        "description": "",
         "parameters": [
           {
             "name": "studentId",
@@ -949,10 +909,7 @@
     },
     "/api/v1/donors/myDonations": {
       "get": {
-        "tags": [
-          "myDonations"
-        ],
-        "description": "All students helped.",
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"
@@ -968,10 +925,7 @@
     },
     "/api/v1/payment/make-donation/{donorId}/{receiverId}/{campaignId}": {
       "post": {
-        "tags": [
-          "Payment"
-        ],
-        "description": "Make a donation.",
+        "description": "",
         "parameters": [
           {
             "name": "donorId",
@@ -1033,9 +987,6 @@
                 "properties": {
                   "amount": {
                     "example": "any"
-                  },
-                  "redirect_url": {
-                    "example": "any"
                   }
                 }
               }
@@ -1046,26 +997,43 @@
     },
     "/api/v1/payment/verify-payment-webhook": {
       "post": {
-        "tags": [
-          "Payment"
-        ],
-        "description": "Verify payment webhook note: will be called by KoraPay won",
+        "description": "",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "event": {
+                    "example": "any"
+                  },
+                  "data": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
-    "/api/v1/payment/request-withdrawal/{donorId}/{campaignId}": {
+    "/api/v1/payment/request-withdrawal/{studentId}/{campaignId}": {
       "post": {
-        "tags": [
-          "Payment"
-        ],
-        "description": "Withdraw donation.",
+        "description": "",
         "parameters": [
           {
-            "name": "donorId",
+            "name": "studentId",
             "in": "path",
             "required": true,
             "schema": {
@@ -1129,10 +1097,7 @@
     },
     "/api/v1/contact-us/": {
       "post": {
-        "tags": [
-          "Contact Us"
-        ],
-        "description": "Contact Us Form Submission Handler",
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"
@@ -1162,10 +1127,7 @@
     },
     "/api/v1/campaigns/": {
       "get": {
-        "tags": [
-          "Campaign"
-        ],
-        "description": "Get a student Campaigns.",
+        "description": "",
         "parameters": [
           {
             "name": "authorization",
@@ -1196,10 +1158,7 @@
     },
     "/api/v1/campaigns/{studentId}": {
       "get": {
-        "tags": [
-          "Campaign"
-        ],
-        "description": "Get all Campaigns.",
+        "description": "",
         "parameters": [
           {
             "name": "studentId",
@@ -1236,10 +1195,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Campaign"
-        ],
-        "description": "Create a new Campaign.",
+        "description": "",
         "parameters": [
           {
             "name": "studentId",
@@ -1291,9 +1247,6 @@
                   },
                   "story": {
                     "example": "any"
-                  },
-                  "campaignImage": {
-                    "example": "any"
                   }
                 }
               }
@@ -1304,10 +1257,7 @@
     },
     "/api/v1/campaigns/campaign-detail/{campaignId}": {
       "get": {
-        "tags": [
-          "Campaign"
-        ],
-        "description": "Get a Campaign.",
+        "description": "",
         "parameters": [
           {
             "name": "campaignId",
@@ -1346,10 +1296,7 @@
     },
     "/api/v1/campaigns/{campaignId}": {
       "put": {
-        "tags": [
-          "Campaign"
-        ],
-        "description": "Create a new Campaign.",
+        "description": "",
         "parameters": [
           {
             "name": "campaignId",
@@ -1412,10 +1359,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Campaign"
-        ],
-        "description": "Delete a Campaign.",
+        "description": "",
         "parameters": [
           {
             "name": "campaignId",
@@ -1454,10 +1398,7 @@
     },
     "/api/v1/academic/{studentId}": {
       "post": {
-        "tags": [
-          "AcademicDetails"
-        ],
-        "description": "Create a new Academic Detail.",
+        "description": "",
         "parameters": [
           {
             "name": "studentId",
@@ -1517,10 +1458,7 @@
         }
       },
       "get": {
-        "tags": [
-          "AcademicDetails"
-        ],
-        "description": "Get Academic Detail.",
+        "description": "",
         "parameters": [
           {
             "name": "studentId",
@@ -1559,10 +1497,7 @@
     },
     "/api/v1/academic/{academicDetailsId}": {
       "put": {
-        "tags": [
-          "AcademicDetails"
-        ],
-        "description": "Update the Academic Detail.",
+        "description": "",
         "parameters": [
           {
             "name": "academicDetailsId",
@@ -1624,10 +1559,7 @@
     },
     "/api/v1/donation/": {
       "get": {
-        "tags": [
-          "Donation"
-        ],
-        "description": "Get all donations.",
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"
@@ -1640,10 +1572,7 @@
     },
     "/api/v1/donation/received-donations/{studentId}": {
       "get": {
-        "tags": [
-          "Donation"
-        ],
-        "description": "Get all donations to a student.",
+        "description": "",
         "parameters": [
           {
             "name": "studentId",
@@ -1689,10 +1618,7 @@
     },
     "/api/v1/donation/received-donations/donation-detail/{reference}": {
       "get": {
-        "tags": [
-          "Donation"
-        ],
-        "description": "Get a donation.",
+        "description": "",
         "parameters": [
           {
             "name": "reference",
@@ -1731,10 +1657,7 @@
     },
     "/api/v1/donation/received-donations/student-balance/{studentId}": {
       "get": {
-        "tags": [
-          "Donation"
-        ],
-        "description": "Get student wallet ballance.",
+        "description": "",
         "parameters": [
           {
             "name": "studentId",
@@ -1773,10 +1696,7 @@
     },
     "/api/v1/donation/received-donations/campaign-balance/{campaignId}": {
       "get": {
-        "tags": [
-          "Donation"
-        ],
-        "description": "Get total donations for a campaign.",
+        "description": "",
         "parameters": [
           {
             "name": "campaignId",
@@ -1815,13 +1735,244 @@
     },
     "/api/v1/donation/received-donations/campaign-donations/{campaignId}": {
       "get": {
-        "tags": [
-          "Donation"
-        ],
-        "description": "Get all donations relating to a campaign.",
+        "description": "",
         "parameters": [
           {
             "name": "campaignId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/notification/total/{userId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/notification/{userId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/notification/mark-all-as-read/{userId}": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/notification/mark-all-as-unread/{userId}": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/notification/mark-as-read/{notificationId}": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "notificationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/notification/mark-as-unread/{notificationId}": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "notificationId",
             "in": "path",
             "required": true,
             "schema": {
@@ -1919,10 +2070,7 @@
             "example": "Example Org"
           }
         },
-        "required": [
-          "email",
-          "password"
-        ]
+        "required": ["email", "password"]
       },
       "Academic": {
         "type": "object",
@@ -1993,12 +2141,7 @@
             "example": "campaign_public_id"
           }
         },
-        "required": [
-          "studentId",
-          "title",
-          "target",
-          "story"
-        ]
+        "required": ["studentId", "title", "target", "story"]
       },
       "Otp": {
         "type": "object",
@@ -2017,10 +2160,7 @@
           },
           "blockedUntil": {}
         },
-        "required": [
-          "userId",
-          "otp"
-        ]
+        "required": ["userId", "otp"]
       },
       "Payment": {
         "type": "object",
@@ -2055,12 +2195,7 @@
             "example": false
           }
         },
-        "required": [
-          "senderId",
-          "receiverId",
-          "amount",
-          "reference"
-        ]
+        "required": ["senderId", "receiverId", "amount", "reference"]
       },
       "UserIdentity": {
         "type": "object",
@@ -2086,10 +2221,7 @@
             "example": "1//0g..."
           }
         },
-        "required": [
-          "userId",
-          "provider"
-        ]
+        "required": ["userId", "provider"]
       },
       "VerificationToken": {
         "type": "object",
@@ -2107,10 +2239,7 @@
             "example": "2025-10-28T12:00:00Z"
           }
         },
-        "required": [
-          "userId",
-          "token"
-        ]
+        "required": ["userId", "token"]
       },
       "Wallet": {
         "type": "object",
@@ -2164,6 +2293,27 @@
           "amount",
           "purpose"
         ]
+      },
+      "StudentRegistration": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe"
+          },
+          "email": {
+            "type": "string",
+            "example": "email@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "password123"
+          }
+        }
       }
     }
   },

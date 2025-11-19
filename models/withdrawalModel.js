@@ -9,18 +9,13 @@ const WithdrawalSchema = new mongoose.Schema(
     },
     campaignId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "campaign",
+      ref: "Campaign",
       required: true,
-    },
-    transactionRef: {
-      type: String,
-      required: true,
-      unique: true,
     },
     amount: {
       type: Number,
       required: true,
-      min: 0.01,
+      min: 1,
     },
     purpose: {
       type: String,

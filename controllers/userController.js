@@ -1,3 +1,4 @@
+const campaignModel = require("../models/campaignModel");
 const UserModel = require("../models/userModel");
 const { hashData } = require("../utils/bcryptUtil");
 const {
@@ -6,29 +7,6 @@ const {
 } = require("../utils/cloudinaryUtil");
 
 exports.updateUser = async (req, res) => {
-  /*
-  #swagger.tags = ['User']
-  #swagger.description = 'Update existing user.'
-  #swagger.requestBody = {
-        required: true,
-        content: {
-            "multipart/form-data": {
-                schema: {
-                    type: "object",
-                    properties: {
-                        firstName: { type: "string" },
-                        lastName: { type: "string" },
-                        role: { type: "string" },
-                        profilePicture: {
-                            type: "string",
-                            format: "binary"
-                        }
-                    }
-                }
-            }
-        }
-    }
-  */
   try {
     const { userId } = req.params;
     const { firstName, lastName, role } = req.body || {};
@@ -50,8 +28,12 @@ exports.updateUser = async (req, res) => {
       };
     }
 
-    user.firstName = firstName ?? user.firstName;
-    user.lastName = lastName ?? user.lastName;
+    user.firstName =
+      charAt(0).toUpperCase() + firstName.slice(1).toLowerCase() ??
+      user.firstName;
+    user.lastName =
+      charAt(0).toUpperCase() + lastName.slice(1).toLowerCase() ??
+      user.lastName;
     user.role = role ?? user.role;
     user.profilePicture = profilePicture ?? user.profilePicture;
 
@@ -69,10 +51,6 @@ exports.updateUser = async (req, res) => {
 };
 
 exports.deleteUser = async (req, res) => {
-  /*
-  #swagger.tags = ['User']
-  #swagger.description = 'Delete a new user.'
-  */
   try {
     const { userId } = req.params;
     const user = await UserModel.findById(userId);
@@ -88,6 +66,7 @@ exports.deleteUser = async (req, res) => {
     await UserModel.findByIdAndDelete(userId);
     res.status(200).json({
       message: "User deleted successfully",
+      data: user,
     });
   } catch (error) {
     res.status(500).json({
@@ -98,23 +77,30 @@ exports.deleteUser = async (req, res) => {
 };
 
 exports.getUser = async (req, res) => {
-  /*
-  #swagger.tags = ['User']
-  #swagger.description = 'Get a user by  ID.'
-  */
   try {
     const { userId } = req.params;
-    const user = await UserModel.findById(userId);
+    const user = await UserModel.findById(userId)
+      .populate("academicDocuments")
+      .lean({ virtuals: true });
+    const educationInformation = await campaignModel
+      .findOne({ studentId: userId })
+      .sort({ createdAt: -1 })
+      .select(
+        "studentId schoolName year course matricNumber jambRegistrationNumber"
+      )
+      ;
     if (!user) {
       return res.status(404).json({
         message: "User not found, please create an account",
       });
     }
+    user.educationInfo = educationInformation;
     res.status(200).json({
       message: "User found successfully",
       data: user,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: "Server error getting user",
       error: error.message,
@@ -123,12 +109,10 @@ exports.getUser = async (req, res) => {
 };
 
 exports.getAllUsers = async (req, res) => {
-  /*
-  #swagger.tags = ['User']
-  #swagger.description = 'Get all users.'
-  */
   try {
-    const users = await UserModel.find();
+    const users = await UserModel.find()
+      .populate("academicDocuments")
+      .lean({ virtuals: true });
     const total = users.length;
     res.status(200).json({
       message: total < 1 ? "No users found" : "Users found successfully",
@@ -144,13 +128,11 @@ exports.getAllUsers = async (req, res) => {
 };
 
 exports.getUserByEmail = async (req, res) => {
-  /*
-  #swagger.tags = ['User']
-  #swagger.description = 'Get a user by email.'
-  */
   try {
     const { email } = req.body || {};
-    const user = await UserModel.findOne({ email });
+    const user = await UserModel.findOne({ email })
+      .populate("academicDocuments")
+      .lean({ virtuals: true });
     if (!user) {
       return res.status(404).json({
         message: "User not found, please create an account",

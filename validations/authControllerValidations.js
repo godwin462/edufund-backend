@@ -25,6 +25,13 @@ exports.registerValidation = joi.object({
     phoneNumber: joi.string().messages({
         'string.base': 'Phone number must be a string.',
     }),
+    sponsorType: joi.string().messages({
+        'string.base': 'Sponsor type must be a string.',
+        'any.only': 'Sponsor type must be one of [company, individual].',
+    }).optional(),
+    organizationName: joi.string().messages({
+        'string.base': 'Sponsor type must be a string.',
+    }).optional(),
 });
 
 exports.loginValidation = joi.object({
@@ -44,11 +51,14 @@ exports.verifyOtpValidation = joi.object({
         'string.base': 'OTP must be a string.',
         'any.required': 'OTP is required.'
     }),
-    email: joi.string().email().required().messages({
+    email: joi.string().email().messages({
         'string.base': 'Email must be a string.',
         'string.email': 'Please provide a valid email address.',
-        'any.required': 'Email is required.'
-    }),
+    }).optional(),
+    password: joi.string().min(6).messages({
+        'string.base': 'Password must be a string.',
+        'string.min': 'Password must be at least 6 characters long.',
+    }).optional(),
 });
 
 exports.resendOtpValidation = joi.object({
