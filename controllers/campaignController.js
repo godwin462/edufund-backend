@@ -224,9 +224,10 @@ exports.getStudentCampaigns = async (req, res) => {
 exports.getAllCampaigns = async (req, res) => {
   try {
     const campaigns = await campaignModel
-      .find({ isActive: true })
+      .find()
       .sort({ createdAt: -1 })
-      .populate("studentId").populate("donations")
+      .populate("studentId")
+      .populate("donations")
       .exec();
     const total = campaigns.length;
     res.status(200).json({
