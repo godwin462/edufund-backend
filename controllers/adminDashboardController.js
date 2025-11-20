@@ -156,8 +156,8 @@ exports.approveCampaign = async (req, res) => {
       });
     }
 
-    await campaignModel.updateOne({
-      _id: campaignId,
+    await campaignModel.findByIdAndUpdate(campaignId, {
+      status: "approved",
       isActive: true,
     });
     await createNotification(
@@ -209,12 +209,18 @@ exports.verifyStudent = async (req, res) => {
       { isFullyVerifiedStudent: true },
       { new: true }
     );
+
+    await StudentVerificationModel.updateMany(
+      { studentId },
+      { $set: { status: "verified" } }
+    );
     await createNotification(
       studentId,
       `Your educational documents have been verified successfully by the Admin`,
       studentId,
       "success"
     );
+
     return res.status(200).json({
       message: "Student verified successfully",
       data: student,

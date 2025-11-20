@@ -226,7 +226,31 @@ exports.getAllCampaigns = async (req, res) => {
     const campaigns = await campaignModel
       .find({ isActive: true })
       .sort({ createdAt: -1 })
-      .populate("studentId").populate("donations")
+      .populate("studentId")
+      .populate("donations")
+      .exec();
+    const total = campaigns.length;
+    res.status(200).json({
+      message: total < 1 ? "No campaigns yet" : "Campaigns found successfully",
+      total,
+      data: campaigns,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Error getting campaigns",
+      error: error.message,
+    });
+  }
+};
+
+exports.getAllInActiveCampaigns = async (req, res) => {
+  try {
+    const campaigns = await campaignModel
+      .find({ isActive: false })
+      .sort({ createdAt: -1 })
+      .populate("studentId")
+      .populate("donations")
       .exec();
     const total = campaigns.length;
     res.status(200).json({
