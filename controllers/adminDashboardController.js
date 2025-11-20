@@ -3,6 +3,7 @@ const UserModel = require("../models/userModel");
 const campaignModel = require("../models/campaignModel");
 const StudentVerificationModel = require("../models/studentVerificationModel");
 const NotificationModel = require("../models/notificationModel");
+const { createNotification } = require("./notificationController");
 
 exports.adminOverview = async (req, res) => {
   try {
@@ -159,7 +160,12 @@ exports.approveCampaign = async (req, res) => {
       _id: campaignId,
       isActive: true,
     });
-
+    await createNotification(
+      campaign.studentId,
+      `Your campaign have successfully been reviewed and approved by the Admin`,
+      campaignId,
+      "success"
+    );
     return res.status(200).json({
       message: "Campaign approved successfully",
       data: campaign,
@@ -203,7 +209,12 @@ exports.verifyStudent = async (req, res) => {
       { isFullyVerifiedStudent: true },
       { new: true }
     );
-
+    await createNotification(
+      studentId,
+      `Your educational documents have been verified successfully by the Admin`,
+      studentId,
+      "success"
+    );
     return res.status(200).json({
       message: "Student verified successfully",
       data: student,
