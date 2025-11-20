@@ -7,6 +7,7 @@ const {
   getAllCampaigns,
   getCampaign,
   updateCampaign,
+  getAllInActiveCampaigns,
 } = require("../controllers/campaignController");
 
 const { isAuthenticated } = require("../middleware/authenticationMiddleware");
@@ -94,11 +95,159 @@ const upload = require("../middleware/multerMiddleware");
  *       "500":
  *         description: Internal server error
  */
+campaignRouter.get("/", isAuthenticated, getAllCampaigns);
+
+/**
+ * @swagger
+ * /campaigns/inactive:
+ *   get:
+ *     summary: Get all inactive campaigns
+ *     tags: [Campaigns]
+ *     responses:
+ *       "200":
+ *         description: A list of campaigns
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Campaigns found successfully
+ *                 total:
+ *                   type: number
+ *                   example: 1
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       studentId:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: string
+ *                             example: 60d5ec49a0d2db2a3c_dummy_id
+ *                           firstName:
+ *                             type: string
+ *                             example: John
+ *                           lastName:
+ *                             type: string
+ *                             example: Doe
+ *                       title:
+ *                         type: string
+ *                         example: Help me fund my education
+ *                       target:
+ *                         type: number
+ *                         example: 5000
+ *                       story:
+ *                         type: string
+ *                         example: I am a student in need of financial assistance...
+ *                       isActive:
+ *                         type: boolean
+ *                         example: true
+ *                       campaignImage:
+ *                         type: object
+ *                         properties:
+ *                           imageUrl:
+ *                             type: string
+ *                             example: http://example.com/image.jpg
+ *                           publicId:
+ *                             type: string
+ *                             example: image_public_id
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
+ *       "500":
+ *         description: Internal server error
+ */
 campaignRouter.get(
-  "/",
+  "/inactive",
   // isAuthenticated,
-  getAllCampaigns
+  getAllInActiveCampaigns
 );
+
+/**
+ * @swagger
+ * /campaigns:
+ *   get:
+ *     summary: Get all campaigns
+ *     tags: [Campaigns]
+ *     responses:
+ *       "200":
+ *         description: A list of campaigns
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Campaigns found successfully
+ *                 total:
+ *                   type: number
+ *                   example: 1
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: 60d5ec49a0d2db2a3c_dummy_id
+ *                       studentId:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: string
+ *                             example: 60d5ec49a0d2db2a3c_dummy_id
+ *                           firstName:
+ *                             type: string
+ *                             example: John
+ *                           lastName:
+ *                             type: string
+ *                             example: Doe
+ *                       title:
+ *                         type: string
+ *                         example: Help me fund my education
+ *                       target:
+ *                         type: number
+ *                         example: 5000
+ *                       story:
+ *                         type: string
+ *                         example: I am a student in need of financial assistance...
+ *                       isActive:
+ *                         type: boolean
+ *                         example: true
+ *                       campaignImage:
+ *                         type: object
+ *                         properties:
+ *                           imageUrl:
+ *                             type: string
+ *                             example: http://example.com/image.jpg
+ *                           publicId:
+ *                             type: string
+ *                             example: image_public_id
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2023-01-01T12:00:00.000Z
+ *       "500":
+ *         description: Internal server error
+ */
+campaignRouter.get("/", isAuthenticated, getAllCampaigns);
 
 /**
  * @swagger

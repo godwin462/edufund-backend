@@ -204,6 +204,11 @@ exports.verifyStudent = async (req, res) => {
       { new: true }
     );
 
+    await StudentVerificationModel.updateMany(
+      { studentId },
+      { $set: { status: "verified" } }
+    );
+
     return res.status(200).json({
       message: "Student verified successfully",
       data: student,
