@@ -156,6 +156,7 @@ exports.approveCampaign = async (req, res) => {
     }
 
     await campaignModel.findByIdAndUpdate(campaignId, {
+      status: "approved",
       isActive: true,
     });
 
